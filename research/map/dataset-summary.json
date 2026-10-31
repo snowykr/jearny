@@ -1,0 +1,26 @@
+{
+  "bounds_wgs84": [
+    139.733,
+    35.63,
+    139.747,
+    35.641
+  ],
+  "features": 2429,
+  "by_kind": {
+    "railways": 218,
+    "roads": 689,
+    "landcover": 117,
+    "buildings": 1280,
+    "landmarks": 8,
+    "crossings": 109,
+    "stations": 8
+  },
+  "source_counts": {
+    "bounds": 1,
+    "node": 16488,
+    "way": 2540,
+    "relation": 198
+  },
+  "source_element_timestamp_min": "2008-10-21T22:06:45Z",
+  "source_element_timestamp_max": "2026-10-30T19:31:21Z"
+}

@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "stage": "source_art_not_runtime_atlas",
+  "assets": [
+    {
+      "id": "station",
+      "source": "assets/source/station-v1.png",
+      "sha256": "9ab0c914772f3b115b705029443de46faf40c4521743b3bc432de9daf069daff",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "proposedRuntimeSize": [
+        192,
+        128
+      ],
+      "status": "needs_edge_cleanup_and_grid_export",
+      "alpha": true,
+      "collision": "not_yet_authored",
+      "doorAnchor": "not_yet_authored"
+    },
+    {
+      "id": "matsushimaya",
+      "source": "assets/source/matsushimaya-v1.png",
+      "sha256": "52ac958effd7cb4d7c7cd1ce3e4a942412c03ab337ab5e8f1069cf2cc15c668c",
+      "sourceSize": [
+        1374,
+        1145
+      ],
+      "proposedRuntimeSize": [
+        96,
+        80
+      ],
+      "status": "needs_grid_palette_export",
+      "alpha": true,
+      "collision": "not_yet_authored",
+      "doorAnchor": "not_yet_authored"
+    },
+    {
+      "id": "liebe",
+      "source": "assets/source/liebe-v1.png",
+      "sha256": "684126cd2e5d3836d54775a6029da15a5b95ed78bcc601d7bc0b2c6807bd96a2",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "proposedRuntimeSize": [
+        80,
+        80
+      ],
+      "status": "optional_outside_first_map",
+      "alpha": true,
+      "collision": "not_yet_authored",
+      "doorAnchor": "not_yet_authored"
+    },
+    {
+      "id": "home",
+      "source": "assets/source/home-v1.png",
+      "sha256": "bd8126a76857e487482c1549b2d037209669a74e1b4d691b3db502e4edacb90b",
+      "sourceSize": [
+        1145,
+        1374
+      ],
+      "proposedRuntimeSize": [
+        80,
+        96
+      ],
+      "status": "fictional_needs_grid_export",
+      "alpha": true,
+      "collision": "not_yet_authored",
+      "doorAnchor": "not_yet_authored"
+    }
+  ]
+}

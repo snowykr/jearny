@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "lines": [
+    {"id":"home.welcome", "speaker":"guide", "displayText":"おはようございます。今日は高輪ゲートウェイ駅まで行ってみましょう。", "spokenText":"おはようございます。今日は、高輪ゲートウェイ駅まで行ってみましょう。"},
+    {"id":"station.directions", "speaker":"station_staff", "displayText":"泉岳寺へは、北改札を出て、案内に沿ってお進みください。", "spokenText":"泉岳寺へは、北改札を出て、案内に沿ってお進みください。"},
+    {"id":"shop.welcome", "speaker":"shopkeeper", "displayText":"いらっしゃいませ。何になさいますか。", "spokenText":"いらっしゃいませ。何になさいますか。"},
+    {"id":"shop.quantity", "speaker":"shopkeeper", "displayText":"おいくつご用意しましょうか。", "spokenText":"おいくつ、ご用意しましょうか。"},
+    {"id":"shop.confirm", "speaker":"shopkeeper", "displayText":"二つですね。ありがとうございます。", "spokenText":"二つですね。ありがとうございます。"},
+    {"id":"guide.clarify", "speaker":"guide", "displayText":"聞き取れないときは、「もう一度お願いします」と言ってみましょう。", "spokenText":"聞き取れないときは、もう一度お願いします、と言ってみましょう。"}
+  ]
+}

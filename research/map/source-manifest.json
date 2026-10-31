@@ -1,0 +1,53 @@
+{
+  "retrieved_date": "2026-10-31",
+  "sources": [
+    {
+      "file": "osm-map.osm",
+      "url": "https://www.openstreetmap.org/api/0.6/map?bbox=139.733,35.630,139.747,35.641",
+      "bytes": 7678789,
+      "sha256": "8a150ac88c9a32bd198385a7b5c4558971afe33c956c97454f560f0bd7c0f235"
+    },
+    {
+      "file": "official-city-access.html",
+      "url": "https://www.takanawagateway-city.com/access/",
+      "bytes": 35911,
+      "sha256": "7e7212eb28379538e46e3381ca922f88d339c6aba294db2d1c0231b4d40aa7cb"
+    },
+    {
+      "file": "official-city-guide.svg",
+      "url": "https://www.takanawagateway-city.com/assets/img/access/guide.svg",
+      "bytes": 146932,
+      "sha256": "0b565ab0df6f17d37c05406151e2e5749f05408fa1a4b7ceb5b017f30ed200f1"
+    },
+    {
+      "file": "official-temple-access.html",
+      "url": "https://www.sengakuji.or.jp/access/",
+      "bytes": 11839,
+      "sha256": "d4ab0daa3cb585b06aac901d5d1963ff95afb53f4cc20dbc4a0f12406d9b773b"
+    },
+    {
+      "file": "official-minato-pedestrian-routes.html",
+      "url": "https://www.city.minato.tokyo.jp/dobokukeikaku/dainitouzai_setumeikai.html",
+      "bytes": 23053,
+      "sha256": "01571f9ebf1c73fd4e9ff7710b2cc1e81e91aab0c0ba3f22b026b7096512c7cb"
+    },
+    {
+      "file": "official-minato-pedestrian-route-20260328.pdf",
+      "url": "https://www.city.minato.tokyo.jp/documents/99746/hokousha_260328.pdf",
+      "bytes": 1358898,
+      "sha256": "1c7f24cdd313a2265c85ce5ba687f6c8d27b334f9a6444fc9820473086f6887f"
+    },
+    {
+      "file": "official-minato-east-bridge.html",
+      "url": "https://www.city.minato.tokyo.jp/kouchou/kuse/kocho/ikenshokai49/3474.html",
+      "bytes": 19655,
+      "sha256": "5a7182f1ccdcdd429caa3f6388c0faba80b3cec7a8ab0c0c07f422b31b59f7e6"
+    },
+    {
+      "file": "osm-license.html",
+      "url": "https://www.openstreetmap.org/copyright",
+      "bytes": 21314,
+      "sha256": "0cb015271b92f00f8b47702df514be2bdaec81d0b914a9911ce6c5484d1eb5e7"
+    }
+  ]
+}

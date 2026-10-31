@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "id": "takanawa-v1",
+  "status": "architecture_plan_not_tilemap",
+  "tileSize": 16,
+  "viewport": [
+    240,
+    160
+  ],
+  "outdoor": {
+    "id": "takanawa",
+    "grid": [
+      128,
+      96
+    ],
+    "geographicTransform": null,
+    "note": "Compressed authored game topology, not navigation; tiles are not geographic coordinates"
+  },
+  "anchors": [
+    {
+      "id": "home",
+      "tile": [
+        18,
+        40
+      ],
+      "fictional": true,
+      "geo": null,
+      "asset": "home"
+    },
+    {
+      "id": "station",
+      "tile": [
+        64,
+        48
+      ],
+      "fictional": false,
+      "geo": [
+        139.7406635,
+        35.6353992
+      ],
+      "asset": "station"
+    },
+    {
+      "id": "plaza",
+      "tile": [
+        54,
+        36
+      ],
+      "fictional": false,
+      "geo": null
+    },
+    {
+      "id": "route15_crossing",
+      "tile": [
+        44,
+        28
+      ],
+      "fictional": false,
+      "geo": null
+    },
+    {
+      "id": "sengakuji_approach",
+      "tile": [
+        34,
+        24
+      ],
+      "fictional": false,
+      "geo": null
+    },
+    {
+      "id": "matsushimaya",
+      "tile": [
+        16,
+        16
+      ],
+      "fictional": false,
+      "geo": null,
+      "address": "東京都港区高輪1-5-25",
+      "asset": "matsushimaya",
+      "placement": "stylized; extension route not geographically validated"
+    }
+  ],
+  "mandatoryConnections": [
+    [
+      "home",
+      "sengakuji_approach"
+    ],
+    [
+      "sengakuji_approach",
+      "route15_crossing"
+    ],
+    [
+      "route15_crossing",
+      "plaza"
+    ],
+    [
+      "plaza",
+      "station"
+    ],
+    [
+      "sengakuji_approach",
+      "matsushimaya"
+    ]
+  ],
+  "constraints": [
+    "railway is blocked",
+    "Route15 traversable only at crossing",
+    "plaza-to-station uses authored deck portal",
+    "no east station bridge",
+    "home has no real geographic point"
+  ],
+  "interiors": [
+    {
+      "id": "home-interior",
+      "grid": [
+        16,
+        12
+      ],
+      "spawn": [
+        8,
+        9
+      ],
+      "exitTo": "home"
+    },
+    {
+      "id": "shop-interior",
+      "grid": [
+        16,
+        12
+      ],
+      "spawn": [
+        8,
+        9
+      ],
+      "exitTo": "matsushimaya",
+      "fictionalInterior": true
+    }
+  ],
+  "quest": {
+    "id": "first-neighborhood-trip",
+    "start": "home",
+    "finish": "home",
+    "budgetYen": 1000,
+    "gameCatalog": [
+      {
+        "id": "mochi",
+        "priceYen": 300,
+        "fictionalPrice": true
+      }
+    ],
+    "requiredQuantity": 2,
+    "remainingYenOnSuccess": 400,
+    "transitions": [
+      {
+        "from": "not_started",
+        "to": "active",
+        "condition": "accept guide task at home"
+      },
+      {
+        "from": "active",
+        "to": "ready_to_return",
+        "condition": "station visited; shop exchange complete; two mochi collected"
+      },
+      {
+        "from": "ready_to_return",
+        "to": "completed",
+        "condition": "return home and deliver two mochi; consume once"
+      }
+    ]
+  },
+  "npcs": [
+    "guide",
+    "station_staff",
+    "shopkeeper"
+  ],
+  "deferred": [
+    "gishido",
+    "liebe",
+    "student-world",
+    "baito-world",
+    "live-STT",
+    "billing",
+    "real-coupons"
+  ]
+}

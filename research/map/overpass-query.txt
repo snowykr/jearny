@@ -1,0 +1,1 @@
+[out:json][timeout:90];(way["highway"](35.63,139.733,35.641,139.747);way["railway"](35.63,139.733,35.641,139.747);way["building"](35.63,139.733,35.641,139.747);node["railway"="station"](35.63,139.733,35.641,139.747);node["highway"="crossing"](35.63,139.733,35.641,139.747););out meta geom;
