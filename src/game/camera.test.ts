@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { BUILDING } from '../contracts';
 import { maps } from '../content/maps';
 import { VIEW_H, VIEW_W, buildingRects, cameraCenter, sceneCamera, visibleTiles } from './camera';
 import { playerDrawPixel } from './player';
@@ -70,6 +71,14 @@ describe('camera', () => {
     it('keeps the home building in view from its door', () => {
       const home = buildingRects(tk).find((r) => r.x1 - r.x0 === 80 && r.y1 - r.y0 === 96)!;
       expect(top(sceneCamera(tk, tl(tk.spawns['home-door']!)))).toBeLessThanOrEqual(home.y0);
+    });
+
+    it('marks the collision rect when a building has no sprite yet', () => {
+      const missing = {
+        ...maps.takanawa,
+        entities: [{ id: BUILDING.home, kind: 'building' as const, tile: [3, 4] as [number, number], size: [2, 3] as [number, number], footRow: 9, assetId: 'not-exported' }],
+      };
+      expect(buildingRects(missing)).toEqual([{ x0: 48, y0: 64, x1: 80, y1: 112 }]);
     });
 
     it('keeps interiors that fit the view centred', () => {
