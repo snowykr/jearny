@@ -1,7 +1,8 @@
 {
   "id": "tiles-interior",
   "kind": "tileset",
-  "source": "assets/source/tiles-interior-atlas-v2.png",
+  "source": "assets/source/tiles-interior-atlas-v4.png",
+  "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
   "runtimeSize": [
     128,
     96
@@ -9,125 +10,499 @@
   "sliceX": 8,
   "sliceY": 6,
   "generator": "Image Gen 2",
-  "mode": "generate",
-  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Use case: stylized-concept. Generate one production interior tileset, exact 8 columns by 4 rows, no gutters, equal square cells; canvas 1536x768 or another exact 2:1 aspect. Each cell represents 16x16 logical pixels. First row left to right: seamless straw tatami floor filling entire cell; seamless warm wood plank floor filling entire cell; seamless horizontally repeating cream wall with dark brown baseboard filling entire cell; blue window in cream wall; low wooden table; folded cream futon with blue pillow; gray stone genkan floor filling cell; red-brown doormat. Second row: seamless cream square shop floor filling cell; LEFT HALF of a continuous two-cell wide glass wagashi counter; RIGHT HALF of same counter, connecting without an internal end wall; wooden shelf with unlabelled pastel sweets boxes; cream noren doorway with open dark passage reaching bottom edge, no text or emblem; small cash register; wooden counter; green potted plant. Last two rows fully transparent reserved cells. Furniture tiles isolated on transparency, no floor under furniture. Floor tiles override 'no floor' prefix and must cover whole cell. Home sprite is style reference; shop and station sprites are style references; photograph is shop mood only, no copying pixels. Fictional interiors. Exact orthogonal grid with NO grid lines, labels, margins or spacing. Keep each object inside its own cell. Intentionally simple 16px-scale clusters.",
+  "mode": "edit",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nOriginal character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Edit target first image: tiles-interior-surfaces-v3. Other three images style references only. Keep exact 4x4 tile order and fully opaque edge-to-edge surfaces, no margins. Simplify all textures to STRICT 16x16 logical pixels per cell, large blocky pixels. Especially row1 col2 wood: three wide horizontal planks, clearly visible thick dark seams at logical rows 0,5,10,15 and staggered vertical joints. No grain noise. Row1 col1 tatami: one pale straw mat texture, thin green binding at left and right, no subdivided mat patchwork. Row3 col3 rug: muted flat terracotta woven surface, sparse simple tiny marks, no noisy checkerboard. Walls smooth cream, no speckle. Preserve window and shoji designs, simplify to 16-pixel clusters. Wall top row2 col3 must be solid dark walnut top surface across entire cell. Every floor repeats without a border or gutters. All other objects keep their placement.",
+  "prompts": {
+    "surfaces": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nOriginal character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Style references are the station, Matsushimaya and home sprites just viewed. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Generate a floors-and-walls tile sheet, 4 columns by 4 rows, 1024x1024, no margins, no gutters, no grid lines. Each 256x256 cell is a 16x16 logical pixel tile enlarged 16 times. Override transparency/no-floor for this sheet: EVERY cell entirely opaque edge to edge, textures tile seamlessly with no outer border. Row1: straw tatami; honey wood planks; cream plaster wall face; blue window in cream wall. Row2: gray genkan stone; cream shop floor; dark walnut wall top cap; cream wall with dark wood skirting at bottom. Row3: shoji lattice wall; blue window with cream curtains; muted terracotta woven rug texture; warm beige shop wall. Row4: shop window with dark timber frame; dark walnut floorboards; gray doma stone; wood genkan step. Simple bold pixel clusters, no tiny details.",
+    "home": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nOriginal character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly (station, shop and home just viewed). One home furniture sprite sheet, 4 columns x 4 rows equal square cells, 1024x1024, transparent background. Each cell is exactly 16x16 logical pixels enlarged: very chunky minimal sprites, dark outlines one logical pixel wide. No grid lines or text, keep every object inside its cell, use most of the cell with 1 logical pixel padding. Row1: low wood table; folded cream futon with blue pillow; red doormat; bookshelf with colored books. Row2: TV on wood stand; kitchen cabinet counter; sink cabinet with blue basin; stove with two black burners. Row3: cream fridge; red zabuton cushion; LEFT half of wide kotatsu with red blanket; RIGHT half of same kotatsu, middle touching cell boundary so halves join. Row4: floor lamp; wall clock; shoe rack; cushion armchair. Clear three-quarter top-down front view, large simple color clusters.",
+    "shop": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nOriginal character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly (station, shop and home just viewed). One shop furniture sprite sheet, 4 columns x 4 rows equal square cells, 1024x1024, transparent background. Each cell is exactly 16x16 logical pixels enlarged: very chunky minimal sprites, dark outlines one logical pixel wide. No grid lines or text, every object in its cell. Row1: LEFT half of glass wagashi display; RIGHT half of same continuous display (halves join at their common cell edge); wood shelf of sweets boxes; cream noren doorway with dark open passage. Row2: cash register; wood shop counter; leafy potted plant; menu board with only sweet pictograms no lettering. Row3: tray of pink white green wagashi; teapot and two cups; round wood stool; potted bamboo. Row4: hanging cream paper lantern; umbrella stand with umbrellas; framed landscape picture; empty transparent reserved cell. Large shapes readable at 16px, simple 3-shade clusters.",
+    "surfacesEdit": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nOriginal character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Edit target first image: tiles-interior-surfaces-v3. Other three images style references only. Keep exact 4x4 tile order and fully opaque edge-to-edge surfaces, no margins. Simplify all textures to STRICT 16x16 logical pixels per cell, large blocky pixels. Especially row1 col2 wood: three wide horizontal planks, clearly visible thick dark seams at logical rows 0,5,10,15 and staggered vertical joints. No grain noise. Row1 col1 tatami: one pale straw mat texture, thin green binding at left and right, no subdivided mat patchwork. Row3 col3 rug: muted flat terracotta woven surface, sparse simple tiny marks, no noisy checkerboard. Walls smooth cream, no speckle. Preserve window and shoji designs, simplify to 16-pixel clusters. Wall top row2 col3 must be solid dark walnut top surface across entire cell. Every floor repeats without a border or gutters. All other objects keep their placement."
+  },
   "references": [
-    "assets/source/home-v1.png",
-    "assets/source/matsushimaya-v1.png",
     "assets/source/station-v1.png",
-    "research/shops/matsushimaya-facade-2026.jpg"
+    "assets/source/matsushimaya-v1.png",
+    "assets/source/home-v1.png"
   ],
+  "status": "approved",
   "anchors": {
     "door": [
       72,
       32
     ]
   },
-  "status": "approved",
-  "notes": "Reviewed at 1x and 4x. IT order 0..15; 16..31 transparent. Door anchor is bottom-center boundary of NOREN_DOOR tile 12 in atlas coordinates. Fictional interior, no text. Source crops assembled in IT order with nearest-neighbour 16x16 downscale; generated floor quadrants mirrored to guarantee matching opposite edges (0,1,8); wall left half mirrored horizontally. Shared export palette quantized to 23 opaque colors plus transparency, alpha threshold 128. Counter source cropped continuously and split at x449, no separating end walls. Integration of authored rooms and portal rendering belongs to #5; asset registry and pipeline metadata merge belong to #1. Ground tiles 0,1,2,3,6,7,8,12 stretched from their opaque bbox to fill the full 16x16 cell (the generated sheet left transparent gutters, which showed as grid gaps in game).",
   "export": {
-    "sourceSize": [
-      1774,
-      887
-    ],
-    "cropBoxes": [
-      [
-        29,
-        77,
-        221,
-        269
-      ],
-      [
-        245,
-        77,
-        437,
-        269
-      ],
-      [
-        461,
-        77,
-        653,
-        269
-      ],
-      [
-        677,
-        77,
-        869,
-        269
-      ],
-      [
-        895,
-        77,
-        1111,
-        293
-      ],
-      [
-        1118,
-        77,
-        1334,
-        293
-      ],
-      [
-        1345,
-        77,
-        1537,
-        269
-      ],
-      [
-        1555,
-        77,
-        1771,
-        293
-      ],
-      [
-        30,
-        294,
-        222,
-        486
-      ],
-      [
-        239,
-        291,
-        449,
-        501
-      ],
-      [
-        449,
-        291,
-        659,
-        501
-      ],
-      [
-        675,
-        289,
-        891,
-        505
-      ],
-      [
-        895,
-        289,
-        1111,
-        505
-      ],
-      [
-        1115,
-        289,
-        1331,
-        505
-      ],
-      [
-        1335,
-        289,
-        1551,
-        505
-      ],
-      [
-        1555,
-        289,
-        1771,
-        505
-      ]
+    "tiles": [
+      {
+        "index": 0,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          0,
+          0,
+          303,
+          312
+        ]
+      },
+      {
+        "index": 1,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          303,
+          0,
+          627,
+          312
+        ]
+      },
+      {
+        "index": 2,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          627,
+          0,
+          947,
+          312
+        ]
+      },
+      {
+        "index": 3,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          947,
+          0,
+          1254,
+          312
+        ]
+      },
+      {
+        "index": 6,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          0,
+          312,
+          303,
+          622
+        ]
+      },
+      {
+        "index": 8,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          303,
+          312,
+          627,
+          622
+        ]
+      },
+      {
+        "index": 16,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          650,
+          400,
+          710,
+          460
+        ]
+      },
+      {
+        "index": 17,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          947,
+          312,
+          1254,
+          622
+        ]
+      },
+      {
+        "index": 18,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          0,
+          622,
+          303,
+          914
+        ]
+      },
+      {
+        "index": 19,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          303,
+          622,
+          627,
+          914
+        ]
+      },
+      {
+        "index": 29,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          627,
+          622,
+          947,
+          914
+        ]
+      },
+      {
+        "index": 32,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          947,
+          622,
+          1254,
+          914
+        ]
+      },
+      {
+        "index": 39,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          0,
+          914,
+          303,
+          1254
+        ]
+      },
+      {
+        "index": 40,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          303,
+          914,
+          627,
+          1254
+        ]
+      },
+      {
+        "index": 41,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          627,
+          914,
+          947,
+          1254
+        ]
+      },
+      {
+        "index": 42,
+        "rawSource": "assets/source/tiles-interior-surfaces-v4.png",
+        "cropBox": [
+          947,
+          914,
+          1254,
+          1254
+        ]
+      },
+      {
+        "index": 4,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          0,
+          0,
+          314,
+          314
+        ]
+      },
+      {
+        "index": 5,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          314,
+          0,
+          627,
+          314
+        ]
+      },
+      {
+        "index": 7,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          627,
+          0,
+          940,
+          314
+        ]
+      },
+      {
+        "index": 20,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          940,
+          0,
+          1254,
+          314
+        ]
+      },
+      {
+        "index": 21,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          0,
+          314,
+          314,
+          627
+        ]
+      },
+      {
+        "index": 22,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          314,
+          314,
+          627,
+          627
+        ]
+      },
+      {
+        "index": 23,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          627,
+          314,
+          940,
+          627
+        ]
+      },
+      {
+        "index": 24,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          940,
+          314,
+          1254,
+          627
+        ]
+      },
+      {
+        "index": 25,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          0,
+          627,
+          314,
+          940
+        ]
+      },
+      {
+        "index": 26,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          314,
+          627,
+          627,
+          940
+        ]
+      },
+      {
+        "index": 27,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          627,
+          627,
+          940,
+          940
+        ]
+      },
+      {
+        "index": 28,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          940,
+          627,
+          1254,
+          940
+        ]
+      },
+      {
+        "index": 30,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          0,
+          940,
+          314,
+          1254
+        ]
+      },
+      {
+        "index": 31,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          314,
+          940,
+          627,
+          1254
+        ]
+      },
+      {
+        "index": 43,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          627,
+          940,
+          940,
+          1254
+        ]
+      },
+      {
+        "index": 45,
+        "rawSource": "assets/source/tiles-interior-home-v3.png",
+        "cropBox": [
+          940,
+          940,
+          1254,
+          1254
+        ]
+      },
+      {
+        "index": 9,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          0,
+          0,
+          314,
+          314
+        ]
+      },
+      {
+        "index": 10,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          314,
+          0,
+          627,
+          314
+        ]
+      },
+      {
+        "index": 11,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          627,
+          0,
+          940,
+          314
+        ]
+      },
+      {
+        "index": 12,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          940,
+          0,
+          1254,
+          314
+        ]
+      },
+      {
+        "index": 13,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          0,
+          314,
+          314,
+          627
+        ]
+      },
+      {
+        "index": 14,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          314,
+          314,
+          627,
+          627
+        ]
+      },
+      {
+        "index": 15,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          627,
+          314,
+          940,
+          627
+        ]
+      },
+      {
+        "index": 33,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          940,
+          314,
+          1254,
+          627
+        ]
+      },
+      {
+        "index": 34,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          0,
+          627,
+          314,
+          940
+        ]
+      },
+      {
+        "index": 35,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          314,
+          627,
+          627,
+          940
+        ]
+      },
+      {
+        "index": 36,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          627,
+          627,
+          940,
+          940
+        ]
+      },
+      {
+        "index": 37,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          940,
+          627,
+          1254,
+          940
+        ]
+      },
+      {
+        "index": 38,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          0,
+          940,
+          314,
+          1254
+        ]
+      },
+      {
+        "index": 44,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          314,
+          940,
+          627,
+          1254
+        ]
+      },
+      {
+        "index": 46,
+        "rawSource": "assets/source/tiles-interior-shop-v3.png",
+        "cropBox": [
+          627,
+          940,
+          940,
+          1254
+        ]
+      }
     ]
   },
-  "rawSource": "assets/source/tiles-interior-v1.png"
+  "notes": "Three generated themed sheets sliced in IT index order. All surfaces use full square source cells, never stretched from opaque bounds. Furniture alpha threshold 128. Paired display and kotatsu halves cropped to alpha bounds and fitted to 16x14 to remove source spacing. Index 47 transparent. Runtime export uses nearest-neighbour, hard alpha and 24-color quantization. Surfaces v4 is an Image Gen 2 edit of v3 to simplify grain at 16px. WALL_TOP uses a square crop of the generated walnut cap. See export.tiles for measured crop coordinates."
 }
