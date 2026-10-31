@@ -139,6 +139,14 @@ const decorationAt = (x: number, y: number): number => map.layers.decoration[y *
 /** Props whose shoulder search found nowhere. Tests require this to stay empty. */
 export const PROP_MISSES: Tile[] = [];
 
+/** Pavement benches whose authored cell was not free pavement. Tests require this to stay empty. */
+export const BENCH_MISSES: Tile[] = [];
+
+/** Trees (explicit or copse) with no clear meadow cell left. Tests require this to stay empty. */
+export const TREE_MISSES: Tile[] = [];
+
+const MEADOW_TILES: ReadonlySet<number> = new Set([T.GRASS_A, T.GRASS_B, T.GRASS_C]);
+
 /**
  * Neighbour offsets in outward spiral order: the authored cell first, then each square ring from
  * the top-left corner round clockwise. Four rings are enough to reach the shoulder of a five-row
@@ -177,19 +185,46 @@ function prop(tile: number, x: number, y: number, blocked = true): boolean {
 /**
  * Authored bench on wide pavement. `prop` never blocks a walkway, but a wide lane or a plaza has
  * room for a bench on its outer row; without these the widest paved screens are bare concrete.
+ * A bench belongs on pavement only: the cell must be a walkway and never a tile `prop` forbids (the
+ * crossing is both), and a bad coordinate is recorded instead of painting furniture over a road or
+ * a lawn.
  * These stay off door fronts, portals and the crossing (the tests check all three).
  */
 function pavementBench(x: number, y: number): void {
+  const ground = groundAt(x, y);
+  if (!WALKWAY_TILES.has(ground) || PROPS_FORBIDDEN.has(ground)
+    || decorationAt(x, y) !== -1 || onBuilding(x, y)) {
+    BENCH_MISSES.push([x, y]);
+    return;
+  }
   paint('decoration', T.BENCH, x, y, x, y, true);
 }
 
+/** True when a 2×2 tree fits at (x, y): plain meadow, nothing painted, clear of every roof. */
+function treeFits(x: number, y: number): boolean {
+  if (x < 1 || y < 1 || x >= map.grid[0] - 2 || y >= map.grid[1] - 2) return false;
+  if (onBuilding(x, y, 2)) return false; // never grow a canopy through a roof
+  for (let dy = 0; dy < 2; dy++) {
+    for (let dx = 0; dx < 2; dx++) {
+      const index = (y + dy) * map.grid[0] + x + dx;
+      if (!MEADOW_TILES.has(map.layers.ground[index] ?? -1)
+        || map.layers.decoration[index] !== -1 || map.layers.roof[index] !== -1) return false;
+    }
+  }
+  return true;
+}
+
 /** 2×2 tree: canopy on the roof layer, trunk and skirt on the blocked decoration layer. */
-function tree(x: number, y: number): void {
-  if (onBuilding(x, y, 2)) return; // never grow a canopy through a roof
+function tree(x: number, y: number): boolean {
+  if (!treeFits(x, y)) {
+    TREE_MISSES.push([x, y]);
+    return false;
+  }
   paint('roof', T.TREE_TL, x, y, x, y);
   paint('roof', T.TREE_TR, x + 1, y, x + 1, y);
   paint('decoration', T.TREE_BL, x, y + 1, x, y + 1, true);
   paint('decoration', T.TREE_BR, x + 1, y + 1, x + 1, y + 1, true);
+  return true;
 }
 
 /**
@@ -337,9 +372,9 @@ const BEDS: ReadonlyArray<[number, number, number, number]> = [
 for (const [x1, y1, x2, y2] of BEDS) paint('decoration', T.FLOWERS, x1, y1, x2, y2);
 
 // Trees: the original clusters, the garden copses, the park corners and the edge screens.
-for (const [x, y] of [[8, 10], [22, 12], [34, 2], [50, 4], [52, 14], [9, 30],
-  [5, 40], [21, 56], [68, 30], [58, 6], [66, 12], [71, 28],
-  [4, 4], [24, 3], [29, 7], [4, 30], [6, 33], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
+for (const [x, y] of [[8, 10], [22, 12], [50, 4], [52, 14], [9, 30],
+  [21, 56], [68, 30], [58, 6], [66, 10], [71, 28],
+  [4, 4], [24, 3], [29, 7], [4, 30], [6, 33], [5, 39], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
   [5, 89], [10, 91], [25, 47], [32, 47], [36, 51], [60, 16], [66, 20],
   [50, 63], [57, 82], [57, 86], [72, 58], [71, 73],
   [24, 61], [37, 61], [24, 77], [37, 77], [20, 90], [24, 92], [30, 90], [35, 91], [39, 88],
@@ -351,50 +386,48 @@ for (const [x, y] of [[8, 10], [22, 12], [34, 2], [50, 4], [52, 14], [9, 30],
 /**
  * Tree cluster: `count` 2×2 trees scattered around (cx, cy) by `roll`, so a group reads as a copse
  * with varied spacing rather than an evenly spaced row. A tree only lands on plain meadow with
- * nothing on any of its four cells: never a walkway, prop, bed, garden ring or another canopy. That
- * keeps clusters from growing through pavement or a roof.
+ * nothing on any of its four cells: never a walkway, prop, bed, garden ring or another canopy.
+ * A skipped tree is recorded by `tree` instead of vanishing, so an authored count that no longer
+ * fits is either given room or removed from the list.
  */
 function copse(cx: number, cy: number, count: number, spread: number): void {
-  const meadowTiles: ReadonlySet<number> = new Set([T.GRASS_A, T.GRASS_B, T.GRASS_C]);
-  for (let i = 0; i < count; i++) {
-    const x = cx + (roll(cx + i * 17, cy + i * 29) % (spread * 2 + 1)) - spread;
-    const y = cy + (roll(cy + i * 31, cx + i * 13) % (spread * 2 + 1)) - spread;
-    if (x < 2 || y < 2 || x > map.grid[0] - 3 || y > map.grid[1] - 3) continue;
-    let clear = true;
-    for (let dy = 0; dy < 2 && clear; dy++) {
-      for (let dx = 0; dx < 2; dx++) {
-        const index = (y + dy) * map.grid[0] + x + dx;
-        if (!meadowTiles.has(map.layers.ground[index] ?? -1)
-          || map.layers.decoration[index] !== -1 || map.layers.roof[index] !== -1) {
-          clear = false;
-          break;
-        }
-      }
-    }
-    if (clear) tree(x, y);
+  // Walk the copse square in a deterministic pseudo-random order (the same `roll` as the meadow), so
+  // a tree that cannot stand on one cell still fills the next clear one instead of disappearing.
+  const anchors: Tile[] = [];
+  for (let dy = -spread; dy <= spread; dy++) {
+    for (let dx = -spread; dx <= spread; dx++) anchors.push([cx + dx, cy + dy]);
   }
+  anchors.sort((a, b) => roll(a[0], a[1]) - roll(b[0], b[1]));
+  let placed = 0;
+  for (const [x, y] of anchors) {
+    if (placed >= count) break;
+    if (!treeFits(x, y)) continue;
+    tree(x, y);
+    placed++;
+  }
+  for (let i = placed; i < count; i++) TREE_MISSES.push([cx, cy]);
 }
 
 // Copses, not orchard rows: corners, garden backs and the far bank. Every entry is [cx, cy, trees,
-// jitter radius]; the trees spread around that centre so no two groups line up.
+// spread]; the count is exact, not a target: each copse fills its square in a deterministic
+// pseudo-random order and `TREE_MISSES` flags any entry that can no longer fit its trees.
 const COPSES: ReadonlyArray<[number, number, number, number]> = [
   [5, 5, 3, 1], [5, 13, 4, 2], [10, 18, 3, 2], [24, 16, 4, 2], [5, 25, 3, 2],
-  [28, 28, 3, 2], [50, 4, 5, 3], [57, 8, 4, 2], [64, 5, 8, 3], [70, 9, 4, 2],
-  [50, 16, 5, 3], [55, 12, 4, 2], [62, 18, 6, 2], [66, 22, 4, 2], [63, 21, 3, 1],
+  [50, 4, 5, 3], [57, 8, 4, 2], [64, 5, 8, 3], [70, 9, 3, 2],
+  [50, 16, 5, 3], [55, 12, 4, 2], [62, 18, 6, 2], [66, 22, 2, 2], [63, 21, 1, 1],
   [6, 53, 5, 2], [10, 49, 4, 2], [26, 57, 3, 2], [36, 55, 4, 2], [50, 52, 4, 2],
   [54, 50, 2, 1], [6, 68, 5, 2], [10, 75, 4, 2], [5, 84, 5, 2], [11, 82, 4, 2],
-  [62, 64, 7, 2], [67, 67, 4, 2], [48, 72, 3, 1], [70, 73, 3, 1], [20, 92, 3, 1],
-  [26, 91, 3, 1], [48, 92, 4, 1], [63, 91, 4, 1],
+  [62, 64, 7, 2], [67, 67, 3, 2], [48, 72, 3, 1], [20, 92, 1, 1],
+  [26, 91, 3, 1], [48, 92, 2, 1], [63, 91, 2, 1],
   // Garden lawns, the north field and the south banks, so no camera window ends on open lawn.
-  [26, 5, 5, 2], [19, 7, 3, 1], [6, 18, 3, 1], [20, 13, 3, 1], [52, 18, 3, 2],
-  [48, 12, 3, 2], [60, 15, 3, 1], [67, 17, 3, 1], [71, 13, 3, 1], [60, 23, 3, 1],
-  [65, 20, 3, 1], [69, 3, 3, 1], [6, 63, 3, 1], [65, 62, 3, 1], [60, 68, 3, 1],
-  [8, 72, 3, 1], [8, 86, 3, 1], [22, 92, 3, 1], [67, 92, 2, 1],
+  [26, 5, 3, 2], [19, 7, 2, 1], [6, 18, 2, 1], [20, 13, 2, 1], [52, 18, 2, 2],
+  [48, 12, 3, 2], [67, 17, 1, 1], [71, 13, 3, 1], [60, 23, 1, 1],
+  [69, 3, 3, 1], [6, 63, 1, 1], [65, 62, 1, 1],
+  [8, 72, 2, 1], [8, 86, 1, 1], [22, 92, 1, 1], [67, 92, 2, 1],
   // The walled station garden and the corners the wider crops left thin.
-  [61, 21, 4, 1], [66, 20, 3, 1], [70, 26, 4, 2], [71, 29, 3, 1], [4, 12, 2, 1],
-  [48, 17, 3, 2], [53, 17, 2, 1], [9, 66, 3, 1], [6, 82, 2, 1], [20, 93, 2, 1],
-  [64, 90, 3, 1], [68, 91, 2, 1], [7, 6, 2, 1], [66, 2, 2, 1], [69, 64, 2, 1],
-  [33, 52, 2, 1], [72, 64, 2, 1], [28, 4, 2, 1], [68, 26, 2, 1],
+  [70, 26, 3, 2], [71, 29, 2, 1],
+  [9, 66, 2, 1], [66, 2, 1, 1], [69, 64, 1, 1],
+  [33, 52, 2, 1], [72, 64, 2, 1], [28, 4, 2, 1], [68, 26, 1, 1],
   // Far bank: unreachable scenery, but the horizon should still read as planted.
   [86, 12, 4, 2], [96, 30, 4, 2], [110, 70, 4, 2], [118, 40, 3, 2], [116, 82, 4, 2],
 ];
@@ -428,6 +461,25 @@ for (const [x, y] of [[12, 16], [12, 17], [20, 16], [20, 17], [26, 43], [31, 44]
   [56, 33], [61, 37], [68, 37], [25, 66], [38, 66], [26, 75], [37, 75]] satisfies Tile[])
   prop(T.FLOWERS, x, y);
 
+// Planting along the approach shoulders: flower clumps on the open meadow rows north and south of
+// the path, and a clipped hedge where the lawn meets the lane, so the widest paved corridor is
+// framed by planting instead of ending on bare lawn. These cells are grass, never a walkway.
+paint('decoration', T.FLOWERS, 19, 28, 20, 28);
+paint('decoration', T.FLOWERS, 10, 29, 11, 29);
+paint('decoration', T.FLOWERS, 13, 29, 13, 29);
+paint('decoration', T.FLOWERS, 15, 29, 16, 29);
+paint('decoration', T.FLOWERS, 18, 29, 19, 29);
+paint('decoration', T.FLOWERS, 26, 29, 30, 29);
+paint('decoration', T.FLOWERS, 11, 30, 11, 30);
+paint('decoration', T.FLOWERS, 13, 30, 13, 30);
+paint('decoration', T.FLOWERS, 15, 30, 15, 30);
+paint('decoration', T.FLOWERS, 17, 30, 17, 30);
+paint('ground', T.HEDGE, 12, 28, 17, 28, true);
+paint('ground', T.HEDGE, 21, 30, 23, 30, true);
+paint('ground', T.HEDGE, 24, 21, 25, 21, true);
+paint('ground', T.HEDGE, 36, 31, 36, 31, true);
+paint('ground', T.HEDGE, 36, 33, 36, 33, true);
+
 // Wide pavement gets authored benches on its outer rows, clear of every door, portal and spawn.
 pavementBench(25, 43);
 pavementBench(26, 43);
@@ -450,6 +502,20 @@ for (let x = 59; x <= 70; x++) {
   if (x === 64) continue;
   pavementBench(x, 54);
 }
+
+// The temple approach is the widest plain corridor on the map: a five-row path meeting a six-wide
+// lane. Seating on its outer rows furnishes the camera windows at the path edges while the three
+// middle rows stay clear from the west meadow, under the gate and into the hall court. The gate axis
+// (x36..37), the shop lane (x14..18) and the lane junction (x31..36) stay unseated.
+for (const x of [10, 13, 19, 22, 25, 28, 31]) pavementBench(x, 22);
+for (const x of [10, 13, 16, 19, 22, 25, 28, 30, 38, 40]) pavementBench(x, 26);
+pavementBench(31, 27);
+pavementBench(40, 27);
+pavementBench(40, 29);
+// The station forecourt plaza is the widest paved screen on the east side; its edges get the same
+// seating so the camera never opens on bare concrete.
+for (const [x, y] of [[47, 31], [47, 35], [52, 37], [55, 36], [56, 31]] satisfies Tile[])
+  pavementBench(x, y);
 
 /**
  * Scatter walkable meadow flowers over plain grass. The quality test counts undecorated grass as

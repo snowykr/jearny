@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDING, PORTAL, SPAWN } from '../../contracts';
 import type { EntityAnchor, Tile } from '../../contracts';
-import { takanawa as map, PASSAGES, PROP_MISSES, WALKWAY_TILES } from './takanawa';
+import { takanawa as map, BENCH_MISSES, PASSAGES, PROP_MISSES, TREE_MISSES, WALKWAY_TILES } from './takanawa';
+import { isBlocked } from '../../game/interaction';
 import { VIEW_H, VIEW_W, cameraCenter } from '../../game/camera';
 import { maps } from './index';
 import { T } from './tiles';
@@ -27,8 +28,9 @@ function reachable(start: Tile, useDeck: boolean, blocked: ReadonlySet<number> =
   for (const tile of queue) {
     const [x, y] = tile;
     const index = cell(tile);
-    if (x < 0 || y < 0 || x >= map.grid[0] || y >= map.grid[1]
-      || blocked.has(index) || map.collision[index] !== 0 || seen.has(index)) continue;
+    // Route the map's reachability through the runtime rule, so a tile the grid frees but an entity
+    // still blocks (or the reverse) can never pass here and fail in the game.
+    if (blocked.has(index) || isBlocked(map, tile) || seen.has(index)) continue;
     seen.add(index);
     queue.push([x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]);
     if (useDeck) {
@@ -71,7 +73,7 @@ describe('authored Takanawa map', () => {
     const strays: Tile[] = [];
     for (let y = 0; y < map.grid[1]; y++) {
       for (let x = 0; x <= 81; x++) {
-        if (map.collision[cell([x, y])] === 0 && !seen.has(cell([x, y]))) strays.push([x, y]);
+        if (!isBlocked(map, [x, y]) && !seen.has(cell([x, y]))) strays.push([x, y]);
       }
     }
     expect(strays).toEqual([]);
@@ -138,8 +140,10 @@ describe('authored Takanawa map', () => {
     expect(closed.has(cell([37, 14]))).toBe(false);
   });
 
-  it('places every authored prop and never drops one', () => {
+  it('places every authored prop, bench and tree and never drops one', () => {
     expect(PROP_MISSES).toEqual([]);
+    expect(BENCH_MISSES).toEqual([]);
+    expect(TREE_MISSES).toEqual([]);
     // No furniture on asphalt, rail, the deck lip, gravel, stone, hedge or water: a prop there is
     // an invisible wall. Wide pavement benches are authored separately and stay off these tiles.
     const props: ReadonlySet<number> = new Set([T.LAMPPOST, T.VENDING, T.BENCH]);
@@ -367,18 +371,24 @@ describe('authored Takanawa map', () => {
 
     it('keeps every 15x10 camera window under 80% empty', () => {
       // One camera window is 15x10 tiles. Empty means bare grass plus undecorated pavement
-      // (SIDEWALK / PLAZA / DECK): counting only grass let a bare concrete lane pass as full.
-      // A building footprint is not empty -- the sprite covers the cell -- and neither is a tree,
-      // bed, prop, road, rail, deck edge, garden ring or water tile.
+      // (SIDEWALK / PLAZA / DECK / TEMPLE_PATH / STAIRS): counting only grass let a bare concrete
+      // lane pass as full, and omitting the temple path left the widest plain corridor on the map
+      // unmeasured. A building footprint is not empty -- the sprite covers the cell -- and neither is
+      // a tree, bed, prop, hedge, road, rail, deck edge, garden ring or water tile.
       //
       // The window slides one tile at a time instead of sampling aligned 15x10 blocks, over every
       // camera origin on the playable west side (x0 0..66, y0 0..86; east of the rail is sealed). The
-      // centre goes through cameraCenter, so clamping matches the real camera exactly. The worst
-      // window is the six-row home lane at origin (22,34): 119 of 150 cells empty (79.3%), all of
-      // it walkable pavement with no bare lawn. That is the bound: 0.8, checked strictly.
+      // centre goes through cameraCenter, so clamping matches the real camera exactly.
+      //
+      // Before the approach was furnished, counting TEMPLE_PATH/STAIRS put the worst window at
+      // origin (27,22): 132 of 150 cells empty (88.0%), the five-row temple path and the open lane
+      // below it. Bench rows on the path shoulders, planting and hedges on the lawn rows y18..21 and
+      // y28..31, and seating on the lane and forecourt edges bring that window to 118 (78.7%). The
+      // worst window on the whole map is now the home lane at (22,34): 119 of 150 (79.3%). The bound
+      // stays 0.8, checked strictly, and both numbers are pinned by the strict `<` below.
       const EMPTY_MAX = 0.8;
       const emptyGround: ReadonlySet<number> = new Set([
-        T.GRASS_A, T.GRASS_B, T.GRASS_C, T.SIDEWALK, T.PLAZA, T.DECK,
+        T.GRASS_A, T.GRASS_B, T.GRASS_C, T.SIDEWALK, T.PLAZA, T.DECK, T.TEMPLE_PATH, T.STAIRS,
       ]);
       const built = new Set<number>();
       for (const entity of map.entities) {
