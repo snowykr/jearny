@@ -1,27 +1,27 @@
 {
   "id": "char-guide",
   "kind": "character",
-  "source": "assets/source/char-guide-atlas.png",
-  "rawSource": "assets/source/char-guide-v1.png",
+  "source": "assets/source/char-guide-atlas-v2.png",
+  "rawSource": "assets/source/char-guide-v2.png",
   "runtimeSize": [
     48,
-    96
+    80
   ],
   "sliceX": 3,
   "sliceY": 4,
   "generator": "Image Gen 2",
   "mode": "generate",
-  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Generate ONE character walk sheet for: friendly older Japanese neighbour with grey hair, warm rust-brown cardigan over cream shirt, charcoal trousers, dark shoes. No cap, no backpack. Use attached player sheet as the exact layout, head/body proportion, pose and animation reference; buildings are palette references only. Exactly THREE columns and FOUR rows, twelve full-body poses. Rows DOWN, LEFT, RIGHT, UP in this order. All three figures in LEFT row face LEFT; all three in RIGHT row face RIGHT. Columns idle feet together, step A, step B opposite leg and arm forward. Each frame 16x24 logical pixels, enlarged cleanly, same scale throughout. Feet bottom-centre. Flat chunky shading, no gradients. Truly transparent empty space, no backdrop or halos. No grid lines, labels or extra poses.",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Original character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. Generate ONE character walk sheet: Kind older neighbour, grey hair in a round bun, lavender cardigan, cream apron and dark shoes. No hat or backpack. Use attached NEW bucket-hat player as proportions, layout, palette and pixel density reference, not clothing. Chibi figure 13 wide and 19 logical pixels tall, head about 9 tall. EXACTLY THREE columns by FOUR rows; rows DOWN, LEFT, RIGHT, UP. All row TWO face LEFT; all row THREE face RIGHT. Columns idle, step A, step B with opposite foot and arm advancing. Each cell 16x20 logical pixels; total 48x80 enlarged cleanly. Feet bottom centre. Genuine transparent background. No floor, shadow, glow, grid, labels or buildings. Simple flat clusters legible at 1x.",
   "references": [
-    "assets/source/home-v1.png",
-    "assets/source/matsushimaya-v1.png",
     "assets/source/station-v1.png",
-    "assets/source/char-player-v2.png"
+    "assets/source/matsushimaya-v1.png",
+    "assets/source/home-v1.png",
+    "assets/source/char-player-v3.png"
   ],
   "anchors": {
     "foot": [
       8,
-      24
+      20
     ]
   },
   "collisionTiles": [
@@ -29,107 +29,89 @@
     1
   ],
   "status": "approved",
-  "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB.",
+  "notes": "Original chibi redesign for #42. Rows down,left,right,up; columns idle,stepA,stepB. Requires #41 renderer and exporter support for 16x20 cells.",
   "export": {
-    "method": "Threshold alpha at 128; find 4 occupied row bands and 3 occupied column bands per row; crop each frame to alpha content; preserve aspect ratio and nearest-neighbour fit within 14x22; centre horizontally and bottom-align in 16x24 cells; assemble 48x96 sheet; median-cut quantize to 23 RGB colors with dithering disabled; restore hard alpha and zero transparent RGB.",
-    "palette": "Per-sheet median-cut from reference-matched generated art, <=23 opaque colors plus transparent.",
-    "frameOrder": [
-      "down-idle",
-      "down-stepA",
-      "down-stepB",
-      "left-idle",
-      "left-stepA",
-      "left-stepB",
-      "right-idle",
-      "right-stepA",
-      "right-stepB",
-      "up-idle",
-      "up-stepA",
-      "up-stepB"
-    ],
+    "method": "Threshold alpha at 128; identify occupied row and column bands; crop each frame to content; nearest-neighbour fit preserving aspect within 14x19; bottom-centre in 16x20 cells; assemble 48x80; quantize to 23 RGB colors without dithering; restore alpha and zero transparent RGB.",
     "sourceFrameBounds": [
       [
-        131,
-        83,
-        320,
-        391
+        60,
+        77,
+        265,
+        417
       ],
       [
-        416,
-        83,
-        606,
-        401
+        382,
+        77,
+        587,
+        422
       ],
       [
-        704,
-        83,
-        893,
-        401
+        706,
+        77,
+        911,
+        422
       ],
       [
-        131,
-        429,
-        314,
-        742
+        59,
+        456,
+        278,
+        778
       ],
       [
-        420,
-        429,
-        601,
-        742
+        380,
+        455,
+        598,
+        778
       ],
       [
-        711,
-        429,
-        894,
-        742
+        702,
+        455,
+        920,
+        779
       ],
       [
-        131,
-        775,
-        314,
-        1090
+        57,
+        815,
+        279,
+        1145
       ],
       [
-        423,
-        775,
-        608,
-        1090
+        373,
+        815,
+        598,
+        1146
       ],
       [
-        716,
-        774,
-        902,
-        1089
+        694,
+        815,
+        919,
+        1146
       ],
       [
-        129,
-        1116,
-        320,
-        1426
+        65,
+        1191,
+        265,
+        1536
       ],
       [
-        415,
-        1116,
-        607,
-        1435
+        384,
+        1194,
+        582,
+        1541
       ],
       [
-        704,
-        1116,
-        895,
-        1435
+        708,
+        1194,
+        904,
+        1541
       ]
     ]
   },
-  "sha256": "5973ccd1f88d1a243a24690074ee90cc6d8e0ee33e82e803792c0acd130be27f",
-  "sourceSha256": "094d325df965b5bd528a9e551ec333ff3c2ee53a3f40ef1e723a664c95503c22",
   "verification": {
     "dimensions": [
       48,
-      96
+      80
     ],
-    "rgbaColors": 24,
     "alphaValues": [
       0,
       255
@@ -139,6 +121,80 @@
     "reviewScales": [
       1,
       4
+    ],
+    "frameBounds": [
+      [
+        2,
+        1,
+        13,
+        20
+      ],
+      [
+        2,
+        1,
+        13,
+        20
+      ],
+      [
+        2,
+        1,
+        13,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        2,
+        1,
+        13,
+        20
+      ],
+      [
+        2,
+        1,
+        13,
+        20
+      ],
+      [
+        2,
+        1,
+        13,
+        20
+      ]
     ]
   }
 }
