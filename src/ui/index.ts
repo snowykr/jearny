@@ -20,6 +20,27 @@ import {
 const TYPE_STEP_MS = 24;
 const TOAST_MS = 2400;
 
+/** Keys KAPLAY also reads; the panel must not leak them back to the game. */
+const GAME_KEYS = new Set([
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  ' ',
+  'Spacebar',
+  'Enter',
+  'w',
+  'a',
+  's',
+  'd',
+  'W',
+  'A',
+  'S',
+  'D',
+]);
+
+const isGameKey = (key: string): boolean => GAME_KEYS.has(key);
+
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   className?: string,
@@ -330,7 +351,11 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
         event.preventDefault();
         event.stopPropagation();
         settings.hidden = true;
+        return;
       }
+      // The panel owns the game keys while it is open. Native defaults on the
+      // focused control still run; KAPLAY never sees the event.
+      if (isGameKey(event.key)) event.stopPropagation();
       return;
     }
     if (!currentNode(snapshot, gameContent)) return;
@@ -344,6 +369,8 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       return;
     event.preventDefault();
     event.stopPropagation();
+    // Holding a key must not advance, choose or buy more than once.
+    if (event.repeat) return;
 
     if (event.key === 'Escape') {
       const node = currentNode(snapshot, gameContent);
