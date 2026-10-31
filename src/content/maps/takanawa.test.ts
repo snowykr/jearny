@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDING, PORTAL, SPAWN } from '../../contracts';
 import type { Tile } from '../../contracts';
-import { takanawa as map, WALKWAY_TILES } from './takanawa';
+import { NARROW_ROUTES, PROP_STATS, takanawa as map } from './takanawa';
 import { maps } from './index';
 import { T } from './tiles';
 import homeMeta from '../../../assets/source/meta/home.json';
@@ -123,7 +123,7 @@ describe('authored Takanawa map', () => {
   });
 
   it('never paints a flower bed over a walkway', () => {
-    const walkway = WALKWAY_TILES;
+    const walkway = NARROW_ROUTES;
     const bad: Tile[] = [];
     map.layers.decoration.forEach((tile, index) => {
       if (tile !== T.FLOWERS) return;
@@ -131,6 +131,12 @@ describe('authored Takanawa map', () => {
       if (walkway.has(ground)) bad.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
     });
     expect(bad).toEqual([]);
+  });
+
+  it('paints every authored prop somewhere sensible', () => {
+    expect(PROP_STATS.dropped).toEqual([]);
+    expect(PROP_STATS.placed).toBe(PROP_STATS.authored);
+    expect(PROP_STATS.authored).toBeGreaterThan(80);
   });
 
   it('keeps furniture at the landmarks the guard could empty', () => {

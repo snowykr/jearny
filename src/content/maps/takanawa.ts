@@ -65,29 +65,57 @@ function meadow(): void {
 }
 
 /** One decoration prop. Props block their tile, so they sit beside a walkway, never on it. */
-/** Ground tiles a prop must never stand on: a planter on the lane would block the route. */
-export const WALKWAY_TILES: ReadonlySet<number> = new Set([
-  T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V, T.DECK, T.STAIRS,
+/** Two-tile lanes and the crossing: narrow routes nothing may stand on. */
+export const NARROW_ROUTES: ReadonlySet<number> = new Set([
+  T.SIDEWALK, T.TEMPLE_PATH, T.CROSSING_H, T.CROSSING_V,
 ]);
 
-const isWalkway = (x: number, y: number): boolean =>
-  WALKWAY_TILES.has(map.layers.ground[y * map.grid[0] + x] ?? -1);
+/** Narrow routes plus non-lawn surfaces: a prop must never block or stand on these. */
+const PROP_BLOCKED_GROUND: ReadonlySet<number> = new Set([
+  ...NARROW_ROUTES, T.DECK, T.STAIRS, T.DECK_EDGE,
+  T.ROAD, T.ROAD_EDGE_N, T.ROAD_EDGE_S, T.ROAD_EDGE_E, T.ROAD_EDGE_W, T.RAIL_H, T.RAIL_V,
+  T.GRAVEL, T.HEDGE, T.STONE_WALL, T.WATER, T.CURB,
+]);
 
+/** Ground a prop may share with nothing else; flowers are soft and may be replaced by a prop. */
+const PROP_FREE_DECORATION: ReadonlySet<number> = new Set([T.FLOWERS]);
+
+/** Authored vs painted furniture, so a silent drop fails a test instead of vanishing. */
+export const PROP_STATS = { authored: 0, placed: 0, dropped: [] as Tile[] };
+
+const insideBuilding = (x: number, y: number): boolean =>
+  map.entities.some((e) => e.kind === 'building'
+    && x >= e.tile[0] && x < e.tile[0] + (e.size?.[0] ?? 1)
+    && y >= e.tile[1] && y < e.tile[1] + (e.size?.[1] ?? 1));
+
+const groundAt = (x: number, y: number): number => map.layers.ground[y * map.grid[0] + x] ?? -1;
 const decorationAt = (x: number, y: number): number => map.layers.decoration[y * map.grid[0] + x] ?? -1;
 
 /**
- * Prop on the shoulder of a walkway. Authored coordinates aim at the lane itself, so a prop that
- * lands on pavement moves to the nearest free shoulder instead of vanishing (silently dropping
- * props left the forecourt and both doorsteps bare).
+ * Prop on the shoulder beside a walkway. Plaza and lawn are open ground, so furniture may stand
+ * there; narrow routes, roads, the deck and water are not. An authored coordinate that lands on a
+ * blocked surface moves outwards (radius 1..3) instead of being dropped.
  */
 function prop(tile: number, x: number, y: number, blocked = true): void {
-  const spots: Tile[] = [[x, y], [x, y + 1], [x, y - 1], [x + 1, y], [x - 1, y],
-    [x + 1, y + 1], [x - 1, y + 1], [x + 1, y - 1], [x - 1, y - 1]];
-  const spot = spots.find(([sx, sy]) =>
+  PROP_STATS.authored += 1;
+  const usable = (sx: number, sy: number): boolean =>
     sx >= 1 && sy >= 1 && sx < map.grid[0] - 1 && sy < map.grid[1] - 1
-    && !isWalkway(sx, sy) && decorationAt(sx, sy) === -1);
-  if (!spot) return;
-  paint('decoration', tile, spot[0], spot[1], spot[0], spot[1], blocked);
+    && !PROP_BLOCKED_GROUND.has(groundAt(sx, sy))
+    && !insideBuilding(sx, sy)
+    && (decorationAt(sx, sy) === -1 || PROP_FREE_DECORATION.has(decorationAt(sx, sy)));
+
+  for (let radius = 0; radius <= 3; radius += 1) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== radius) continue;
+        if (!usable(x + dx, y + dy)) continue;
+        paint('decoration', tile, x + dx, y + dy, x + dx, y + dy, blocked);
+        PROP_STATS.placed += 1;
+        return;
+      }
+    }
+  }
+  PROP_STATS.dropped.push([x, y]);
 }
 
 /** 2×2 tree: canopy on the roof layer, trunk and skirt on the blocked decoration layer. */
@@ -217,17 +245,17 @@ for (const [x, y] of [[8, 10], [22, 12], [34, 4], [39, 17], [50, 4], [52, 14], [
 // forecourt and the park heart.
 for (const [x, y] of [[11, 21], [21, 21], [12, 22], [24, 22], [36, 22], [18, 26], [30, 26],
   [13, 43], [22, 43], [31, 43], [37, 38], [15, 48], [15, 56], [15, 64], [15, 72], [15, 80],
-  [20, 46], [20, 77], [50, 30], [54, 30], [48, 40], [55, 40], [59, 33], [70, 33], [59, 37],
+  [20, 46], [20, 77], [50, 38], [54, 30], [48, 40], [55, 40], [59, 33], [70, 33], [59, 37],
   [70, 37], [28, 66], [35, 66], [28, 73], [35, 73], [57, 39], [56, 72]] satisfies Tile[])
   prop(T.LAMPPOST, x, y);
 
 // Benches face the lanes and the park plaza, clear of the through route.
-for (const [x, y] of [[13, 40], [20, 50], [20, 58], [48, 32], [48, 36], [60, 34], [69, 34],
+for (const [x, y] of [[13, 40], [20, 50], [20, 58], [48, 39], [48, 36], [60, 34], [69, 34],
   [27, 68], [27, 71], [36, 68], [36, 71], [57, 31], [56, 64], [56, 86]] satisfies Tile[])
   prop(T.BENCH, x, y);
 
 // Vending machines sit on corners where a walker would stop, not in the road.
-for (const [x, y] of [[21, 18], [12, 44], [20, 63], [47, 38], [59, 35], [70, 50]] satisfies Tile[])
+for (const [x, y] of [[21, 18], [12, 44], [20, 63], [47, 39], [59, 35], [70, 50]] satisfies Tile[])
   prop(T.VENDING, x, y);
 
 // Flower clumps inside the closed gardens, beside their trees.
@@ -237,7 +265,7 @@ for (const [x, y] of [[7, 3], [3, 7], [26, 3], [30, 5], [3, 33], [7, 29], [8, 47
   [110, 74], [119, 59], [122, 55]] satisfies Tile[]) prop(T.FLOWERS, x, y);
 
 // Planters and beds frame doorsteps and the plaza edges.
-for (const [x, y] of [[12, 16], [12, 17], [20, 16], [20, 17], [26, 43], [29, 43], [47, 33],
+for (const [x, y] of [[12, 16], [12, 17], [20, 16], [20, 17], [26, 43], [29, 43], [47, 39],
   [56, 33], [61, 37], [68, 37], [25, 66], [38, 66], [26, 75], [37, 75]] satisfies Tile[])
   prop(T.FLOWERS, x, y);
 
