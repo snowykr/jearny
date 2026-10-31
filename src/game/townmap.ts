@@ -12,6 +12,13 @@ import type { Poi } from './pois';
 /** Pixels per tile on the full map. 128x96 tiles -> 384x288, which fits the menu window. */
 export const TOWN_SCALE = 3;
 
+/** Shown next to the marker when the player is indoors; 2F is still home, not the shop. */
+const INSIDE_LABEL: Partial<Record<SceneId, string>> = {
+  'home-interior': '自宅の中',
+  'home-2f': '自宅 2Fの中',
+  'shop-interior': '松島屋の中',
+};
+
 export interface TownMapFrame {
   w: number;
   h: number;
@@ -33,9 +40,19 @@ export interface TownMapPlayer {
 }
 
 /** Outdoor tile of the portal leading into `sceneId`, so an inside player still has a marker. */
-export function entranceFor(map: MapDefinition, sceneId: SceneId): Tile | null {
+export function entranceFor(map: MapDefinition, sceneId: SceneId, depth = 0): Tile | null {
   const portal = map.portals.find((p) => p.toScene === sceneId);
-  return portal ? portal.tile : null;
+  if (portal) return portal.tile;
+  if (depth > 0) return null;
+  // A room reached through another room (home 2F) still points at the outdoor door.
+  const scene = maps[sceneId];
+  if (!scene) return null;
+  for (const step of scene.portals) {
+    if (step.toScene === sceneId) continue;
+    const outer = entranceFor(map, step.toScene, depth + 1);
+    if (outer) return outer;
+  }
+  return null;
 }
 
 /** Places to legend: every POI plus the landmark, in map order. */
@@ -187,7 +204,7 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
       const door = entranceFor(map, player.sceneId);
       if (door) {
         marker = worldToMinimap([door[0] + 0.5, door[1] + 0.5], frame);
-        inside = player.sceneId === 'home-interior' ? '自宅の中' : '松島屋の中';
+        inside = INSIDE_LABEL[player.sceneId] ?? null;
       }
     }
     if (marker) {

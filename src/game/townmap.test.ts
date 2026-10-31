@@ -88,7 +88,8 @@ describe('town map geometry', () => {
   it('maps an interior back to the outdoor door that leads into it', () => {
     expect(entranceFor(town, 'home-interior')).toEqual([17, 40]);
     expect(entranceFor(town, 'shop-interior')).toEqual([17, 16]);
-    expect(entranceFor(maps['home-interior'], 'takanawa')).toEqual([8, 11]);
+    expect(entranceFor(maps['home-interior'], 'takanawa')).toEqual([6, 8]);
+    expect(entranceFor(town, 'home-2f')).toEqual([17, 40]); // via the 1F door
   });
 
   it('legends every place, 泉岳寺 included', () => {
@@ -138,6 +139,7 @@ describe('town map panel', () => {
   it('labels the door by scene: home is not a shop', () => {
     for (const [sceneId, label] of [
       ['home-interior', '自宅の中'],
+      ['home-2f', '自宅 2Fの中'],
       ['shop-interior', '松島屋の中'],
     ] as const) {
       const { ctx, ops } = recordingContext();
