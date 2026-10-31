@@ -9,9 +9,9 @@ import { attachKeyboard } from './keyboard';
 import { ITEM_DESCRIPTIONS, mountStartMenu } from './menu';
 import type { TownMapPlayer } from './townmap';
 
-const labels = { title: 'メニュー', quest: 'クエスト', map: 'マップ', close: 'とじる' } as const;
+const labels = { title: 'メニュー', quest: 'クエスト', map: 'マップ', close: '閉じる' } as const;
 // Literal copy, so a changed constant cannot make the assertions pass by construction.
-const TAB_COPY = ['バッグ', 'クエスト', 'マップ', 'とじる'] as const;
+const TAB_COPY = ['持ち物', 'クエスト', 'マップ', '閉じる'] as const;
 
 let cleanup: (() => void) | null = null;
 
@@ -122,7 +122,7 @@ describe('start menu', () => {
     expect(document.activeElement).toBe(document.getElementById('game'));
   });
 
-  it('shows the wallet, items with descriptions and quest progress in バッグ', () => {
+  it('shows the wallet, items with descriptions and quest progress in 持ち物', () => {
     const description = ITEM_DESCRIPTIONS[ITEM.mochi] ?? '';
     expect(description).not.toBe('');
     const { menu } = mount(
@@ -188,7 +188,7 @@ describe('start menu', () => {
     expect(document.activeElement).toBe(document.getElementById('game'));
   });
 
-  it('closes from とじる', () => {
+  it('closes from 閉じる', () => {
     const { menu } = mount();
     menu.open();
     click(labels.close);
