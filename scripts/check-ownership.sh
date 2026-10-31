@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Warn when the current track branch edits files owned by the other track or shared files.
-# Usage: scripts/check-ownership.sh [base-ref]   (default: origin/main)
+# Usage: scripts/check-ownership.sh [base-ref] [branch]
+# Defaults: origin/main and the current branch. CI passes the PR head branch, because a
+# pull_request checkout is a detached merge commit.
 set -euo pipefail
 base="${1:-origin/main}"
-branch="$(git rev-parse --abbrev-ref HEAD)"
+branch="${2:-$(git rev-parse --abbrev-ref HEAD)}"
 
 a='^(src/game/|src/content/maps/|public/sprites/|assets/|tools/art/)'
 b='^(src/domain/|src/session/|src/storage/|src/ui/|src/audio/|src/content/|content/|tools/voice/|public/audio/)'

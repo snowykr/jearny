@@ -59,6 +59,8 @@ The caller's flow is `openSession(worldId)`, `dispatch(command)`, `subscribe(ren
 
 Map definitions contain grid dimensions, ground/decoration/roof layers, collision cells, walkable portals and entity anchors. Roads and railways are blocked except authored crossings. Doors have named destination/spawn pairs. Y-sort characters by foot position and place roofs in a separate foreground layer. Entering a scene cancels old listeners and audio before mounting the next scene.
 
+`#ui-root` is the single DOM surface for overlays. `index.html` sets `#ui-root > * { pointer-events: auto }`, which outranks any class-level `pointer-events: none`; a full-viewport overlay child must opt out with an ID-scoped rule (`#ui-root > .overlay { pointer-events: none }`) and re-enable hits only on its own controls. Overlays also need an explicit z-index below UI panels, and the game must stop taking input while the UI owns it (dialogue, settings, modal).
+
 ## 6. Quests and dialogue
 
 Use a finite quest state machine: not_started, active, ready_to_return, completed. Conditions are data such as visited(station), conversationPassed(shop_order), inventoryAtLeast(item,2), delivered(companion). Only the reducer/server can advance the quest.
