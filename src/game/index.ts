@@ -25,8 +25,8 @@ interface SceneArgs {
 export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
   const input = createInputBus();
   const detachKeyboard = attachKeyboard(input);
-  // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input.
-  // Mounted inside the UI surface so it shares a stacking context with the dialogue overlay.
+  // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input. Mounted inside
+  // #ui-root so it lives on the same DOM surface as the DOM UI (it still paints above it).
   const uiRoot = document.getElementById('ui-root') ?? document.body;
   const unmountTouch = mountTouchControls(uiRoot, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
 
@@ -71,16 +71,17 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
       enter(snapshot.sceneId, snapshot.spawnId);
     }
   });
-  window.addEventListener(
-    'pagehide',
-    (event) => {
-      if (event.persisted) return; // page may be restored from the back/forward cache
-      unsubscribe();
-      unmountTouch();
-      detachKeyboard();
-    },
-    { once: true },
-  );
+  const detachAll = () => {
+    window.removeEventListener('pagehide', onPageHide);
+    unsubscribe();
+    unmountTouch();
+    detachKeyboard();
+  };
+  const onPageHide = (event: PageTransitionEvent) => {
+    if (event.persisted) return; // page may be restored from the back/forward cache
+    detachAll();
+  };
+  window.addEventListener('pagehide', onPageHide);
 
   const onResult = (token: number) => (r: CommandResult) => {
     handleEffects(r.outcome.ok ? r.outcome.effects : []);
