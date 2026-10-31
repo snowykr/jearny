@@ -132,8 +132,8 @@ function drawBuilding(k: KAPLAYCtx, e: EntityAnchor, ts: number): void {
     k.drawSprite({ sprite, pos: k.vec2(e.tile[0] * ts + (fw - dims[0]) / 2, buildingFootRow(e) * ts - dims[1]) });
     return;
   }
-  // Same bottom edge as the sprite path, so a missing asset marks the blocked rows.
-  k.drawRect({ pos: k.vec2(e.tile[0] * ts, buildingFootRow(e) * ts - fh), width: fw, height: fh, color: cached(k, 'missing', [200, 0, 200]), outline: { width: 1, color: k.rgb(60, 0, 60) } });
+  // The box marks the *collision* rect, not the sprite: `size` is what blocks movement.
+  k.drawRect({ pos: k.vec2(e.tile[0] * ts, e.tile[1] * ts), width: fw, height: fh, color: cached(k, 'missing', [200, 0, 200]), outline: { width: 1, color: k.rgb(60, 0, 60) } });
 }
 
 /** (tileX, bottomY) is the tile's bottom-left; the sheet's real cell sits on it by the feet. `col` is 0 idle, 1/2 walk. */
