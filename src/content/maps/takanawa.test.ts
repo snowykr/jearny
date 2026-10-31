@@ -13,12 +13,14 @@ import liebeMeta from '../../../assets/source/meta/liebe.json';
 import houseTwoMeta from '../../../assets/source/meta/house-2.json';
 import houseThreeMeta from '../../../assets/source/meta/house-3.json';
 import apartmentSmallMeta from '../../../assets/source/meta/apartment-small.json';
+import apartmentMidMeta from '../../../assets/source/meta/apartment-mid.json';
 import cafeMeta from '../../../assets/source/meta/cafe.json';
 import konbiniMeta from '../../../assets/source/meta/konbini.json';
 import kobanMeta from '../../../assets/source/meta/koban.json';
 import sengakujiGateMeta from '../../../assets/source/meta/sengakuji-gate.json';
 import sengakujiHallMeta from '../../../assets/source/meta/sengakuji-hall.json';
 import bicycleParkingMeta from '../../../assets/source/meta/bicycle-parking.json';
+import officeTowerMeta from '../../../assets/source/meta/office-tower.json';
 
 const cell = ([x, y]: Tile) => y * map.grid[0] + x;
 
@@ -276,6 +278,8 @@ describe('authored Takanawa map', () => {
       'house-2': houseTwoMeta,
       'house-3': houseThreeMeta,
       'apartment-small': apartmentSmallMeta,
+      'apartment-mid': apartmentMidMeta,
+      'office-tower': officeTowerMeta,
       cafe: cafeMeta,
       konbini: konbiniMeta,
       koban: kobanMeta,
@@ -296,7 +300,7 @@ describe('authored Takanawa map', () => {
     };
 
     it('fronts every door with pavement', () => {
-      expect(packBuildings).toHaveLength(10);
+      expect(packBuildings).toHaveLength(12);
       for (const entity of packBuildings) {
         const meta = doorMetas[entity.assetId!]!;
         const [w, h] = entity.size ?? [1, 1];
@@ -366,7 +370,7 @@ describe('authored Takanawa map', () => {
             .toBe(false);
         }
       }
-      expect(checked).toBe(13);
+      expect(checked).toBe(15);
     });
 
     it('keeps every 15x10 camera window under 80% empty', () => {
