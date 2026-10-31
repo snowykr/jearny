@@ -4,6 +4,8 @@ import type { GameSnapshot } from '../contracts';
 import { ITEM, QUEST } from '../contracts';
 import { content } from '../content';
 import { createInitialSnapshot } from '../domain';
+import { createInputBus } from './input';
+import { attachKeyboard } from './keyboard';
 import { ITEM_DESCRIPTIONS, mountStartMenu } from './menu';
 import type { TownMapPlayer } from './townmap';
 
@@ -278,6 +280,54 @@ describe('start menu', () => {
     await new Promise((resolve) => setTimeout(resolve, 150));
 
     expect(menu.isOpen()).toBe(false);
+  });
+});
+
+describe('menu edge cases', () => {
+  it('shows the empty-bag copy when the inventory is empty', () => {
+    const { menu } = mount(snapshot({ inventory: {} }));
+    menu.open();
+    expect(dialog()?.querySelector('.jr-menu-empty')?.textContent).toBe('なし');
+  });
+
+  it('swallows held M without toggling twice', () => {
+    const { menu } = mount();
+    const held = press('m', { repeat: true });
+    expect(menu.isOpen()).toBe(false);
+    expect(held.defaultPrevented).toBe(true);
+    press('m');
+    expect(menu.isOpen()).toBe(true);
+    const repeat = press('m', { repeat: true });
+    expect(menu.isOpen()).toBe(true);
+    expect(repeat.defaultPrevented).toBe(true);
+  });
+
+  it('keeps every game key off the InputBus and lets Up/Down scroll natively', () => {
+    const bus = createInputBus();
+    const pressed: string[] = [];
+    bus.onPress((action) => pressed.push(action));
+    const off = attachKeyboard(bus);
+    try {
+      const { menu } = mount();
+      menu.open();
+      const tab = dialog()?.querySelector<HTMLElement>('.jr-menu-tab');
+      const panel = dialog()?.querySelector<HTMLElement>('.jr-menu-panel');
+      if (!tab || !panel) throw new Error('missing tab/panel');
+      const dispatch = (target: HTMLElement, key: string) => {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        target.dispatchEvent(event);
+        return event;
+      };
+      for (const key of ['ArrowRight', 'ArrowLeft', 'w', 'a', 's', 'd', 'z', 'Enter', ' ']) dispatch(tab, key);
+      expect(pressed).toEqual([]);
+      // Vertical arrows must not be prevented: the focused panel still scrolls.
+      panel.focus();
+      expect(dispatch(panel, 'ArrowDown').defaultPrevented).toBe(false);
+      expect(dispatch(panel, 'ArrowUp').defaultPrevented).toBe(false);
+      expect(pressed).toEqual([]);
+    } finally {
+      off();
+    }
   });
 });
 
