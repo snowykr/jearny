@@ -40,7 +40,7 @@ The production server is not an authoritative per-frame simulator. Position, fac
 | `src/session/` | One session controller and command queue; local or remote authority | Domain, save/API adapters |
 | `src/game/` | KAPLAY scenes, camera, grid movement and drawing | Session and asset loader |
 | `src/ui/` | Accessible DOM controls and captions | Session and audio player |
-| `src/audio/` | Playback, replay, mute, scene cancellation | Published voice manifest |
+| `src/audio/` | Browser playback of the published voice manifest; replay, mute, scene cancellation | Published voice manifest |
 | `src/storage/` | Snapshot serialization, migrations, IndexedDB | Serializable domain data |
 | `server/modules/` | Auth, progress, optional STT, billing, coupons | PostgreSQL and bounded provider adapters |
 | `tools/voice/` | Approved-line TTS generation and content-addressed cache | ElevenLabs server API |
@@ -77,7 +77,7 @@ Primary design: pre-generate reviewed Japanese lines and publish complete MP3 fi
 
 Cache identity includes spoken text, voice ID, model, output format and normalization settings. The script writes full files atomically, keeps a line-to-file manifest, serializes jobs with a lock, and rejects provider errors, non-audio responses and obviously invalid MP3 headers. Header checks are not decoding or listening review. A stale lock requires checking that no generation process is active.
 
-KAPLAY preloads scene clips with `loadSound`; the playback adapter uses `play`, maintains at most one active NPC clip, and stops it on advance/scene change. A user gesture enables playback. Muting/replay/captions work independently of quest logic. Failed audio leaves the written line and choices usable. Changing a line or voice invalidates its cache entry.
+`src/audio/` plays published clips with the browser's `HTMLAudioElement`, reading `public/audio/manifest.json`; it needs no KAPLAY context, and `src/game/` does not preload NPC audio. The adapter maintains at most one active NPC clip and stops it on advance/scene change. A user gesture enables playback. Muting/replay/captions work independently of quest logic. Failed audio leaves the written line and choices usable. Changing a line or voice invalidates its cache entry.
 
 If runtime TTS is later needed, use authenticated line IDs, server-side text resolution, bounded concurrency, usage quotas and a complete-file cache. Streaming uses a separate browser audio adapter; do not assume KAPLAY accepts an incomplete MP3 stream. Personalized text is private and must not enter a public cache.
 
