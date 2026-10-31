@@ -27,10 +27,10 @@
   },
   "collisionTiles": [
     5,
-    3
+    6
   ],
   "status": "approved",
-  "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration.",
+  "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration.",
   "history": [
     {
       "source": "assets/source/home-v2.png",

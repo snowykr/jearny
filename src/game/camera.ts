@@ -1,5 +1,5 @@
 // Logical viewport and camera clamping. Pure, so it is unit-testable without KAPLAY.
-import type { MapDefinition } from '../contracts';
+import type { EntityAnchor, MapDefinition } from '../contracts';
 import { ASSETS } from './assets';
 
 export const VIEW_W = 240;
@@ -31,7 +31,15 @@ export interface Rect {
   y1: number;
 }
 
-/** Where each building sprite is drawn: bottom-aligned to its footprint, centred horizontally. */
+/**
+ * Tile row of a building sprite's bottom edge. It anchors drawing, Y-sort and this camera lift, so it
+ * stays put when the collision footprint shrinks to the art's opaque rows.
+ */
+export function buildingFootRow(e: EntityAnchor): number {
+  return e.footRow ?? e.tile[1] + (e.size?.[1] ?? 1);
+}
+
+/** Where each building sprite is drawn: bottom-aligned to its foot row, centred horizontally. */
 export function buildingRects(map: MapDefinition): Rect[] {
   const ts = map.tileSize;
   const dims = ASSETS.buildings as Record<string, readonly [number, number]>;
@@ -41,7 +49,7 @@ export function buildingRects(map: MapDefinition): Rect[] {
     const [w, h] = e.size ?? [1, 1];
     const [sw, sh] = (e.assetId && dims[e.assetId]) || [w * ts, h * ts];
     const cx = e.tile[0] * ts + (w * ts) / 2;
-    const bottom = (e.tile[1] + h) * ts;
+    const bottom = buildingFootRow(e) * ts;
     rects.push({ x0: cx - sw / 2, y0: bottom - sh, x1: cx + sw / 2, y1: bottom });
   }
   return rects;

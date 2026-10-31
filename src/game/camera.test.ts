@@ -32,7 +32,7 @@ describe('camera', () => {
     const top = (c: [number, number]) => c[1] - VIEW_H / 2;
     const station = buildingRects(tk).find((r) => r.x1 - r.x0 === 192)!;
 
-    it('finds the station sprite rect: 192×128, bottom-aligned to its footprint', () => {
+    it('finds the station sprite rect: 192×128, bottom-aligned to its foot row', () => {
       expect(station).toEqual({ x0: 58 * 16, y0: 40 * 16, x1: 58 * 16 + 192, y1: 48 * 16 });
     });
 
