@@ -19,7 +19,7 @@ export const UI_STYLES = `
 .jq-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .jq-choice { font: inherit; padding: 6px 10px; border-radius: 6px; cursor: pointer;
   border: 1px solid #7c8294; background: #1b1f2c; color: #f7f3e6; }
-.jq-choice[aria-selected="true"] { border-color: #ffd479; background: #2f3550; }
+.jq-choice[aria-current="true"] { border-color: #ffd479; background: #2f3550; }
 .jq-choice:disabled { opacity: .45; cursor: not-allowed; }
 .jq-cue { display: block; text-align: right; color: #ffd479; font-size: 12px; }
 .jq-cue[hidden] { visibility: hidden; }
