@@ -50,6 +50,13 @@ export const UI_STYLES = `
   background: #141826; color: #f7f3e6; border: 2px solid #ffd479; text-align: center;
   font: 14px/1.7 system-ui, sans-serif; }
 .jq-modal-card h2 { margin: 0 0 6px; font-size: 16px; }
+.jq-modal-extra:empty { display: none; }
+.jq-coupon { margin: 10px 0 2px; padding: 10px 12px; border: 2px dashed #ffd479; border-radius: 8px;
+  background: rgba(255, 212, 121, .08); }
+.jq-coupon-title { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #ffd479; }
+.jq-coupon-shop { font-size: 16px; font-weight: 700; margin-top: 2px; }
+.jq-coupon-note { margin-top: 6px; font-size: 11px; opacity: .85; }
+.jq-coupon-en { display: block; margin-top: 2px; }
 .jq-modal-card button { margin-top: 12px; font: inherit; padding: 6px 14px; border-radius: 6px;
   border: 1px solid #ffd479; background: #2a2f45; color: inherit; cursor: pointer; }
 

@@ -147,6 +147,12 @@ describe('dialogue overlay', () => {
     expect(modal?.hidden).toBe(false);
     expect(modal?.querySelector('h2')?.textContent).toBe('クエスト達成！');
     expect(root.textContent).toContain('¥400');
+    // The demo coupon is a visual, not a code: it must say so on the card.
+    const coupon = modal?.querySelector('.jq-coupon');
+    expect(coupon?.textContent).toContain('デモクーポン');
+    expect(coupon?.textContent).toContain('松島屋');
+    expect(coupon?.textContent).toContain('利用できません');
+    expect(coupon?.textContent).toContain('cannot be redeemed');
     modal?.querySelector('button')?.click();
     expect(modal?.hidden).toBe(true);
   });
@@ -158,6 +164,7 @@ describe('dialogue overlay', () => {
     const modal = root.querySelector<HTMLElement>('.jq-modal');
     expect(modal?.hidden).toBe(false);
     expect(modal?.querySelector('h2')?.textContent).toBe('はじめから');
+    expect(root.querySelector('.jq-coupon')).toBeNull(); // the restart prompt must not inherit it
 
     await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
     expect(session.snapshot.revision).toBe(1);
