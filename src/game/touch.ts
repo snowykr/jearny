@@ -92,6 +92,9 @@ const CSS = `
 .jr-touch{position:fixed;inset:0;z-index:50;pointer-events:none;user-select:none;-webkit-user-select:none;
   -webkit-touch-callout:none;touch-action:none;font-family:ui-monospace,Menlo,monospace;image-rendering:pixelated}
 .jr-touch *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:none}
+/* index.html sets #ui-root > * { pointer-events: auto }; the overlay itself must stay click-through. */
+#ui-root > .jr-touch{pointer-events:none}
+.jr-touch[hidden]{display:none}
 .jr-dpad{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));
   width:${PAD}px;height:${PAD}px;pointer-events:auto}
 .jr-dpad[hidden]{display:none}
@@ -196,13 +199,14 @@ export function mountTouchControls(root: HTMLElement, input: InputBus, opts: Tou
   // Block context menu / scroll gestures over the controls.
   overlay.addEventListener('contextmenu', (e) => e.preventDefault());
 
-  // --- Dialogue: hide the D-pad (dialogue UI owns taps), keep A.
+  // --- Dialogue: the dialogue UI owns every tap while it is open, and its panel sits where the
+  // A button would paint, so hide the whole overlay instead of leaving a control on top of it.
   let lastOpen: boolean | null = null;
   const syncDialogue = () => {
     const open = opts.isDialogueOpen();
     if (open === lastOpen) return;
     lastOpen = open;
-    dpad.hidden = open;
+    overlay.hidden = open;
     state.setDpadEnabled(!open);
     paint();
   };

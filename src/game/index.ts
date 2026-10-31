@@ -84,16 +84,10 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
 
   const onResult = (token: number) => (r: CommandResult) => {
     handleEffects(r.outcome.ok ? r.outcome.effects : []);
-    // DEV FALLBACK until Track B session (#14): the stub session never emits ChangeScene,
-    // so walk through the portal locally. Skipped if the session already moved us.
+    // The session owns scene navigation: it must answer UsePortal with ChangeScene. A portal that
+    // is accepted without one is a content/session bug, so surface it instead of moving locally.
     if (r.portal && r.outcome.ok && token === sceneToken) {
-      if (import.meta.env.DEV) {
-        console.warn(`[game] DEV FALLBACK: no ChangeScene for ${r.portal.id}; moving to ${r.portal.toScene}@${r.portal.toSpawn} locally`);
-        enter(r.portal.toScene, r.portal.toSpawn);
-      } else {
-        // Production is M1: the stub session does not emit ChangeScene yet (Track B, #14).
-        console.warn(`[game] portal ${r.portal.id} accepted but no ChangeScene effect; scene unchanged (needs the M2 session)`);
-      }
+      console.warn(`[game] portal ${r.portal.id} accepted but produced no ChangeScene effect`);
     }
   };
 

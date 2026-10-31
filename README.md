@@ -21,10 +21,11 @@ npm run check      # typecheck + unit tests + voice tests
 npm run dev        # http://localhost:5173 — arrows/WASD walk, Space/Enter interacts
 ```
 
-Current state on `main` is **M1**: the authored Takanawa map, interiors, sprites, walking,
-collision, camera and touch controls are live, but `src/session/` is still the stub, so doors
-change scenes only in dev (a `DEV` fallback) and stay put in a production build until Track B's
-real session lands (WORKSPLIT M2).
+Current state on `main` is **M2**: the authored Takanawa map, interiors, sprites, walking,
+collision, camera and touch controls are live, and the local session/reducer drive dialogue,
+portals and the return-home quest. Voice lines are not rendered yet (`public/audio/` is empty), so
+NPC speech is caption-only; game audio failure never blocks progress. M3 is the hand-played
+keyboard + touch run through the full quest.
 
 ### Make your track worktree
 
