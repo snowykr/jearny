@@ -98,6 +98,8 @@ const CSS = `
 .jr-menu-objective-en{margin:0;color:#9ea3bc;font-size:12px}
 .jr-menu-placeholder{margin:8px 0;padding:12px;background:#10131e;border:2px solid #2b2d42;color:#d7d9ee}
 .jr-menu-large .jr-menu-panel{font-size:17px;line-height:1.8}
+.jr-menu-large .jr-menu-title{font-size:18px}
+.jr-menu-large .jr-menu-heading{font-size:15px}
 .jr-menu-large .jr-menu-tab,.jr-menu-large .jr-menu-close{font-size:16px}
 .jr-menu-large .jr-menu-item-desc,.jr-menu-large .jr-menu-objective-en{font-size:15px}
 `;
