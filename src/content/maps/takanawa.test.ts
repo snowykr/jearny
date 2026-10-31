@@ -1,12 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDING, PORTAL, SPAWN } from '../../contracts';
-import type { Tile } from '../../contracts';
+import type { EntityAnchor, Tile } from '../../contracts';
 import { takanawa as map, WALKWAY_TILES } from './takanawa';
 import { maps } from './index';
 import { T } from './tiles';
 import homeMeta from '../../../assets/source/meta/home.json';
 import matsushimayaMeta from '../../../assets/source/meta/matsushimaya.json';
 import stationMeta from '../../../assets/source/meta/station.json';
+import liebeMeta from '../../../assets/source/meta/liebe.json';
+import houseTwoMeta from '../../../assets/source/meta/house-2.json';
+import houseThreeMeta from '../../../assets/source/meta/house-3.json';
+import apartmentSmallMeta from '../../../assets/source/meta/apartment-small.json';
+import cafeMeta from '../../../assets/source/meta/cafe.json';
+import konbiniMeta from '../../../assets/source/meta/konbini.json';
+import kobanMeta from '../../../assets/source/meta/koban.json';
+import sengakujiGateMeta from '../../../assets/source/meta/sengakuji-gate.json';
+import sengakujiHallMeta from '../../../assets/source/meta/sengakuji-hall.json';
+import bicycleParkingMeta from '../../../assets/source/meta/bicycle-parking.json';
 
 const cell = ([x, y]: Tile) => y * map.grid[0] + x;
 
@@ -204,5 +214,170 @@ describe('authored Takanawa map', () => {
       const expected = y >= 41 && y <= 45 ? 1 : 0;
       for (let x = 58; x < 70; x++) expect([y, x, map.collision[cell([x, y])]]).toEqual([y, x, expected]);
     }
+  });
+
+  describe('neighbourhood pack buildings', () => {
+    /** Door anchors and sprite sizes of the buildings that must get a doorstep. */
+    const doorMetas: Record<string, { runtimeSize: number[]; anchors: { door: number[] } }> = {
+      liebe: liebeMeta,
+      'house-2': houseTwoMeta,
+      'house-3': houseThreeMeta,
+      'apartment-small': apartmentSmallMeta,
+      cafe: cafeMeta,
+      konbini: konbiniMeta,
+      koban: kobanMeta,
+      'sengakuji-gate': sengakujiGateMeta,
+      'sengakuji-hall': sengakujiHallMeta,
+      'bicycle-parking': bicycleParkingMeta,
+    };
+
+    const packBuildings = map.entities.filter((e) => e.kind === 'building' && e.assetId && doorMetas[e.assetId]);
+
+    /** Tile under the door anchor: the renderer centres the sprite on the footprint (drawBuilding). */
+    const doorFront = (entity: EntityAnchor, meta: { runtimeSize: number[]; anchors: { door: number[] } }): Tile => {
+      const [w] = entity.size ?? [1, 1];
+      const worldX = entity.tile[0] * map.tileSize
+        + (w * map.tileSize - (meta.runtimeSize[0] as number)) / 2
+        + (meta.anchors.door[0] as number);
+      return [Math.floor(worldX / map.tileSize), entity.footRow ?? entity.tile[1] + (entity.size?.[1] ?? 1)];
+    };
+
+    it('fronts every door with reachable pavement', () => {
+      const seen = reachable(home, true);
+      expect(packBuildings).toHaveLength(10);
+      for (const entity of packBuildings) {
+        const meta = doorMetas[entity.assetId!]!;
+        const [w, h] = entity.size ?? [1, 1];
+        // Pack sprites paint down to their last 16px band, so the sprite bottom is the footprint
+        // bottom and the doorstep is the row directly below it (art-collision.test.ts pins the rest).
+        expect([entity.assetId, entity.footRow]).toEqual([entity.assetId, entity.tile[1] + h]);
+        const front = doorFront(entity, meta);
+        expect(front[0], entity.assetId).toBeGreaterThanOrEqual(entity.tile[0]);
+        expect(front[0], entity.assetId).toBeLessThan(entity.tile[0] + w);
+        const ground = map.layers.ground[cell(front)] ?? -1;
+        expect([entity.assetId, ground === T.SIDEWALK || ground === T.PLAZA]).toEqual([entity.assetId, true]);
+        expect([entity.assetId, map.collision[cell(front)]]).toEqual([entity.assetId, 0]);
+        expect([entity.assetId, seen.has(cell(front))]).toEqual([entity.assetId, true]);
+      }
+    });
+
+    it('stands the 泉岳寺 gate on the temple approach, in front of the hall', () => {
+      const hall = map.entities.find((e) => e.id === BUILDING.sengakujiHall);
+      const gate = map.entities.find((e) => e.id === BUILDING.sengakujiGate);
+      expect([hall?.assetId, gate?.assetId]).toEqual(['sengakuji-hall', 'sengakuji-gate']);
+      const centre = (entity: EntityAnchor) => entity.tile[0] + (entity.size?.[0] ?? 1) / 2;
+      // Same axis, gate nearer the path (larger foot row), hall wholly behind it.
+      expect(centre(gate!)).toBe(centre(hall!));
+      expect(gate!.footRow!).toBeGreaterThan(hall!.footRow!);
+      expect(hall!.tile[1] + (hall!.size?.[1] ?? 1)).toBeLessThanOrEqual(gate!.tile[1]);
+      // The gate opens onto a paved apron on the path; the hall door opens onto the paved court.
+      expect(map.layers.ground[cell([centre(gate!), gate!.footRow!])]).toBe(T.PLAZA);
+      expect(map.layers.ground[cell([37, 14])]).toBe(T.PLAZA);
+      // The approach marker (34,24) and the path under the gate are still TEMPLE_PATH.
+      expect(map.layers.ground[cell([34, 24])]).toBe(T.TEMPLE_PATH);
+      expect(map.layers.ground[cell([37, 24])]).toBe(T.TEMPLE_PATH);
+    });
+
+    it('keeps every building footprint off portals, spawns, the zone and the crossing', () => {
+      const reserved = new Set<number>();
+      for (const portal of map.portals) reserved.add(cell(portal.tile));
+      for (const spawn of Object.values(map.spawns)) reserved.add(cell(spawn));
+      for (let y = 27; y <= 29; y++) for (let x = 42; x <= 46; x++) reserved.add(cell([x, y])); // crossing
+      for (const entity of map.entities) {
+        if (entity.kind !== 'zone') continue;
+        const [w, h] = entity.size ?? [1, 1];
+        for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++)
+          reserved.add(cell([entity.tile[0] + dx, entity.tile[1] + dy]));
+      }
+      // The station is built on the deck by design; every other building must stay off the road,
+      // the crossing and the raised deck the portals step onto.
+      const carried: ReadonlySet<number> = new Set([T.ROAD, T.ROAD_EDGE_W, T.ROAD_EDGE_E, T.ROAD_EDGE_N, T.ROAD_EDGE_S,
+        T.RAIL_V, T.RAIL_H, T.CROSSING_H, T.CROSSING_V, T.DECK, T.DECK_EDGE, T.STAIRS]);
+      let checked = 0;
+      for (const entity of map.entities) {
+        if (entity.kind !== 'building') continue;
+        checked++;
+        const [w, h] = entity.size ?? [1, 1];
+        for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++) {
+          const tile: Tile = [entity.tile[0] + dx, entity.tile[1] + dy];
+          expect(reserved.has(cell(tile)), `${entity.id} covers reserved ${tile}`).toBe(false);
+          if (entity.id === BUILDING.station) continue;
+          expect(carried.has(map.layers.ground[cell(tile)] ?? -1), `${entity.id} covers deck/road ${tile}`)
+            .toBe(false);
+        }
+      }
+      expect(checked).toBe(13);
+    });
+
+    it('keeps every 15x10 town block at or below 60% bare grass', () => {
+      // One camera window is 15x10 tiles, so a block is one screen. Bare means plain grass with no
+      // decoration, no canopy and no building sprite: a screen the issue calls a lawn. A building
+      // footprint is not bare -- the sprite covers the cell even though grass is the ground under it.
+      const BARE_MAX = 0.6;
+      const plain: ReadonlySet<number> = new Set([T.GRASS_A, T.GRASS_B, T.GRASS_C]);
+      const built = new Set<number>();
+      for (const entity of map.entities) {
+        if (entity.kind !== 'building') continue;
+        const [w, h] = entity.size ?? [1, 1];
+        for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++)
+          built.add(cell([entity.tile[0] + dx, entity.tile[1] + dy]));
+      }
+      const blocks: Array<{ x: number; y: number; share: number }> = [];
+      for (let y0 = 0; y0 < map.grid[1]; y0 += 10) {
+        for (let x0 = 0; x0 <= 73; x0 += 15) {
+          let bare = 0;
+          let cells = 0;
+          for (let y = y0; y < Math.min(y0 + 10, map.grid[1]); y++) {
+            for (let x = x0; x <= Math.min(x0 + 14, 73); x++) {
+              const index = cell([x, y]);
+              cells++;
+              if (built.has(index)) continue;
+              if (plain.has(map.layers.ground[index] ?? -1)
+                && map.layers.decoration[index] === -1
+                && map.layers.roof[index] === -1) bare++;
+            }
+          }
+          blocks.push({ x: x0, y: y0, share: bare / cells });
+        }
+      }
+      // Guard the measurement: an empty block list would pass the assertion below vacuously.
+      expect(blocks.length).toBeGreaterThanOrEqual(20);
+      expect(blocks.filter((block) => block.share > BARE_MAX)).toEqual([]);
+      // The town is planted, not measured on paper: both the canopy and the beds must exist.
+      expect(map.layers.roof.filter((tile) => tile === T.TREE_TL).length).toBeGreaterThan(40);
+      expect(map.layers.decoration.filter((tile) => tile === T.FLOWERS).length).toBeGreaterThan(60);
+    });
+
+    it('roots every tree on meadow, clear of pavement and building roofs', () => {
+      const built = new Set<number>();
+      for (const entity of map.entities) {
+        if (entity.kind !== 'building') continue;
+        const [w, h] = entity.size ?? [1, 1];
+        for (let dy = 0; dy < h; dy++) for (let dx = 0; dx < w; dx++)
+          built.add(cell([entity.tile[0] + dx, entity.tile[1] + dy]));
+      }
+      let trunks = 0;
+      map.layers.decoration.forEach((tile, index) => {
+        if (tile !== T.TREE_BL && tile !== T.TREE_BR) return;
+        trunks++;
+        const x = index % map.grid[0];
+        const y = Math.floor(index / map.grid[0]);
+        const left = tile === T.TREE_BL ? x : x - 1;
+        const top = y - 1;
+        // Every 2x2 tree must be on meadow, off a walkway and clear of a footprint, and its canopy
+        // must actually be painted: a blocked trunk without a canopy would be an invisible wall.
+        expect([tile, map.layers.roof[cell([left, top])]]).toEqual([tile, T.TREE_TL]);
+        expect([tile, map.layers.roof[cell([left + 1, top])]]).toEqual([tile, T.TREE_TR]);
+        for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+          const cellIndex = cell([left + dx, top + dy]);
+          const ground = map.layers.ground[cellIndex] ?? -1;
+          expect([ground === T.GRASS_A || ground === T.GRASS_B || ground === T.GRASS_C,
+            left + dx, top + dy], `${left + dx},${top + dy}`).toEqual([true, left + dx, top + dy]);
+          expect(WALKWAY_TILES.has(ground), `tree on pavement at ${left + dx},${top + dy}`).toBe(false);
+          expect(built.has(cellIndex), `tree through a roof at ${left + dx},${top + dy}`).toBe(false);
+        }
+      });
+      expect(trunks).toBeGreaterThan(0);
+    });
   });
 });
