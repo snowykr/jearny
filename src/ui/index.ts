@@ -2,7 +2,7 @@
 // it owns no quest or inventory state. No KAPLAY imports.
 import type { Effect, GameSession, GameSnapshot } from '../contracts';
 import { content as gameContent } from '../content';
-import { applyAudioSettings, replayAudio, stopAudio } from '../audio';
+import { applyAudioSettings, canReplay, preloadAudio, replayAudio, stopAudio } from '../audio';
 import { UI_STYLES } from './styles';
 import {
   currentNode,
@@ -241,7 +241,9 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
       announced = '';
     }
     speaker.textContent = speakerName(snapshot, gameContent);
-    replay.hidden = !node.lineId;
+    // A replay button with no clip behind it is a dead control: hide it until the
+    // published manifest proves the line exists.
+    replay.hidden = !node.lineId || !canReplay(node.lineId);
     replay.onclick = (event) => {
       // The button lives inside the click-to-advance box; never advance it.
       event.stopPropagation();
@@ -495,11 +497,17 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   }, TYPE_STEP_MS);
 
   const unsubscribe = session.subscribe(render);
+  // The manifest decides which lines can replay; re-render once it is known.
+  let mounted = true;
+  void preloadAudio().then(() => {
+    if (mounted) render(session.snapshot, []);
+  });
 
   return {
     ownsInput: () =>
       modalOpen || !settings.hidden || currentNode(session.snapshot, gameContent) !== null,
     unmount() {
+      mounted = false;
       unsubscribe();
       window.clearInterval(timer);
       window.clearTimeout(toastTimer);

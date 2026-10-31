@@ -23,9 +23,9 @@ const map: MapDefinition = makeRoom({
   entities: [
     { id: ENTITY.stationStaff, kind: 'npc', tile: [66, 50], facing: 'down' },
     { id: ENTITY.stationZone, kind: 'zone', tile: [61, 48], size: [7, 2] },
-    { id: BUILDING.station, kind: 'building', tile: [58, 40], size: [12, 8], assetId: 'station' },
-    { id: BUILDING.home, kind: 'building', tile: [15, 34], size: [5, 6], assetId: 'home' },
-    { id: BUILDING.matsushimaya, kind: 'building', tile: [13, 11], size: [6, 5], assetId: 'matsushimaya' },
+    { id: BUILDING.station, kind: 'building', tile: [58, 41], size: [12, 5], footRow: 48, assetId: 'station' },
+    { id: BUILDING.home, kind: 'building', tile: [15, 34], size: [5, 6], footRow: 40, assetId: 'home' },
+    { id: BUILDING.matsushimaya, kind: 'building', tile: [13, 11], size: [6, 5], footRow: 16, assetId: 'matsushimaya' },
   ],
 });
 

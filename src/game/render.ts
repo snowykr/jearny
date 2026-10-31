@@ -5,7 +5,7 @@ import type { Color, KAPLAYCtx } from 'kaplay';
 import type { EntityAnchor } from '../contracts';
 import { TILESET_FOR_SCENE } from '../content/maps/tiles';
 import { ASSETS, DEFAULT_CELL, SHEET_COLS, characterCell, hasAsset } from './assets';
-import { visibleTiles } from './camera';
+import { buildingFootRow, visibleTiles } from './camera';
 import type { Dir } from './input';
 import { playerDrawPixel, walkColumn } from './player';
 import type { SceneRuntime } from './scene';
@@ -93,7 +93,7 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
   tileAt(map.layers.ground, 'ground');
   tileAt(map.layers.decoration, 'decoration');
 
-  // Y-sorted layer: buildings (foot = bottom of footprint), NPCs and the player.
+  // Y-sorted layer: buildings (foot = foot row), NPCs and the player.
   const items: Drawable[] = [];
   const minX = cam[0] - 120 - 192;
   const maxX = cam[0] + 120 + 192;
@@ -104,7 +104,7 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
     const px = e.tile[0] * ts;
     const py = e.tile[1] * ts;
     if (px < minX || px > maxX || py < minY || py > maxY) continue;
-    if (e.kind === 'building') items.push({ foot: (e.tile[1] + (e.size?.[1] ?? 1)) * ts, draw: () => drawBuilding(k, e, ts) });
+    if (e.kind === 'building') items.push({ foot: buildingFootRow(e) * ts, draw: () => drawBuilding(k, e, ts) });
     else items.push({ foot: py + ts, draw: () => drawCharacter(k, charSprite(e), px, py + ts, ts, rt.npcFacing(e.id) ?? e.facing ?? 'down', 0, hashRgb(e.id)) });
   }
   const [ppx, ppy] = playerDrawPixel(rt.player, ts);
@@ -121,7 +121,7 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
 
 const charSprite = (e: EntityAnchor) => `char-${e.id.slice(e.id.indexOf(':') + 1)}`;
 
-/** Bottom-aligned to the footprint, centred horizontally. */
+/** Bottom-aligned to the foot row, centred horizontally over the footprint. */
 function drawBuilding(k: KAPLAYCtx, e: EntityAnchor, ts: number): void {
   const [w, h] = e.size ?? [1, 1];
   const fw = w * ts;
@@ -129,9 +129,10 @@ function drawBuilding(k: KAPLAYCtx, e: EntityAnchor, ts: number): void {
   const sprite = e.assetId;
   if (sprite && hasAsset(sprite)) {
     const dims = (ASSETS.buildings as Record<string, readonly [number, number]>)[sprite] ?? [fw, fh];
-    k.drawSprite({ sprite, pos: k.vec2(e.tile[0] * ts + (fw - dims[0]) / 2, (e.tile[1] + h) * ts - dims[1]) });
+    k.drawSprite({ sprite, pos: k.vec2(e.tile[0] * ts + (fw - dims[0]) / 2, buildingFootRow(e) * ts - dims[1]) });
     return;
   }
+  // The box marks the *collision* rect, not the sprite: `size` is what blocks movement.
   k.drawRect({ pos: k.vec2(e.tile[0] * ts, e.tile[1] * ts), width: fw, height: fh, color: cached(k, 'missing', [200, 0, 200]), outline: { width: 1, color: k.rgb(60, 0, 60) } });
 }
 

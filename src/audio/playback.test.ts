@@ -201,4 +201,23 @@ describe('audio playback', () => {
 
     expect(FakeAudio.instances.map((clip) => clip.src)).toEqual(['/audio/guide.mp3']);
   });
+
+  it('reports a line as replayable only after the manifest names it', async () => {
+    respondWith(manifest);
+    const audio = await import('./index');
+
+    // The dialogue can render before the manifest lands; no clip means no button.
+    expect(audio.canReplay('guide.intro')).toBe(false);
+    await audio.preloadAudio();
+    expect(audio.canReplay('guide.intro')).toBe(true);
+    expect(audio.canReplay('shop.not-there')).toBe(false);
+  });
+
+  it('reports no replayable line when the manifest is missing', async () => {
+    respondWith(null, false);
+    const audio = await import('./index');
+
+    await audio.preloadAudio();
+    expect(audio.canReplay('guide.intro')).toBe(false);
+  });
 });

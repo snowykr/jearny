@@ -139,6 +139,56 @@
       "notes": "Original chibi redesign for #42. Rows down,left,right,up; columns idle,stepA,stepB. Requires #41 renderer and exporter support for 16x20 cells."
     },
     {
+      "id": "coupon-icon",
+      "kind": "building",
+      "source": "assets/source/coupon-icon-atlas-v1.png",
+      "sha256": "34befcc99b4ae5155392804ff444b46f33f0ddb130fe5ae0f3b3439100c25286",
+      "sourceSize": [
+        16,
+        16
+      ],
+      "runtimeSize": [
+        16,
+        16
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/coupon-icon.png",
+      "spriteSha256": "74a96b9d3be205b667b7aa5680d01cbeb85e20a2a36177d8a112c3e45f99109c",
+      "colors": 20,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors."
+    },
+    {
+      "id": "coupon-stamp",
+      "kind": "building",
+      "source": "assets/source/coupon-stamp-atlas-v1.png",
+      "sha256": "f193bce7b87763d98e808b99b2f0270c706ce7ef580a6b2b59e2f30ff949c022",
+      "sourceSize": [
+        48,
+        48
+      ],
+      "runtimeSize": [
+        48,
+        48
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/coupon-stamp.png",
+      "spriteSha256": "145809f7605afc2f75b6b4d3ce06c59f6c634cbbac72b0b770ebd01c13e70e71",
+      "colors": 22,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors."
+    },
+    {
       "id": "home",
       "kind": "building",
       "source": "assets/source/home-v2.png",
@@ -170,11 +220,11 @@
       },
       "collisionTiles": [
         5,
-        3
+        6
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
-      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "liebe",
@@ -208,7 +258,7 @@
       },
       "collisionTiles": [
         5,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
@@ -246,11 +296,11 @@
       },
       "collisionTiles": [
         6,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
-      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "station",
@@ -288,11 +338,11 @@
       },
       "collisionTiles": [
         12,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
-      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "tiles-interior",
