@@ -55,5 +55,9 @@
     ]
   },
   "status": "draft",
-  "notes": "Pixel (x,y) = tile*3+1 from content/world-plan.json anchors (world-plan home [18,40], station [64,48], plaza [54,36], route15_crossing [44,28], sengakuji_approach [34,24], matsushimaya [16,16]). Layout reference painted from the authored takanawa map arrays. Two built-in Image Gen 2 edits. V1 preserved road/rail geometry but enlarged landmarks. V2 simplified them; final deterministic crop/nearest-neighbor assembly uses only generated pixels and authored tile masks to restore exact building, tree, flower, path, furniture and stair footprints. No art drawn in code. Palette quantization is accent-weighted, 29 final RGB colors, fully opaque, 384x288. Reviewed at 1x and nearest-neighbor 6x. Layout reference comes from actual imported takanawa map arrays (Vitest export in temporary repository copy); no water exists in authored map. Overlay is 50% blend. Preview has 24px mid-grey margins. Working clone unedited; no commits or pushes. Export scripts and source arrays at /tmp/jearny-art67/work/p4."
+  "notes": "Pixel (x,y) = tile*3+1 from content/world-plan.json anchors (world-plan home [18,40], station [64,48], plaza [54,36], route15_crossing [44,28], sengakuji_approach [34,24], matsushimaya [16,16]). Layout reference painted from the authored takanawa map arrays. Two built-in Image Gen 2 edits. V1 preserved road/rail geometry but enlarged landmarks. V2 simplified them; final deterministic crop/nearest-neighbor assembly uses only generated pixels and authored tile masks to restore exact building, tree, flower, path, furniture and stair footprints. No art drawn in code. Palette quantization is accent-weighted, 29 final RGB colors, fully opaque, 384x288. Reviewed at 1x and nearest-neighbor 6x. Layout reference comes from actual imported takanawa map arrays (Vitest export in temporary repository copy); no water exists in authored map. Overlay is 50% blend. Preview has 24px mid-grey margins. Working clone unedited; no commits or pushes. Export scripts and source arrays at /tmp/jearny-art67/work/p4.",
+  "collisionTiles": [
+    24,
+    18
+  ]
 }

@@ -32,5 +32,9 @@
       "2": "tilted wiggle"
     }
   },
-  "notes": "3 frames of 64x64 laid out horizontally (192x64); load as a 3x1 sheet. Same teal tote as ui-icons #0. raw-v1 is the bag sheet; raw-v2 is the pocket tab sheet. Nearest-neighbour resize, 31 RGB colors plus transparent, alpha threshold 128. Reviewed final sprites at 1x and 6x. No repository files edited."
+  "notes": "3 frames of 64x64 laid out horizontally (192x64); load as a 3x1 sheet. Same teal tote as ui-icons #0. raw-v1 is the bag sheet; raw-v2 is the pocket tab sheet. Nearest-neighbour resize, 31 RGB colors plus transparent, alpha threshold 128. Reviewed final sprites at 1x and 6x. No repository files edited.",
+  "collisionTiles": [
+    12,
+    4
+  ]
 }
