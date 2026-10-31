@@ -1,0 +1,327 @@
+{
+  "id": "tiles-outdoor",
+  "kind": "tileset",
+  "source": "assets/source/tiles-outdoor-v2.png",
+  "runtimeSize": [
+    128,
+    96
+  ],
+  "sliceX": 8,
+  "sliceY": 6,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Edit the attached outdoor tileset only; station and shop are style references. Keep all 32 cells and their exact positions, shapes and subjects. Fix the grass and ground tiles to use flat fills without light-to-dark gradients, dark border strokes, bevels or soft glow. Opposite edges of each square ground tile must wrap seamlessly. Both rails must reach exactly the edges of their square, with identical endpoint positions on opposite sides. Keep tree as one connected tree without a cross seam or gap through its center. Keep transparent gutters and transparent backgrounds around props. Increase pixel chunk size so each tile reads as exactly 16x16 logical pixels, tree 32x32. Keep the palette, object designs, camera angle and ordering unchanged. No text.",
+  "references": [
+    "assets/source/tiles-outdoor-v1.png",
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png"
+  ],
+  "status": "approved",
+  "notes": "Agent visual review at 1x and 4x. Fixed T indices 0..31; 32..47 transparent. Tree quadrants 17,18,19,20 reconstruct one 32x32 tree. Collision remains map-owned. Source v1 generated, v2 edited to remove tree seams and improve ground. Crop boxes remove generated gutters and ground borders. Palette sampled from generated source regions to retain green, red, blue, cream, brown and slate; visually matched against building references. Manifest and loader integration belongs to #1.",
+  "history": [
+    {
+      "source": "assets/source/tiles-outdoor-v1.png",
+      "mode": "generate",
+      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. The station and red-awning shop images are STYLE REFERENCES only; the map is mood only, do not draw the map or buildings. Create a production tileset as exactly 8 columns by 4 rows, 128x64 logical pixels, enlarged nearest-neighbor to 1536x768. No gutters, labels, grid lines, padding, shadows, bevels or outlines around ground squares. Every cell is exactly 16x16 logical pixels. Ground fills its cell fully opaque; props have transparent backgrounds. All ground textures wrap seamlessly at opposite edges, including paired rails across tile boundaries. Sparse flat pixel texture; no anti-aliasing.\nRow 1 left to right: grass A, grass B, grass C, warm gray sidewalk, dark asphalt road without markings, road with curb only at NORTH edge, road with curb only at SOUTH edge, road with curb only at EAST edge.\nRow 2: road with curb only at WEST edge, zebra crossing for horizontal walking (vertical white stripes), zebra crossing for vertical walking (horizontal white stripes), horizontal railway with continuous paired rails and regular sleepers, vertical railway with continuous paired rails and regular sleepers, cream raised deck paving, deck edge railing, stairs.\nRow 3: hedge, tree TOP LEFT, tree TOP RIGHT, lamppost, red vending machine, wooden bench, temple stone path, low stone wall.\nRow 4: iron fence, tree BOTTOM LEFT, tree BOTTOM RIGHT, flower bed, pale plaza paving, blue water, gravel, curb.\nThe tree spans row 3-4 columns 2-3 as ONE connected 32x32-pixel round green tree, with trunk at bottom center. Ground tiles tile seamlessly in 4x4 repetitions; no dark per-tile borders. Clearly separated green tones, cream stone, slate asphalt, brown wood, red accents and teal water. Save genuine transparency around props.",
+      "references": [
+        "assets/source/station-v1.png",
+        "assets/source/matsushimaya-v1.png"
+      ],
+      "moodReference": "research/map/official-minato-pedestrian-route-20260328.png"
+    },
+    {
+      "source": "assets/source/tiles-outdoor-v2.png",
+      "mode": "edit",
+      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Edit the attached outdoor tileset only; station and shop are style references. Keep all 32 cells and their exact positions, shapes and subjects. Fix the grass and ground tiles to use flat fills without light-to-dark gradients, dark border strokes, bevels or soft glow. Opposite edges of each square ground tile must wrap seamlessly. Both rails must reach exactly the edges of their square, with identical endpoint positions on opposite sides. Keep tree as one connected tree without a cross seam or gap through its center. Keep transparent gutters and transparent backgrounds around props. Increase pixel chunk size so each tile reads as exactly 16x16 logical pixels, tree 32x32. Keep the palette, object designs, camera angle and ordering unchanged. No text.",
+      "references": [
+        "assets/source/tiles-outdoor-v1.png",
+        "assets/source/station-v1.png",
+        "assets/source/matsushimaya-v1.png"
+      ]
+    }
+  ],
+  "verification": {
+    "size": [
+      128,
+      96
+    ],
+    "opaqueColors": 24,
+    "alphaValues": [
+      0,
+      255
+    ],
+    "populatedIndices": 32,
+    "reservedTransparent": 16,
+    "sha256": "22314f86beb3a0cc82010793cd9d59a75aa6a410efcdc46fc2d88351c808c25f",
+    "commands": [
+      "npm run check",
+      "npx vite build",
+      "bash scripts/check-ownership.sh"
+    ],
+    "repeatTiles": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      11,
+      12,
+      28,
+      30
+    ]
+  },
+  "export": {
+    "tool": "Python Pillow",
+    "resampling": "nearest",
+    "alphaThreshold": 128,
+    "dither": "none",
+    "cropBoxesByRuntimeIndex": [
+      [
+        58,
+        55,
+        234,
+        231
+      ],
+      [
+        264,
+        55,
+        446,
+        231
+      ],
+      [
+        480,
+        55,
+        662,
+        231
+      ],
+      [
+        694,
+        55,
+        870,
+        231
+      ],
+      [
+        904,
+        55,
+        1082,
+        231
+      ],
+      [
+        1116,
+        55,
+        1292,
+        231
+      ],
+      [
+        1328,
+        55,
+        1510,
+        231
+      ],
+      [
+        1543,
+        55,
+        1717,
+        231
+      ],
+      [
+        58,
+        266,
+        234,
+        442
+      ],
+      [
+        264,
+        266,
+        446,
+        442
+      ],
+      [
+        480,
+        266,
+        662,
+        442
+      ],
+      [
+        694,
+        266,
+        870,
+        442
+      ],
+      [
+        904,
+        266,
+        1082,
+        442
+      ],
+      [
+        1116,
+        266,
+        1292,
+        442
+      ],
+      [
+        1315,
+        256,
+        1519,
+        460
+      ],
+      [
+        1530,
+        256,
+        1730,
+        460
+      ],
+      [
+        48,
+        463,
+        243,
+        666
+      ],
+      null,
+      null,
+      null,
+      null,
+      [
+        680,
+        462,
+        884,
+        666
+      ],
+      [
+        886,
+        462,
+        1090,
+        666
+      ],
+      [
+        1096,
+        462,
+        1300,
+        666
+      ],
+      [
+        1327,
+        487,
+        1509,
+        656
+      ],
+      [
+        1530,
+        462,
+        1734,
+        666
+      ],
+      [
+        46,
+        671,
+        250,
+        851
+      ],
+      [
+        682,
+        671,
+        886,
+        851
+      ],
+      [
+        904,
+        683,
+        1082,
+        837
+      ],
+      [
+        1116,
+        683,
+        1292,
+        837
+      ],
+      [
+        1328,
+        683,
+        1509,
+        837
+      ],
+      [
+        1537,
+        714,
+        1718,
+        837
+      ]
+    ],
+    "treeCrop": [
+      252,
+      463,
+      676,
+      851
+    ],
+    "treePadding": "Pad to 424x424 at bottom before nearest resize to 32x32; split into TL/TR/BL/BR.",
+    "paletteSamples": [
+      {
+        "box": [
+          264,
+          55,
+          446,
+          231
+        ],
+        "colors": 4
+      },
+      {
+        "box": [
+          736,
+          466,
+          812,
+          663
+        ],
+        "colors": 4
+      },
+      {
+        "box": [
+          1116,
+          55,
+          1292,
+          94
+        ],
+        "colors": 3
+      },
+      {
+        "box": [
+          1116,
+          553,
+          1280,
+          635
+        ],
+        "colors": 3
+      },
+      {
+        "box": [
+          1116,
+          683,
+          1292,
+          837
+        ],
+        "colors": 3
+      },
+      {
+        "box": [
+          922,
+          489,
+          1040,
+          515
+        ],
+        "colors": 3
+      },
+      {
+        "box": [
+          694,
+          55,
+          870,
+          231
+        ],
+        "colors": 4
+      }
+    ],
+    "paletteMethod": "Per-region median cut, concatenate 24 entries; nearest palette mapping without dithering.",
+    "curb": "Fit within 16x16 without stretching; bottom align."
+  }
+}
