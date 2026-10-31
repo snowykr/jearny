@@ -33,7 +33,20 @@ export const BUILDING = {
   station: 'building:station',
   home: 'building:home',
   matsushimaya: 'building:matsushimaya',
-  liebe: 'building:liebe', // bakery sprite already in ASSETS.buildings, unused until #84
+  liebe: 'building:liebe',
+  // Neighbourhood pack (#83/#94). Generic, unbranded storefronts only: a real
+  // chain logo on the map would need the legal note to name it too (#72).
+  houseTwo: 'building:house-2',
+  houseThree: 'building:house-3',
+  apartmentSmall: 'building:apartment-small',
+  apartmentMid: 'building:apartment-mid',
+  cafe: 'building:cafe',
+  konbini: 'building:konbini',
+  koban: 'building:koban',
+  officeTower: 'building:office-tower',
+  sengakujiGate: 'building:sengakuji-gate',
+  sengakujiHall: 'building:sengakuji-hall',
+  bicycleParking: 'building:bicycle-parking',
 } as const;
 
 export const SHOP = { matsushimaya: 'shop:matsushimaya' } as const;
