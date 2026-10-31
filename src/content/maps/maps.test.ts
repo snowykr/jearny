@@ -59,7 +59,7 @@ describe('map registry validation', () => {
         map.portals.push({ id: `test-${index}`, tile, toScene: map.id, toSpawn: next });
     });
     expect(validateMaps(registry)).toEqual([]);
-    map.portals.pop();
+    map.portals.splice(2, 1);
     expect(validateMaps(registry)).toContainEqual(expect.stringContaining('required spawn station-deck is disconnected'));
   });
 
