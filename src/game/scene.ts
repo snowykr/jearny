@@ -18,6 +18,8 @@ export interface SceneRuntimeOptions {
   spawnId: string;
   session: GameSession;
   bus: InputBus;
+  /** True while a DOM surface owns input; defaults to the dialogue status. */
+  isInputBlocked?: () => boolean;
   onResult(result: CommandResult): void;
 }
 
@@ -63,10 +65,10 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
   let zoneId = arrivalCommand(map, start, null).zoneId; // spawning inside a zone is not an "entry"
   let busy = false;
   let bumpT = 0;
-  let wasClosed = true;
+  let wasOpen = false;
   let disposed = false;
 
-  const dialogueClosed = () => session.snapshot.dialogue.status === 'closed';
+  const isInputBlocked = opts.isInputBlocked ?? (() => session.snapshot.dialogue.status !== 'closed');
 
   const send = (payload: CommandPayload) => {
     const portal = payload.type === 'UsePortal' ? (map.portals.find((p) => p.id === payload.portalId) ?? null) : null;
@@ -90,7 +92,7 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
     bus.onPress((action) => {
       if (disposed) return;
       if (action === 'interact') {
-        if (!dialogueClosed() || busy || player.to) return;
+        if (isInputBlocked() || busy || player.to) return;
         const cmd = interactCommand(map, player.tile, player.facing);
         if (cmd) send(cmd);
       } else {
@@ -110,14 +112,14 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
     update(dt) {
       if (disposed) return;
       bumpT = Math.max(0, bumpT - dt);
-      const closed = dialogueClosed();
-      if (wasClosed && !closed) {
-        bus.reset(); // dialogue opened: drop held keys so nothing walks on close
+      const blocked = isInputBlocked();
+      if (!wasOpen && blocked) {
+        bus.reset(); // UI opened: drop held keys so nothing walks underneath it
         tapDir = null;
       }
-      wasClosed = closed;
-      const canAct = closed && !busy;
-      const arrived = updatePlayer(player, map, dt, { heldDir: closed ? bus.heldDir() : null, tapDir: canAct ? tapDir : null, canAct });
+      wasOpen = blocked;
+      const canAct = !blocked && !busy;
+      const arrived = updatePlayer(player, map, dt, { heldDir: canAct ? bus.heldDir() : null, tapDir: canAct ? tapDir : null, canAct });
       tapDir = null;
       if (arrived) {
         const r = arrivalCommand(map, arrived, zoneId);

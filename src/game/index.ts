@@ -99,7 +99,7 @@ export function startGame(
 
   k.scene('map', ({ sceneId, spawnId }: SceneArgs) => {
     const map = maps[sceneId];
-    const rt = createSceneRuntime({ map, spawnId, session, bus: input, onResult: onResult(sceneToken) });
+    const rt = createSceneRuntime({ map, spawnId, session, bus: input, isInputBlocked, onResult: onResult(sceneToken) });
     current = rt;
     const cam = (): [number, number] => {
       const [px, py] = playerPixel(rt.player, map.tileSize);

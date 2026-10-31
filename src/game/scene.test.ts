@@ -151,6 +151,35 @@ describe('scene runtime', () => {
     expect(rt.player.tile[1]).toBe(48);
   });
 
+  it('ignores input while a DOM surface owns it, and resumes when it closes', () => {
+    const f = fakeSession();
+    const bus = createInputBus();
+    let blocked = true;
+    const rt = createSceneRuntime({
+      map: maps['home-interior'],
+      spawnId: 'start',
+      session: f.session,
+      bus,
+      isInputBlocked: () => blocked,
+      onResult: () => {},
+    });
+    const start = [...rt.player.tile] as [number, number];
+
+    bus.press('down');
+    tick(rt, 1);
+    expect(rt.player.tile).toEqual(start);
+    bus.press('interact');
+    expect(f.sent).toEqual([]);
+    bus.release('down');
+
+    blocked = false;
+    bus.press('down');
+    tick(rt, 0.2); // one 150 ms step, then release before the next
+    bus.release('down');
+    expect(rt.player.tile[1]).toBe(start[1] + 1);
+    rt.dispose();
+  });
+
   it('leaks no listeners after 10 scene changes', () => {
     const bus = createInputBus();
     const f = fakeSession();
