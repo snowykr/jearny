@@ -59,7 +59,6 @@ hang(15, 1, IT.SHOP_WINDOW);
 fill(1, 2, 16, 4, IT.FLOOR_WOOD_DARK); // staff side
 fill(13, 7, 16, 11, IT.FLOOR_WOOD_DARK); // tea corner
 fill(7, 11, 11, 12, IT.DOMA_STONE); // entrance
-ground[idx(COLS, 9, 12)] = IT.DOOR_MAT;
 
 // ---- staff side ----------------------------------------------------------------
 place(1, 2, IT.POTTED_BAMBOO);
