@@ -64,3 +64,13 @@ Handle `detail.code`, with `detail.status` as a legacy fallback. Do not retry au
 Verification has two stages. First, mocked responses prove cache hits issue no synthesis calls, changed synthesis inputs invalidate the cache, errors never become MP3 assets, aborted streams never publish, and missing audio never blocks play. Browser checks cover gesture restrictions, replay, mute, scene cancellation, and overlapping lines. Second, after credentials and a small generation budget are supplied, verify voice access and model availability with read-only metadata calls, then generate one short Japanese clip. Check status, audio content type, decode success, audible Japanese pronunciation, and one repeated cache hit with zero new generation. Never print the key. No credential validity, account voice access, latency, or Japanese listening quality has been verified by this research.
 
 Optional speech recognition has its own microphone consent, transcription service, timeout, and typed-input fallback. ElevenLabs Scribe is a separate STT model family. It does not replace the TTS path described here. [Model families](https://elevenlabs.io/docs/overview/models)
+
+## Selected voice (2026-10-31)
+
+Auditioned from the shared-voice library (`GET /v1/shared-voices?language=ja`) against the static pipeline, which only accepts `eleven_multilingual_v2`.
+
+- **Single voice for the six-line demo:** `dp4HJlekKt0HZFHL2jQg` — "Ayaka - Cute, Bright & Clear". Female, adult, `kanto` accent, professional, verified on `eleven_multilingual_v2` and `eleven_v4`, free users allowed. Clear consonants and a friendly register, which the language-learning lines need. [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/80a10100c4924c2eb0a45329cb42691b/voices/dp4HJlekKt0HZFHL2jQg/J757N21bsMnHGXYh9Wme.mp3)
+- Shopkeeper alternative (anime-idol register): `orJJwOpc1v9dJbhXKsPq` — "KawaIIchan - Cute & Friendly". [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/a45484b4345e4cfd89e8eb5b018daecb/voices/orJJwOpc1v9dJbhXKsPq/iXoGRNk2U8ecnXaFVfhW.mp3)
+- Station-staff alternative (male, calm): `gHOZgBRO2XoES8fxMGSa` — "Koki - Calm Japanese Male Narrator". [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/01a069aa5f0744a7b080332cabcfecfb/voices/gHOZgBRO2XoES8fxMGSa/8cc4380b-afa5-4edb-8658-75ca29e1ac33.mp3)
+
+`tools/voice/render.mjs` reads a single `ELEVENLABS_VOICE_ID`; per-NPC IDs (`ELEVENLABS_VOICE_ID_<SPEAKER>`) are the next step if the six lines keep three speakers. Library voices must be added to the workspace before synthesis: confirm with `GET /v2/voices` after the key exists, otherwise the request fails with `invalid_voice` and saves nothing.
