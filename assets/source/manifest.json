@@ -25,11 +25,11 @@
       "anchors": {
         "door": [
           64,
-          124
+          126
         ],
         "foot": [
           64,
-          127
+          126
         ]
       },
       "collisionTiles": [
@@ -63,11 +63,11 @@
       "anchors": {
         "door": [
           48,
-          108
+          110
         ],
         "foot": [
           48,
-          111
+          110
         ]
       },
       "collisionTiles": [
@@ -134,7 +134,7 @@
         ],
         "foot": [
           32,
-          47
+          46
         ]
       },
       "collisionTiles": [
@@ -202,11 +202,11 @@
       "anchors": {
         "door": [
           40,
-          75
+          77
         ],
         "foot": [
           40,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -240,7 +240,7 @@
       "anchors": {
         "foot": [
           16,
-          23
+          20
         ]
       },
       "collisionTiles": [
@@ -274,7 +274,7 @@
       "anchors": {
         "foot": [
           16,
-          23
+          20
         ]
       },
       "collisionTiles": [
@@ -444,7 +444,7 @@
       "anchors": {
         "foot": [
           32,
-          31
+          29
         ]
       },
       "collisionTiles": [
@@ -563,11 +563,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          78
         ],
         "foot": [
           56,
-          79
+          78
         ]
       },
       "collisionTiles": [
@@ -601,11 +601,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          77
         ],
         "foot": [
           56,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -639,7 +639,7 @@
       "anchors": {
         "door": [
           48,
-          78
+          79
         ],
         "foot": [
           48,
@@ -677,11 +677,11 @@
       "anchors": {
         "door": [
           64,
-          92
+          93
         ],
         "foot": [
           64,
-          94
+          93
         ]
       },
       "collisionTiles": [
@@ -715,11 +715,11 @@
       "anchors": {
         "door": [
           40,
-          94
+          89
         ],
         "foot": [
           40,
-          95
+          89
         ]
       },
       "collisionTiles": [
@@ -753,11 +753,11 @@
       "anchors": {
         "door": [
           40,
-          93
+          94
         ],
         "foot": [
           40,
-          95
+          94
         ]
       },
       "collisionTiles": [
@@ -791,11 +791,11 @@
       "anchors": {
         "door": [
           40,
-          74
+          78
         ],
         "foot": [
           40,
-          79
+          78
         ]
       },
       "collisionTiles": [
@@ -829,11 +829,11 @@
       "anchors": {
         "door": [
           24,
-          60
+          61
         ],
         "foot": [
           24,
-          62
+          61
         ]
       },
       "collisionTiles": [
@@ -867,11 +867,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          77
         ],
         "foot": [
           56,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -905,11 +905,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          77
         ],
         "foot": [
           56,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -943,11 +943,11 @@
       "anchors": {
         "door": [
           54,
-          74
+          66
         ],
         "foot": [
           40,
-          79
+          66
         ]
       },
       "collisionTiles": [
@@ -981,7 +981,7 @@
       "anchors": {
         "door": [
           79,
-          254
+          255
         ],
         "foot": [
           79,
@@ -1019,11 +1019,11 @@
       "anchors": {
         "door": [
           76,
-          76
+          78
         ],
         "foot": [
           56,
-          79
+          78
         ]
       },
       "collisionTiles": [
@@ -1057,11 +1057,11 @@
       "anchors": {
         "door": [
           70,
-          78
+          71
         ],
         "foot": [
           48,
-          79
+          71
         ]
       },
       "collisionTiles": [
@@ -1095,11 +1095,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          77
         ],
         "foot": [
           56,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -1133,7 +1133,7 @@
       "anchors": {
         "door": [
           112,
-          158
+          159
         ],
         "foot": [
           112,
@@ -1375,11 +1375,11 @@
       "anchors": {
         "door": [
           64,
-          188
+          189
         ],
         "foot": [
-          64,
-          190
+          63,
+          189
         ]
       },
       "collisionTiles": [
@@ -1472,11 +1472,11 @@
       "anchors": {
         "door": [
           64,
-          108
+          109
         ],
         "foot": [
           64,
-          110
+          109
         ]
       },
       "collisionTiles": [
@@ -1510,11 +1510,11 @@
       "anchors": {
         "door": [
           80,
-          108
+          125
         ],
         "foot": [
           80,
-          126
+          125
         ]
       },
       "collisionTiles": [
@@ -1548,7 +1548,7 @@
       "anchors": {
         "door": [
           32,
-          62
+          63
         ],
         "foot": [
           32,
@@ -1586,11 +1586,11 @@
       "anchors": {
         "door": [
           56,
-          76
+          77
         ],
         "foot": [
           56,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -1624,11 +1624,11 @@
       "anchors": {
         "door": [
           47,
-          69
+          77
         ],
         "foot": [
           48,
-          78
+          77
         ]
       },
       "collisionTiles": [
@@ -1662,15 +1662,15 @@
       "anchors": {
         "door": [
           89,
-          126
+          91
         ],
         "foot": [
           96,
-          127
+          91
         ],
         "secondDoor": [
           102,
-          126
+          91
         ]
       },
       "collisionTiles": [
@@ -1704,7 +1704,7 @@
       "anchors": {
         "door": [
           48,
-          94
+          95
         ],
         "foot": [
           48,
@@ -1742,7 +1742,7 @@
       "anchors": {
         "foot": [
           16,
-          23
+          19
         ]
       },
       "collisionTiles": [
@@ -2052,11 +2052,11 @@
       "anchors": {
         "door": [
           80,
-          108
+          109
         ],
         "foot": [
           80,
-          110
+          109
         ]
       },
       "collisionTiles": [
@@ -2124,7 +2124,7 @@
       "anchors": {
         "foot": [
           16,
-          127
+          117
         ]
       },
       "collisionTiles": [
@@ -2158,11 +2158,11 @@
       "anchors": {
         "door": [
           68,
-          76
+          78
         ],
         "foot": [
           48,
-          79
+          78
         ]
       },
       "collisionTiles": [
