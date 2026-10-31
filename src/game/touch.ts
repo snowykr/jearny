@@ -81,7 +81,8 @@ export function dirFromOffset(dx: number, dy: number, deadZone: number, maxRadiu
 }
 
 export interface TouchOptions {
-  isDialogueOpen: () => boolean;
+  /** While true a DOM surface owns taps; the overlay hides and releases held directions. */
+  isInputBlocked: () => boolean;
   force?: boolean;
 }
 
@@ -202,16 +203,16 @@ export function mountTouchControls(root: HTMLElement, input: InputBus, opts: Tou
   // --- Dialogue: the dialogue UI owns every tap while it is open, and its panel sits where the
   // A button would paint, so hide the whole overlay instead of leaving a control on top of it.
   let lastOpen: boolean | null = null;
-  const syncDialogue = () => {
-    const open = opts.isDialogueOpen();
+  const syncInput = () => {
+    const open = opts.isInputBlocked();
     if (open === lastOpen) return;
     lastOpen = open;
     overlay.hidden = open;
     state.setDpadEnabled(!open);
     paint();
   };
-  syncDialogue();
-  const timer = setInterval(syncDialogue, 100);
+  syncInput();
+  const timer = setInterval(syncInput, 100);
 
   const onBlur = () => { state.releaseAll(); paint(); };
   const win = doc.defaultView;

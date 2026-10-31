@@ -22,13 +22,18 @@ interface SceneArgs {
   spawnId: string;
 }
 
-export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
+export function startGame(
+  canvas: HTMLCanvasElement,
+  session: GameSession,
+  /** True while the DOM UI owns input (dialogue, settings, modal). */
+  isInputBlocked: () => boolean = () => session.snapshot.dialogue.status !== 'closed',
+): { input: InputBus } {
   const input = createInputBus();
   const detachKeyboard = attachKeyboard(input);
-  // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input. Mounted inside
+  // D-pad + A overlay on touch devices; hidden while the DOM UI owns input. Mounted inside
   // #ui-root so it lives on the same DOM surface as the DOM UI (it still paints above it).
   const uiRoot = document.getElementById('ui-root') ?? document.body;
-  const unmountTouch = mountTouchControls(uiRoot, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
+  const unmountTouch = mountTouchControls(uiRoot, input, { isInputBlocked: isInputBlocked });
 
   const k = kaplay({
     global: false,
