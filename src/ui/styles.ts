@@ -5,7 +5,8 @@ export const UI_STYLES = `
    clear of the dialogue box even though the chip floats over the field. */
 .jq-hud { position: absolute; top: 8px; left: 8px; display: flex; flex-wrap: wrap; align-items: center;
   gap: 2px 6px; padding: 3px 6px; border-radius: 6px; background: rgba(12, 14, 22, .82); color: #f4f1e8;
-  font: 11px/1.35 system-ui, sans-serif; pointer-events: none; max-width: min(260px, 62vw); }
+  font: 11px/1.35 system-ui, sans-serif; pointer-events: none; box-sizing: border-box;
+  max-width: min(260px, calc(100vw - 128px)); max-height: calc(100vh - 16px); overflow-y: auto; }
 .jq-hud button { pointer-events: auto; flex: 0 0 auto; display: inline-flex; align-items: center;
   justify-content: center; min-height: 24px; font: inherit; line-height: 1.35; padding: 1px 6px;
   border-radius: 4px; border: 1px solid #8b8f9a; background: #232636; color: inherit; cursor: pointer; }
@@ -26,6 +27,24 @@ export const UI_STYLES = `
 /* Below a 320px viewport the chip would wrap into three rows; drop the English
    objective line there, the Japanese line already names the task. */
 @media (max-width: 319px) { .jq-quest-en { display: none; } .jq-hud { font-size: 10px; } }
+/* Handheld/short viewports (240x160): keep the chip in the free top strip. It
+   must stay left of the minimap and above the touch D-pad, so the rows are
+   ordered explicitly instead of relying on DOM order. */
+@media (max-height: 220px) {
+  /* 52px column keeps both buttons left of the touch D-pad's up cell (x=68 at
+     240px wide); the objective uses the right column and spans the button rows. */
+  .jq-hud { display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center;
+    max-width: min(120px, calc(100vw - 128px)); max-height: 88px; font-size: 10px;
+    gap: 1px 4px; padding: 2px 4px; }
+  .jq-hud button { min-height: 18px; padding: 0 4px; width: 100%; }
+  .jq-wallet { grid-column: 1; grid-row: 1; }
+  .jq-hud-note { grid-column: 1; grid-row: 2; }
+  .jq-hud-settings { grid-column: 1; grid-row: 3; }
+  .jq-objective { grid-column: 2; grid-row: 1 / span 3; }
+  .jq-quest-en { display: none; }
+  .jq-disclaimer-short { grid-column: 1 / -1; grid-row: 4; font-size: 8px; line-height: 1.2; padding-top: 1px; }
+  .jq-disclaimer { grid-column: 1 / -1; grid-row: 5; font-size: 9px; max-height: 16px; }
+}
 .jq-disclaimer-ja, .jq-disclaimer-en { display: block; }
 .jq-disclaimer-en { margin-top: 2px; font-size: .95em; }
 

@@ -38,19 +38,6 @@ export function objectiveText(snapshot: GameSnapshot, content: WorldContent): Ob
   return content.ui.objectives[status];
 }
 
-export function inventoryRows(
-  snapshot: GameSnapshot,
-  content: WorldContent,
-): Array<{ itemId: string; label: string; count: number }> {
-  return Object.entries(snapshot.inventory)
-    .filter(([, count]) => count > 0)
-    .map(([itemId, count]) => ({
-      itemId,
-      label: content.ui.items[itemId] ?? itemId,
-      count,
-    }));
-}
-
 export function hintText(reason: string, content: WorldContent): string {
   return content.ui.hints[reason as RejectReason] ?? reason;
 }
