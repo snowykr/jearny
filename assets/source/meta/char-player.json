@@ -1,7 +1,8 @@
 {
   "id": "char-player",
   "kind": "character",
-  "source": "assets/source/char-player-v2.png",
+  "source": "assets/source/char-player-atlas.png",
+  "rawSource": "assets/source/char-player-v2.png",
   "runtimeSize": [
     48,
     96

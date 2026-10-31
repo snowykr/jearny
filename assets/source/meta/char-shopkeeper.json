@@ -1,7 +1,8 @@
 {
   "id": "char-shopkeeper",
   "kind": "character",
-  "source": "assets/source/char-shopkeeper-v1.png",
+  "source": "assets/source/char-shopkeeper-atlas.png",
+  "rawSource": "assets/source/char-shopkeeper-v1.png",
   "runtimeSize": [
     48,
     96

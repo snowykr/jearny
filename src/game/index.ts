@@ -13,6 +13,7 @@ import { playerPixel } from './player';
 import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
+import { mountTouchControls } from './touch';
 
 export { VIEW_H, VIEW_W };
 
@@ -24,6 +25,8 @@ interface SceneArgs {
 export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
   const input = createInputBus();
   attachKeyboard(input);
+  // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input.
+  const unmountTouch = mountTouchControls(document.body, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
 
   const k = kaplay({
     global: false,
@@ -66,7 +69,14 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
       enter(snapshot.sceneId, snapshot.spawnId);
     }
   });
-  window.addEventListener('pagehide', unsubscribe, { once: true });
+  window.addEventListener(
+    'pagehide',
+    () => {
+      unsubscribe();
+      unmountTouch();
+    },
+    { once: true },
+  );
 
   const onResult = (token: number) => (r: CommandResult) => {
     handleEffects(r.outcome.ok ? r.outcome.effects : []);
@@ -96,7 +106,18 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
   });
 
   // Art may still be landing (#1): never block or fail on it, everything has a placeholder.
-  const begin = () => enter(session.snapshot.sceneId, session.snapshot.spawnId);
+  const begin = () => {
+    // DEV only: ?scene=takanawa&spawn=station-deck jumps straight to a map for visual checks.
+    const q = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
+    const devScene = q?.get('scene') as SceneId | null | undefined;
+    const devSpawn = q?.get('spawn');
+    if (devScene && devScene in maps && devSpawn && devSpawn in maps[devScene].spawns) {
+      seenKey = `${devScene}@${devSpawn}`;
+      enter(devScene, devSpawn);
+      return;
+    }
+    enter(session.snapshot.sceneId, session.snapshot.spawnId);
+  };
   loadAssets(k).then(begin, (err: unknown) => {
     console.warn('[game] asset load failed; using placeholders', err);
     begin();

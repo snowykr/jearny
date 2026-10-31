@@ -1,7 +1,8 @@
 {
   "id": "char-station_staff",
   "kind": "character",
-  "source": "assets/source/char-station_staff-v1.png",
+  "source": "assets/source/char-station_staff-atlas.png",
+  "rawSource": "assets/source/char-station_staff-v1.png",
   "runtimeSize": [
     48,
     96

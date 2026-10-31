@@ -3,10 +3,146 @@
   "stage": "exported_runtime_sprites",
   "assets": [
     {
+      "id": "char-guide",
+      "kind": "character",
+      "source": "assets/source/char-guide-atlas.png",
+      "sha256": "5973ccd1f88d1a243a24690074ee90cc6d8e0ee33e82e803792c0acd130be27f",
+      "sourceSize": [
+        48,
+        96
+      ],
+      "runtimeSize": [
+        48,
+        96
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/char-guide.png",
+      "spriteSha256": "557ef61754b85761e62f8dcdd64e7bd6f1c5fcaccaf750f528a16cc5c67dab72",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "foot": [
+          8,
+          24
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB."
+    },
+    {
+      "id": "char-player",
+      "kind": "character",
+      "source": "assets/source/char-player-atlas.png",
+      "sha256": "87f991949230db7924ac0bdd070891939ece75e1eb907fc9f5ec28a249f55a7c",
+      "sourceSize": [
+        48,
+        96
+      ],
+      "runtimeSize": [
+        48,
+        96
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/char-player.png",
+      "spriteSha256": "f9bb0fc228e6eddfcc6d7ff1f5a60b112404af7de747739eb0e24e5de85a2d36",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "foot": [
+          8,
+          24
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB."
+    },
+    {
+      "id": "char-shopkeeper",
+      "kind": "character",
+      "source": "assets/source/char-shopkeeper-atlas.png",
+      "sha256": "8eda95a97b7821a4228eca6c069c995e67ee6ddb2880ff898de856fda9fe4961",
+      "sourceSize": [
+        48,
+        96
+      ],
+      "runtimeSize": [
+        48,
+        96
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/char-shopkeeper.png",
+      "spriteSha256": "b1e82e83d62dd8fd9ca84cdeb342b4a1c6bb8c0ed401367c513e174aab9c2c4d",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "foot": [
+          8,
+          24
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB."
+    },
+    {
+      "id": "char-station_staff",
+      "kind": "character",
+      "source": "assets/source/char-station_staff-atlas.png",
+      "sha256": "9ea4c843ec8e47d57482621cc9e5e17c80243e84f5b2c7bde44592f141ca978a",
+      "sourceSize": [
+        48,
+        96
+      ],
+      "runtimeSize": [
+        48,
+        96
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/char-station_staff.png",
+      "spriteSha256": "e696c4f8e91f9c8cf9f53097e73e704bfeda8b1df9877cd428529e4507c5f219",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "foot": [
+          8,
+          24
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB."
+    },
+    {
       "id": "home",
       "kind": "building",
-      "source": "assets/source/home-v1.png",
-      "sha256": "bd8126a76857e487482c1549b2d037209669a74e1b4d691b3db502e4edacb90b",
+      "source": "assets/source/home-v2.png",
+      "sha256": "2f9d2b158e2630e9f411d6017594fdfd00c21207a972965715a3a30722ce0e7d",
       "sourceSize": [
         1145,
         1374
@@ -18,20 +154,33 @@
       "sliceX": 1,
       "sliceY": 1,
       "sprite": "public/sprites/home.png",
-      "spriteSha256": "e82e1072a52da0b01f29a05bb904a53e35ca4006ebc3096788dde519e281997c",
+      "spriteSha256": "8b34537a5ca4fd081ce85308b838f313cb99cd7e167114e6919f9e67547124fe",
       "colors": 24,
       "alpha": true,
-      "status": "draft",
-      "anchors": {},
-      "generator": "built-in image_gen",
-      "mode": "generate",
-      "notes": "v1 draft source; legacy status: fictional_needs_grid_export"
+      "status": "approved",
+      "anchors": {
+        "door": [
+          40,
+          94
+        ],
+        "foot": [
+          40,
+          95
+        ]
+      },
+      "collisionTiles": [
+        5,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "liebe",
       "kind": "building",
-      "source": "assets/source/liebe-v1.png",
-      "sha256": "684126cd2e5d3836d54775a6029da15a5b95ed78bcc601d7bc0b2c6807bd96a2",
+      "source": "assets/source/liebe-v2.png",
+      "sha256": "6eea115975f7efbf827300c36ce3da4c264b478a5678e3b2601a89a1cf8bda76",
       "sourceSize": [
         1254,
         1254
@@ -43,20 +192,33 @@
       "sliceX": 1,
       "sliceY": 1,
       "sprite": "public/sprites/liebe.png",
-      "spriteSha256": "5b6e946f8beb92d24977bcb58f2cfcf3e8533cbcb66a09bb13acdcabe9e2732b",
+      "spriteSha256": "842588de8856bf3ac4def59d18a8e05c648bfb31802f94dd9966970b2a9147e2",
       "colors": 24,
       "alpha": true,
-      "status": "draft",
-      "anchors": {},
-      "generator": "built-in image_gen",
-      "mode": "generate",
-      "notes": "v1 draft source; legacy status: optional_outside_first_map"
+      "status": "approved",
+      "anchors": {
+        "door": [
+          54,
+          74
+        ],
+        "foot": [
+          40,
+          79
+        ]
+      },
+      "collisionTiles": [
+        5,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "matsushimaya",
       "kind": "building",
-      "source": "assets/source/matsushimaya-v1.png",
-      "sha256": "52ac958effd7cb4d7c7cd1ce3e4a942412c03ab337ab5e8f1069cf2cc15c668c",
+      "source": "assets/source/matsushimaya-v2.png",
+      "sha256": "7bfe6ad183d21c0d027d6882218f245bcdc40a39492eca551b20356b284dfd56",
       "sourceSize": [
         1374,
         1145
@@ -68,20 +230,33 @@
       "sliceX": 1,
       "sliceY": 1,
       "sprite": "public/sprites/matsushimaya.png",
-      "spriteSha256": "12d430f60825866d0b0f83f0b112b16703b9dbd734d9dbe9458be7ef5811270b",
+      "spriteSha256": "bc2b3b5ab6bf3b376b86e4bf6466cfde28fa31312f3bc4637c8c513e5bec75df",
       "colors": 24,
       "alpha": true,
-      "status": "draft",
-      "anchors": {},
-      "generator": "built-in image_gen",
-      "mode": "generate",
-      "notes": "v1 draft source; legacy status: needs_grid_palette_export"
+      "status": "approved",
+      "anchors": {
+        "door": [
+          70,
+          78
+        ],
+        "foot": [
+          48,
+          79
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "station",
       "kind": "building",
-      "source": "assets/source/station-v1.png",
-      "sha256": "9ab0c914772f3b115b705029443de46faf40c4521743b3bc432de9daf069daff",
+      "source": "assets/source/station-v3.png",
+      "sha256": "c25136290938b602339177283675dc866d697a3314a602219e87fb229dabc125",
       "sourceSize": [
         1536,
         1024
@@ -93,14 +268,31 @@
       "sliceX": 1,
       "sliceY": 1,
       "sprite": "public/sprites/station.png",
-      "spriteSha256": "6d8332342cb6fb1e8d86c8cdad702ae7870c3fad410d17d796bb7dcc1e1d2897",
+      "spriteSha256": "765572163648f4a4a9d6da8588fc338633858ed1228de6a38ca466b30f62e957",
       "colors": 24,
       "alpha": true,
-      "status": "draft",
-      "anchors": {},
-      "generator": "built-in image_gen",
-      "mode": "generate",
-      "notes": "v1 draft source; legacy status: needs_edge_cleanup_and_grid_export"
+      "status": "approved",
+      "anchors": {
+        "door": [
+          89,
+          126
+        ],
+        "foot": [
+          96,
+          127
+        ],
+        "secondDoor": [
+          102,
+          126
+        ]
+      },
+      "collisionTiles": [
+        12,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
       "id": "tiles-interior",

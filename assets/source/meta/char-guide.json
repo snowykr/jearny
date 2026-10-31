@@ -1,7 +1,8 @@
 {
   "id": "char-guide",
   "kind": "character",
-  "source": "assets/source/char-guide-v1.png",
+  "source": "assets/source/char-guide-atlas.png",
+  "rawSource": "assets/source/char-guide-v1.png",
   "runtimeSize": [
     48,
     96
