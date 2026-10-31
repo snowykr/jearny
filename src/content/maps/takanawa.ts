@@ -65,12 +65,29 @@ function meadow(): void {
 }
 
 /** One decoration prop. Props block their tile, so they sit beside a walkway, never on it. */
-const WALKWAY = new Set<number>([T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V]);
+/** Ground tiles a prop must never stand on: a planter on the lane would block the route. */
+export const WALKWAY_TILES: ReadonlySet<number> = new Set([
+  T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V, T.DECK, T.STAIRS,
+]);
 
+const isWalkway = (x: number, y: number): boolean =>
+  WALKWAY_TILES.has(map.layers.ground[y * map.grid[0] + x] ?? -1);
+
+const decorationAt = (x: number, y: number): number => map.layers.decoration[y * map.grid[0] + x] ?? -1;
+
+/**
+ * Prop on the shoulder of a walkway. Authored coordinates aim at the lane itself, so a prop that
+ * lands on pavement moves to the nearest free shoulder instead of vanishing (silently dropping
+ * props left the forecourt and both doorsteps bare).
+ */
 function prop(tile: number, x: number, y: number, blocked = true): void {
-  // Decorative props never land on a walkway: a planter on the lane would block the route.
-  if (WALKWAY.has(map.layers.ground[y * map.grid[0] + x] ?? -1)) return;
-  paint('decoration', tile, x, y, x, y, blocked);
+  const spots: Tile[] = [[x, y], [x, y + 1], [x, y - 1], [x + 1, y], [x - 1, y],
+    [x + 1, y + 1], [x - 1, y + 1], [x + 1, y - 1], [x - 1, y - 1]];
+  const spot = spots.find(([sx, sy]) =>
+    sx >= 1 && sy >= 1 && sx < map.grid[0] - 1 && sy < map.grid[1] - 1
+    && !isWalkway(sx, sy) && decorationAt(sx, sy) === -1);
+  if (!spot) return;
+  paint('decoration', tile, spot[0], spot[1], spot[0], spot[1], blocked);
 }
 
 /** 2×2 tree: canopy on the roof layer, trunk and skirt on the blocked decoration layer. */
@@ -177,6 +194,7 @@ paint('decoration', T.FLOWERS, 14, 33, 21, 33);
 // closed gardens either side and a park strip by the water.
 paint('ground', T.SIDEWALK, 54, 57, 55, 90);
 paint('ground', T.PLAZA, 60, 78, 70, 84);
+paint('ground', T.PLAZA, 56, 81, 59, 81);
 garden(48, 60, 53, 70);
 garden(58, 60, 70, 70);
 garden(48, 78, 53, 88);
@@ -188,7 +206,7 @@ for (const [x, y] of [[8, 10], [22, 12], [34, 4], [39, 17], [50, 4], [52, 14], [
   [7, 40], [53, 43], [21, 56], [68, 30], [58, 6], [66, 12], [71, 28],
   [4, 4], [24, 3], [29, 7], [4, 30], [6, 33], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
   [5, 89], [10, 91], [25, 47], [32, 47], [36, 51], [60, 16], [66, 20],
-  [50, 63], [52, 80], [57, 86], [68, 59], [71, 73],
+  [50, 63], [57, 82], [57, 86], [72, 58], [71, 73],
   [24, 61], [37, 61], [24, 77], [37, 77], [20, 90], [24, 92], [30, 90], [35, 91], [39, 88],
   [88, 36], [93, 41], [106, 20], [112, 23], [117, 26], [100, 68], [106, 72], [109, 76],
   [118, 56], [121, 61], [86, 8], [94, 6], [102, 12], [112, 14], [120, 10], [88, 22], [96, 24],
@@ -200,11 +218,13 @@ for (const [x, y] of [[8, 10], [22, 12], [34, 4], [39, 17], [50, 4], [52, 14], [
 for (const [x, y] of [[11, 21], [21, 21], [12, 22], [24, 22], [36, 22], [18, 26], [30, 26],
   [13, 43], [22, 43], [31, 43], [37, 38], [15, 48], [15, 56], [15, 64], [15, 72], [15, 80],
   [20, 46], [20, 77], [50, 30], [54, 30], [48, 40], [55, 40], [59, 33], [70, 33], [59, 37],
-  [70, 37], [28, 66], [35, 66], [28, 73], [35, 73]] satisfies Tile[]) prop(T.LAMPPOST, x, y);
+  [70, 37], [28, 66], [35, 66], [28, 73], [35, 73], [57, 39], [56, 72]] satisfies Tile[])
+  prop(T.LAMPPOST, x, y);
 
 // Benches face the lanes and the park plaza, clear of the through route.
 for (const [x, y] of [[13, 40], [20, 50], [20, 58], [48, 32], [48, 36], [60, 34], [69, 34],
-  [27, 68], [27, 71], [36, 68], [36, 71]] satisfies Tile[]) prop(T.BENCH, x, y);
+  [27, 68], [27, 71], [36, 68], [36, 71], [57, 31], [56, 64], [56, 86]] satisfies Tile[])
+  prop(T.BENCH, x, y);
 
 // Vending machines sit on corners where a walker would stop, not in the road.
 for (const [x, y] of [[21, 18], [12, 44], [20, 63], [47, 38], [59, 35], [70, 50]] satisfies Tile[])

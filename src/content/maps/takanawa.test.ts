@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDING, PORTAL, SPAWN } from '../../contracts';
 import type { Tile } from '../../contracts';
-import { takanawa as map } from './takanawa';
+import { takanawa as map, WALKWAY_TILES } from './takanawa';
 import { maps } from './index';
 import { T } from './tiles';
 import homeMeta from '../../../assets/source/meta/home.json';
@@ -123,7 +123,7 @@ describe('authored Takanawa map', () => {
   });
 
   it('never paints a flower bed over a walkway', () => {
-    const walkway = new Set<number>([T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V]);
+    const walkway = WALKWAY_TILES;
     const bad: Tile[] = [];
     map.layers.decoration.forEach((tile, index) => {
       if (tile !== T.FLOWERS) return;
@@ -131,6 +131,24 @@ describe('authored Takanawa map', () => {
       if (walkway.has(ground)) bad.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
     });
     expect(bad).toEqual([]);
+  });
+
+  it('keeps furniture at the landmarks the guard could empty', () => {
+    const props = new Map<number, Tile[]>();
+    map.layers.decoration.forEach((tile, index) => {
+      const list = props.get(tile) ?? [];
+      list.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
+      props.set(tile, list);
+    });
+    const near = (tile: number, box: [number, number, number, number]): number =>
+      (props.get(tile) ?? []).filter(([x, y]) => x >= box[0] && x <= box[2] && y >= box[1] && y <= box[3]).length;
+    // Prop placement moves to the shoulder when the authored cell is pavement, so counts here
+    // would silently go to zero if the guard started dropping props again.
+    expect(near(T.BENCH, [44, 24, 60, 44])).toBeGreaterThan(0); // station forecourt
+    expect(near(T.LAMPPOST, [44, 24, 60, 44])).toBeGreaterThan(0);
+    expect(near(T.BENCH, [48, 57, 73, 94])).toBeGreaterThan(0); // east neighbourhood
+    expect(near(T.LAMPPOST, [48, 57, 73, 94])).toBeGreaterThan(0);
+    expect(near(T.FLOWERS, [10, 14, 22, 22])).toBeGreaterThan(0); // shop doorstep planters
   });
 
   it('keeps every portal and its destination walkable', () => {
