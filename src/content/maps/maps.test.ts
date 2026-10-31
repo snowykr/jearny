@@ -47,6 +47,7 @@ describe('map registry validation', () => {
     map.entities = [];
     map.portals = [];
     map.collision.fill(1);
+    map.layers.ground.fill(T.GRASS_A); // drop real road/crossing tiles so only BFS is under test
     const tiles: Tile[] = [[2, 2], [4, 4], [6, 6], [8, 8]];
     const names = [SPAWN.homeDoor, SPAWN.shopDoor, SPAWN.plaza, SPAWN.stationDeck];
     names.forEach((name, index) => {
