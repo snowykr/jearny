@@ -62,7 +62,16 @@ function injectStyles(root: HTMLElement): HTMLStyleElement {
   return style;
 }
 
-export function mountUi(root: HTMLElement, session: GameSession): () => void {
+export interface MountedUi {
+  /**
+   * True while a UI surface owns input: the dialogue, the settings panel or a
+   * modal. The game and its touch overlay must not walk or interact then.
+   */
+  ownsInput(): boolean;
+  unmount(): void;
+}
+
+export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   const labels = gameContent.ui.labels;
   const style = injectStyles(root);
   const reducedMotion =
@@ -451,12 +460,16 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
 
   const unsubscribe = session.subscribe(render);
 
-  return () => {
-    unsubscribe();
-    window.clearInterval(timer);
-    window.clearTimeout(toastTimer);
-    window.removeEventListener('keydown', onKeyDown, true);
-    for (const node of [hud, dialogue, toast, settings, modal]) node.remove();
-    style.remove();
+  return {
+    ownsInput: () =>
+      modalOpen || !settings.hidden || currentNode(session.snapshot, gameContent) !== null,
+    unmount() {
+      unsubscribe();
+      window.clearInterval(timer);
+      window.clearTimeout(toastTimer);
+      window.removeEventListener('keydown', onKeyDown, true);
+      for (const node of [hud, dialogue, toast, settings, modal]) node.remove();
+      style.remove();
+    },
   };
 }

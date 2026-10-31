@@ -16,7 +16,7 @@ describe('mountTouchControls', () => {
     root.id = 'ui-root';
     document.body.append(root);
 
-    const unmount = mountTouchControls(root, createInputBus(), { isDialogueOpen: () => false, force: true });
+    const unmount = mountTouchControls(root, createInputBus(), { isInputBlocked: () => false, force: true });
 
     expect(overlay()?.parentElement).toBe(root);
     expect(overlay()?.hidden).toBe(false);
@@ -30,7 +30,7 @@ describe('mountTouchControls', () => {
     document.body.append(root);
     let open = false;
 
-    mountTouchControls(root, createInputBus(), { isDialogueOpen: () => open, force: true });
+    mountTouchControls(root, createInputBus(), { isInputBlocked: () => open, force: true });
     expect(overlay()?.hidden).toBe(false);
 
     open = true;
@@ -46,7 +46,7 @@ describe('mountTouchControls', () => {
     const root = document.createElement('div');
     document.body.append(root);
 
-    mountTouchControls(root, createInputBus(), { isDialogueOpen: () => false });
+    mountTouchControls(root, createInputBus(), { isInputBlocked: () => false });
 
     expect(overlay()).toBeNull();
   });
@@ -54,7 +54,7 @@ describe('mountTouchControls', () => {
   it('keeps the overlay itself click-through so it cannot swallow dialogue taps', () => {
     const root = document.createElement('div');
     document.body.append(root);
-    mountTouchControls(root, createInputBus(), { isDialogueOpen: () => false, force: true });
+    mountTouchControls(root, createInputBus(), { isInputBlocked: () => false, force: true });
 
     const style = document.querySelector('style')?.textContent ?? '';
     expect(style).toContain('#ui-root > .jr-touch{pointer-events:none}');
