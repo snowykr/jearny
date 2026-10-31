@@ -62,6 +62,9 @@ describe('dialogue overlay', () => {
     // The demo shop is real; the offer is not. The note ships on every screen.
     expect(root.textContent).toContain('実在の店舗');
     expect(root.textContent).toContain('unaffiliated');
+    // Status only: the bag lives in the menu now, so the HUD must not duplicate it.
+    expect(root.querySelector('.jq-bag')).toBeNull();
+    expect(root.querySelector('.jq-hud-head .jq-wallet')?.textContent).toContain('¥1000');
     expect(dialogueBox(root)?.hidden).toBe(true);
   });
 
