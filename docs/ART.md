@@ -11,7 +11,7 @@ The style anchors are these files. Treat them as the ground truth for palette, o
 | station | `assets/source/station-v1.png` | 192×128 | needs halo/edge cleanup |
 | matsushimaya | `assets/source/matsushimaya-v1.png` | 96×80 | needs grid/palette export |
 | home | `assets/source/home-v1.png` | 80×96 | needs grid export |
-| liebe | `assets/source/liebe-v1.png` | 80×80 | optional, outside first map |
+| liebe | `assets/source/liebe-v1.png` | 80×80 | placed as scenery on the home lane |
 
 The original prompts are in `assets/source/prompts.json`. The architecture reference photos are in `research/shops/`.
 
@@ -52,5 +52,6 @@ bottom-aligns the sprite there and Y-sorts by it. It defaults to `tile.y + size.
     collision top row = footRow - spriteHeight/16 + floor(opaqueTopPx / 16)
 
 Rows the sprite paints are collision, including a painted roof overhang. Transparent padding above
-or below the painted rows is not. Map authors still place a walkable portal immediately in front of
-the door.
+or below the painted rows is not. Map authors place a walkable pavement tile immediately in front of
+the door. Only buildings with an interior get a portal: the neighbourhood pack and the bakery are
+scenery, so their doors open onto pavement and nothing else.
