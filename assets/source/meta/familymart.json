@@ -1,0 +1,51 @@
+{
+  "id": "familymart",
+  "kind": "building",
+  "source": "assets/source/familymart-atlas-v1.png",
+  "runtime": "public/sprites/familymart.png",
+  "runtimeSize": [
+    112,
+    80
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. Override no text/logos ONLY for required FamilyMart brand. Use attached sprites as style references. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. ONE isolated Japanese FamilyMart convenience store, flat cream roof seen from above, front faces directly down. Green top stripe, white middle fascia with precise blue FamilyMart lettering, blue lower stripe. Broad glass front with central sliding double door. Transparent background no ground or people or exterior shadow. 112x80 logical pixel sprite enlarged to at least 1024px wide, fills canvas with 2px logical margin. Bold readable FamilyMart sign, simple large pixel clusters, no fine texture. Brand colors override warm palette where needed.",
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. EDIT the attached FamilyMart sprite only. Preserve its building outline, angle, roof, windows, doors, palette, transparent background. Override no text/logos for real brand. Fix ONLY the front sign: make white stripe taller and FamilyMart wordmark TWICE AS WIDE, spanning 80 percent of front fascia. Exact text FamilyMart in blue. Use a very simple chunky pixel alphabet, with 5x7 logical pixel glyphs, each stroke at least one pixel when entire sprite is 112x80. Ensure every letter is distinct and readable, no fine thin type. Green stripe above and blue stripe below preserved. Match the palette, outline weight, pixel density and three-quarter top-down angle of attached style sprites exactly."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "raws": [
+    "assets/source/familymart-raw-v1.png",
+    "assets/source/familymart-raw-v2.png"
+  ],
+  "anchors": {
+    "door": [
+      56,
+      76
+    ],
+    "foot": [
+      56,
+      78
+    ]
+  },
+  "collisionTiles": [
+    7,
+    3
+  ],
+  "brand": {
+    "name": "FamilyMart",
+    "real": true,
+    "affiliated": false
+  },
+  "status": "draft",
+  "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+}

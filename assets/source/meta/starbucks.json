@@ -1,0 +1,49 @@
+{
+  "id": "starbucks",
+  "kind": "building",
+  "source": "assets/source/starbucks-atlas-v1.png",
+  "runtime": "public/sprites/starbucks.png",
+  "runtimeSize": [
+    96,
+    80
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. Override no-logo rule for required Starbucks branding. Attached sprites are style references only. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. ONE isolated Tokyo Starbucks cafe, 96x80 logical pixels enlarged to >=1024px wide. Dark warm wood front, large teal glass windows, entrance door centered, low broad roof seen from above. Large green roundel with WHITE CROWNED TWO-TAILED SIREN centered on upper facade, immediately recognizable Starbucks siren logo. Small terrace WITHIN footprint at front right with one tiny round table and two empty chairs. No ground outside footprint, no people or shadows beyond footprint. Building fills image with small margin. Chunky crisp pixel clusters, simple roof, restrained palette. Logo is focal point and must read at 1x."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "raws": [
+    "assets/source/starbucks-raw-v1.png"
+  ],
+  "anchors": {
+    "door": [
+      47,
+      69
+    ],
+    "foot": [
+      48,
+      78
+    ]
+  },
+  "collisionTiles": [
+    6,
+    3
+  ],
+  "brand": {
+    "name": "Starbucks",
+    "real": true,
+    "affiliated": false
+  },
+  "status": "draft",
+  "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+}

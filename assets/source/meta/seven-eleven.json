@@ -1,0 +1,51 @@
+{
+  "id": "seven-eleven",
+  "kind": "building",
+  "source": "assets/source/seven-eleven-atlas-v1.png",
+  "runtime": "public/sprites/seven-eleven.png",
+  "runtimeSize": [
+    112,
+    80
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. Override no-text/logo clause: actual 7-Eleven brand required. One isolated Japanese 7-Eleven convenience store, white cream facade, large glass windows with stocked shelves, centered double glass door. Prominent continuous horizontal orange, green and red stripe band above glass, center raised white rectangular logo panel with large iconic orange/red numeral 7 and green ELEVEn crossing the lower half. Correct brand sign layout, huge simple legible sign. Match reference sprites chunky pixel density and dark colored outlines. Low flat gray roof visible from above, straight down-facing facade, no side wall. Target 112x80 logical pixels enlarged to at least 1024px, fill canvas, small transparent margins. No pedestrians, no exterior ground.",
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. EDIT the attached 7-Eleven storefront only. Override no logos rule. Preserve building footprint, roof, glass, colors and straight-down facade. The white logo panel must be 50 percent wider and taller so the lettering survives a 112x80 export. Correct the logo: orange top bar and red descending 7, green exact text ELEVEn in a single clear horizontal line across the lower half. Use bold simple pixel letters at least 5 logical pixels tall. Keep transparent background. No other changes."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "raws": [
+    "assets/source/seven-eleven-raw-v1.png",
+    "assets/source/seven-eleven-raw-v2.png"
+  ],
+  "anchors": {
+    "door": [
+      56,
+      76
+    ],
+    "foot": [
+      56,
+      78
+    ]
+  },
+  "collisionTiles": [
+    7,
+    3
+  ],
+  "brand": {
+    "name": "7-Eleven",
+    "real": true,
+    "affiliated": false
+  },
+  "status": "draft",
+  "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x. The \"ELEVEn\" lettering under the generated 7 numeral was redrawn with a 3x5 pixel font in Pillow (Image Gen 2 edit left it broken at 1x); the building and the 7 are generated."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "gu",
+  "kind": "building",
+  "source": "assets/source/gu-atlas-v1.png",
+  "runtime": "public/sprites/gu.png",
+  "runtimeSize": [
+    128,
+    96
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. Override no-logo clause: actual GU branding required. One isolated Japanese GU clothing shop, white cream facade, modern large glass front with mannequin silhouettes, folded clothes shelves, centered double glass entrance. Above entrance a very large DARK BLUE SQUARE sign bearing the correct bright yellow GU logo, bold rounded G and U, easily legible at 128x96 logical pixels. Low flat warm gray roof visible from above, facade straight down, no side wall. Match attached style sprites. Chunky true pixels, simple clusters, 24 colors. Enlarge the 128x96 sprite to at least 1024px, fill canvas, small transparent margins. No pedestrians, no external ground."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "raws": [
+    "assets/source/gu-raw-v1.png"
+  ],
+  "anchors": {
+    "door": [
+      64,
+      92
+    ],
+    "foot": [
+      64,
+      94
+    ]
+  },
+  "collisionTiles": [
+    8,
+    3
+  ],
+  "brand": {
+    "name": "GU",
+    "real": true,
+    "affiliated": false
+  },
+  "status": "draft",
+  "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+}
