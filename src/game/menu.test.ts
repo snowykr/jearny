@@ -74,7 +74,8 @@ describe('start menu', () => {
     ]);
     expect(dialog()?.getAttribute('role')).toBe('dialog');
     expect(dialog()?.getAttribute('aria-modal')).toBe('true');
-    expect(dialog()?.getAttribute('aria-label')).toBe(labels.title);
+    const title = document.getElementById(dialog()?.getAttribute('aria-labelledby') ?? '');
+    expect(title?.textContent).toBe(labels.title);
     expect(buttons()[0]?.getAttribute('role')).toBe('tab');
     expect(buttons()[0]?.getAttribute('aria-selected')).toBe('true');
     expect(document.activeElement).toBe(buttons()[0]);
@@ -160,6 +161,7 @@ describe('start menu', () => {
     const { menu } = mount();
     menu.open();
     const [bag, quest, map, close] = buttons();
+    const panel = dialog()?.querySelector<HTMLElement>('.jr-menu-panel');
 
     const forward = press('Tab');
     expect(forward.defaultPrevented).toBe(true);
@@ -169,7 +171,7 @@ describe('start menu', () => {
     press('Tab');
     expect(document.activeElement).toBe(close);
     press('Tab');
-    expect(document.activeElement).toBe(bag);
+    expect(document.activeElement).toBe(panel);
 
     press('Tab', { shiftKey: true });
     expect(document.activeElement).toBe(close);
@@ -229,5 +231,37 @@ describe('start menu', () => {
     window.removeEventListener('keydown', bubble);
 
     expect(bubble).not.toHaveBeenCalled();
+  });
+});
+
+describe('menu accessibility contracts', () => {
+  it('returns focus to the trigger that opened it, not the canvas', () => {
+    const { menu } = mount();
+    const button = trigger();
+    if (!button) throw new Error('missing trigger');
+    button.focus(); // a real click focuses the button before its handler runs
+    button.click();
+    expect(menu.isOpen()).toBe(true);
+    press('Escape');
+    expect(document.activeElement).toBe(button);
+  });
+
+  it('keeps the scrolling panel in the tab order after the last button', () => {
+    const { menu } = mount();
+    menu.open();
+    const panel = dialog()?.querySelector<HTMLElement>('.jr-menu-panel');
+    expect(panel?.tabIndex).toBe(0);
+    const close = dialog()?.querySelector<HTMLElement>('[data-testid="start-menu-close"]');
+    close?.focus();
+    press('Tab');
+    expect(document.activeElement).toBe(panel);
+  });
+
+  it('reports closed when disposed while open', () => {
+    const { menu, events } = mount();
+    menu.open();
+    menu.dispose();
+    cleanup = null;
+    expect(events).toEqual([true, false]);
   });
 });

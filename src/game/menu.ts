@@ -107,6 +107,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   const menuText = MENU_TEXT;
   const uid = `jr-menu-${++nextId}`;
   const panelId = `${uid}-panel`;
+  const dialogId = `${uid}-dialog`;
 
   const make = <K extends keyof HTMLElementTagNameMap>(
     tag: K,
@@ -128,7 +129,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   trigger.dataset.testid = 'start-menu-trigger';
   trigger.setAttribute('aria-label', menuText.open);
   trigger.setAttribute('aria-haspopup', 'dialog');
-  trigger.setAttribute('aria-controls', panelId);
+  trigger.setAttribute('aria-controls', dialogId);
   trigger.setAttribute('aria-expanded', 'false');
 
   const dialog = make('div', 'jr-menu');
@@ -136,7 +137,8 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   dialog.dataset.testid = 'start-menu';
   dialog.setAttribute('role', 'dialog');
   dialog.setAttribute('aria-modal', 'true');
-  dialog.setAttribute('aria-label', menuText.title);
+  dialog.id = dialogId;
+  dialog.setAttribute('aria-labelledby', `${uid}-title`);
 
   const windowEl = make('div', 'jr-menu-window');
   const title = make('h2', 'jr-menu-title', menuText.title);
@@ -173,6 +175,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
 
   const panel = make('div', 'jr-menu-panel');
   panel.id = panelId;
+  panel.tabIndex = 0;
   panel.setAttribute('role', 'tabpanel');
   windowEl.append(title, bar, panel);
   dialog.append(windowEl);
@@ -268,17 +271,20 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   let openState = false;
   let previousFocus: HTMLElement | null = null;
 
-  const focusables = (): HTMLButtonElement[] => [tabs.bag, tabs.quest, tabs.map, closeButton];
+  const focusables = (): HTMLElement[] => [tabs.bag, tabs.quest, tabs.map, closeButton, panel];
 
   const restoreFocus = (): void => {
-    const game = doc.getElementById('game');
-    if (game) {
-      // Canvas is not focusable by default; -1 keeps it out of the tab order.
-      if (!game.hasAttribute('tabindex')) game.setAttribute('tabindex', '-1');
-      game.focus({ preventScroll: true });
+    // Back to whatever opened it (keyboard, the trigger button, a screen reader),
+    // falling back to the canvas only when that element is gone.
+    if (previousFocus && previousFocus !== doc.body && previousFocus.isConnected) {
+      previousFocus.focus({ preventScroll: true });
       return;
     }
-    if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    const game = doc.getElementById('game');
+    if (!game) return;
+    // Canvas is not focusable by default; -1 keeps it out of the tab order.
+    if (!game.hasAttribute('tabindex')) game.setAttribute('tabindex', '-1');
+    game.focus({ preventScroll: true });
   };
 
   const syncTrigger = (): void => {
@@ -408,7 +414,10 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     dispose() {
       win?.clearInterval(timer);
       win?.removeEventListener('keydown', onKeyDown, true);
-      openState = false;
+      if (openState) {
+        openState = false;
+        opts.onOpenChange?.(false); // teardown must not leave a stale "open" belief
+      }
       dialog.remove();
       trigger.remove();
       style.remove();
