@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "lines": {
+    "home.welcome": {
+      "path": "/audio/54ca0f5fd82787560bbbf40970b65e4d019f1ce705914a002cf3c539e3c2ed1e.mp3",
+      "hash": "54ca0f5fd82787560bbbf40970b65e4d019f1ce705914a002cf3c539e3c2ed1e",
+      "voiceId": "dp4HJlekKt0HZFHL2jQg",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    },
+    "station.directions": {
+      "path": "/audio/cf4a258917c42aab5b133174a76ad34f1dd305a9257561414de1cc413c77c025.mp3",
+      "hash": "cf4a258917c42aab5b133174a76ad34f1dd305a9257561414de1cc413c77c025",
+      "voiceId": "Q3V5SJSktn49inIBeIuC",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    },
+    "shop.welcome": {
+      "path": "/audio/c1c1ca7d87d156906bcf2e16cf70706a6c1f1448f14bae57b22c7ed052b2a1ba.mp3",
+      "hash": "c1c1ca7d87d156906bcf2e16cf70706a6c1f1448f14bae57b22c7ed052b2a1ba",
+      "voiceId": "MhnQB6oLKSlS0AIJzxtO",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    },
+    "shop.quantity": {
+      "path": "/audio/330a6c5c285a74b93047b6313d2b9ff7f68807b6a6548e6673a3f0466f58ef85.mp3",
+      "hash": "330a6c5c285a74b93047b6313d2b9ff7f68807b6a6548e6673a3f0466f58ef85",
+      "voiceId": "MhnQB6oLKSlS0AIJzxtO",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    },
+    "shop.confirm": {
+      "path": "/audio/225f4686b6d9bac7f469f8830b49f0f6cbc05128c7df3b5c6bd9204ddc4f9354.mp3",
+      "hash": "225f4686b6d9bac7f469f8830b49f0f6cbc05128c7df3b5c6bd9204ddc4f9354",
+      "voiceId": "MhnQB6oLKSlS0AIJzxtO",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    },
+    "guide.clarify": {
+      "path": "/audio/ee6e8c1c149795962f7b85c1f46e42e67586cb08ab507fdb2942ea034fed75d6.mp3",
+      "hash": "ee6e8c1c149795962f7b85c1f46e42e67586cb08ab507fdb2942ea034fed75d6",
+      "voiceId": "dp4HJlekKt0HZFHL2jQg",
+      "modelId": "eleven_multilingual_v2",
+      "status": "generated_pending_listening_review"
+    }
+  }
+}
