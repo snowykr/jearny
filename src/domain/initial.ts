@@ -1,19 +1,18 @@
 // Track B owns src/domain/. Pure: no KAPLAY, DOM, storage or network imports.
 import type { GameSnapshot } from '../contracts';
+import { QUEST } from '../contracts';
 
-export const CONTENT_VERSION = 'takanawa-v1';
-
-export function createInitialSnapshot(sessionId: string): GameSnapshot {
+export function createInitialSnapshot(sessionId: string, contentVersion: string): GameSnapshot {
   return {
     schemaVersion: 1,
-    contentVersion: CONTENT_VERSION,
+    contentVersion,
     sessionId,
     revision: 0,
     sceneId: 'home-interior',
     spawnId: 'start',
     inventory: {},
     walletYen: 1000,
-    quests: { 'first-neighborhood-trip': 'not_started' },
+    quests: { [QUEST.firstTrip]: 'not_started' },
     flags: {},
     dialogue: { status: 'closed', nodeId: null, speakerId: null },
     cosmetics: [],
