@@ -28,6 +28,7 @@ export const INDOOR_FLOOR: Record<number, TileCategory> = {
   [IT.TATAMI]: 'floor-tatami', [IT.WOOD_FLOOR]: 'floor-wood', [IT.FLOOR_WOOD_DARK]: 'floor-wood',
   [IT.SHOP_FLOOR]: 'floor-shop', [IT.GENKAN]: 'floor-stone', [IT.DOOR_MAT]: 'floor-stone',
   [IT.DOMA_STONE]: 'floor-stone', [IT.GENKAN_STEP]: 'floor-stone', [IT.NOREN_DOOR]: 'floor-stone', [IT.RUG]: 'floor-tatami',
+  [IT.STAIRS_UP]: 'floor-wood', [IT.STAIRS_DOWN]: 'floor-wood',
 };
 export const INDOOR_WALL: ReadonlySet<number> = new Set([
   IT.WALL, IT.WINDOW, IT.WALL_TOP, IT.WALL_BASE, IT.WALL_SHOJI, IT.WINDOW_CURTAIN, IT.SHOP_WALL, IT.SHOP_WINDOW,

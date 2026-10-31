@@ -14,8 +14,6 @@ const ROWS = 8;
 //   y1   wall face with a window, clock and picture; the stairs sit at x8
 //   y2-6 tatami room: futon against the left wall, low table, shelf, lamp
 //   y7   side/front wall (solid)
-//
-// Stairs use the existing step tile until the dedicated stair tile from #79 lands.
 export const home2f: MapDefinition = makeRoom({
   id: 'home-2f',
   grid: [COLS, ROWS],
@@ -44,8 +42,8 @@ fill(1, 1, 9, 1, IT.WALL);
 for (let x = 1; x <= 9; x++) collision[idx(COLS, x, 1)] = 1;
 fill(1, 7, 9, 7, IT.WALL_BASE);
 
-// Stairs down: open the wall-face cell and mark it with the step tile.
-ground[idx(COLS, 8, 1)] = IT.FLOOR_WOOD_DARK; // recessed stairwell until #79's tile is wired
+// Stairs down: open the wall-face cell and mark it with the stairwell tile.
+ground[idx(COLS, 8, 1)] = IT.STAIRS_DOWN;
 collision[idx(COLS, 8, 1)] = 0;
 
 // Wall hangings.

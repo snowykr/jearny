@@ -13,7 +13,7 @@ export const ASSETS = {
     cafe: [80, 80], konbini: [112, 80], koban: [48, 64],
     'sengakuji-gate': [128, 112], 'sengakuji-hall': [160, 128], 'bicycle-parking': [64, 48],
   },
-  tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 } },
+  tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 }, 'tiles-interior-2': { sliceX: 8, sliceY: 2 } },
   /** Walk sheets: 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up). Cells are 16×20 (16×24 on the legacy sheets); the real size is read from the loaded image. */
   characters: ['char-player', 'char-guide', 'char-station_staff', 'char-shopkeeper'],
 } as const;

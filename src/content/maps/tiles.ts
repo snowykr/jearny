@@ -24,13 +24,41 @@ export const IT = {
   // Row 5: floors, entrance, small props
   FLOOR_WOOD_DARK: 40, DOMA_STONE: 41, GENKAN_STEP: 42, SHOE_RACK: 43, UMBRELLA_STAND: 44, CUSHION_CHAIR: 45, PICTURE_FRAME: 46,
   // 47 reserved
+  // On the second interior sheet (tiles-interior-2), indices 48+.
+  STAIRS_UP: 48, STAIRS_DOWN: 49,
 } as const;
 
 export const TILESETS = {
   'tiles-outdoor': { cols: 8, rows: 6 },
   'tiles-interior': { cols: 8, rows: 6 },
+  'tiles-interior-2': { cols: 8, rows: 2 },
 } as const;
 export type TilesetId = keyof typeof TILESETS;
+
+/** One image a tileset is split across, and the tile index range it covers. */
+export interface TileSheet {
+  id: TilesetId;
+  /** First tile index on this sheet. */
+  base: number;
+  /** Number of tiles on this sheet. */
+  count: number;
+}
+
+/** The images that make up each tileset, in draw order. Index = sheet base + frame. */
+export const TILESET_SHEETS: Record<TilesetId, readonly TileSheet[]> = {
+  'tiles-outdoor': [{ id: 'tiles-outdoor', base: 0, count: 48 }],
+  'tiles-interior': [
+    { id: 'tiles-interior', base: 0, count: 48 },
+    { id: 'tiles-interior-2', base: 48, count: 16 },
+  ],
+  // tiles-interior-2 is a companion sheet: scenes using it draw through 'tiles-interior' above.
+  'tiles-interior-2': [{ id: 'tiles-interior-2', base: 0, count: 16 }],
+};
+
+/** One past the highest tile index the tileset's sheets cover. */
+export function tileCount(tileset: TilesetId): number {
+  return TILESET_SHEETS[tileset].reduce((end, sheet) => Math.max(end, sheet.base + sheet.count), 0);
+}
 
 export const TILESET_FOR_SCENE: Record<SceneId, TilesetId> = {
   takanawa: 'tiles-outdoor',
