@@ -1,18 +1,186 @@
 {
   "id": "home",
   "kind": "building",
-  "source": "assets/source/home-v1.png",
+  "source": "assets/source/home-v2.png",
+  "runtime": "public/sprites/home.png",
   "runtimeSize": [
     80,
     96
   ],
   "sliceX": 1,
   "sliceY": 1,
-  "generator": "built-in image_gen",
-  "mode": "generate",
-  "prompt": "Create one original compact Japanese two-story neighborhood apartment building sprite for a top-down GBA-era pixel RPG, FireRed overworld aesthetic. Fictional home, not a real residence. Frontal orthographic north-facing building with roof visible from above, horizontal facade, no isometric perspective. Cream plaster, muted terracotta tiled roof, tiny upper balcony with blue laundry, two lower windows, a blue front door at bottom center, small mailbox and two potted plants. Chunky crisp pixel clusters and dark colored outlines, sunlight upper left. Simple and readable at 80x96 logical pixels. Entire building visible centered. Transparent background, no floor, no shadow, no glow, no text, no people. Match restrained 24-color shop sprites.",
-  "references": [],
-  "anchors": {},
-  "status": "draft",
-  "notes": "v1 draft source; legacy status: fictional_needs_grid_export"
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: precise-object-edit. Edit target: home-v1.png. Snap this exact house to a clean consistent pixel grid for 80x96 runtime export. Keep the red tile roof, cream two-story facade, centered balcony with two hanging towels, blue centered door, two ground floor windows, red mailbox and two potted plants identical in layout and proportions. Change only pixel grid consistency and simplify tiny textures into crisp clusters. Preserve palette, angle and silhouette. Hard transparent exterior, no glow or floor. Do not redesign.",
+  "references": [
+    "assets/source/home-v1.png"
+  ],
+  "anchors": {
+    "door": [
+      40,
+      94
+    ],
+    "foot": [
+      40,
+      95
+    ]
+  },
+  "collisionTiles": [
+    5,
+    3
+  ],
+  "status": "approved",
+  "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration.",
+  "history": [
+    {
+      "source": "assets/source/home-v2.png",
+      "mode": "edit",
+      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: precise-object-edit. Edit target: home-v1.png. Snap this exact house to a clean consistent pixel grid for 80x96 runtime export. Keep the red tile roof, cream two-story facade, centered balcony with two hanging towels, blue centered door, two ground floor windows, red mailbox and two potted plants identical in layout and proportions. Change only pixel grid consistency and simplify tiny textures into crisp clusters. Preserve palette, angle and silhouette. Hard transparent exterior, no glow or floor. Do not redesign.",
+      "references": [
+        "assets/source/home-v1.png"
+      ]
+    }
+  ],
+  "export": {
+    "source": "assets/source/home-v2.png",
+    "sourceCrop": [
+      48,
+      128,
+      1097,
+      1289
+    ],
+    "scaledSize": [
+      80,
+      89
+    ],
+    "offset": [
+      0,
+      7
+    ],
+    "paletteRGB": [
+      [
+        24,
+        30,
+        44
+      ],
+      [
+        61,
+        65,
+        77
+      ],
+      [
+        101,
+        109,
+        126
+      ],
+      [
+        160,
+        169,
+        190
+      ],
+      [
+        216,
+        220,
+        227
+      ],
+      [
+        255,
+        248,
+        226
+      ],
+      [
+        222,
+        205,
+        164
+      ],
+      [
+        176,
+        142,
+        103
+      ],
+      [
+        111,
+        77,
+        50
+      ],
+      [
+        178,
+        115,
+        55
+      ],
+      [
+        235,
+        169,
+        102
+      ],
+      [
+        111,
+        46,
+        51
+      ],
+      [
+        197,
+        66,
+        65
+      ],
+      [
+        230,
+        113,
+        83
+      ],
+      [
+        32,
+        76,
+        42
+      ],
+      [
+        64,
+        113,
+        44
+      ],
+      [
+        134,
+        168,
+        52
+      ],
+      [
+        28,
+        72,
+        105
+      ],
+      [
+        63,
+        101,
+        171
+      ],
+      [
+        125,
+        174,
+        213
+      ],
+      [
+        14,
+        75,
+        104
+      ],
+      [
+        22,
+        125,
+        161
+      ],
+      [
+        86,
+        200,
+        194
+      ]
+    ],
+    "runtimeSha256": "499bbf32711fdaddda5044f8a3157eb2e8aef7fcd07beb12dc4971536a344654",
+    "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
+    "paletteSources": [
+      "assets/source/station-v1.png",
+      "assets/source/matsushimaya-v1.png",
+      "assets/source/home-v1.png",
+      "assets/source/liebe-v1.png"
+    ]
+  }
 }
