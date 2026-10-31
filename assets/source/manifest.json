@@ -3,6 +3,158 @@
   "stage": "exported_runtime_sprites",
   "assets": [
     {
+      "id": "apartment-mid",
+      "kind": "building",
+      "source": "assets/source/apartment-mid-atlas-v1.png",
+      "sha256": "23c7b83942f8e2a84d2bbfe933ea38a40bdac1453b3d8df814bd22285becc7b9",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "runtimeSize": [
+        128,
+        128
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/apartment-mid.png",
+      "spriteSha256": "a6afe4c7b3c1a0eeaa5b53634d6bab53a3becb8465b0075df8e7faa2ed4b203a",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          64,
+          124
+        ],
+        "foot": [
+          64,
+          127
+        ]
+      },
+      "collisionTiles": [
+        7,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/apartment-mid-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 128x128, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "apartment-small",
+      "kind": "building",
+      "source": "assets/source/apartment-small-atlas-v1.png",
+      "sha256": "6432d7492dd6d329450bb5336f60db965f9508d3fa985b19b12df081ed14da43",
+      "sourceSize": [
+        96,
+        112
+      ],
+      "runtimeSize": [
+        96,
+        112
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/apartment-small.png",
+      "spriteSha256": "a7bbe337d3b9b468b23a86d85b88699fb829cea013318fc4c1a96291735e1455",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          48,
+          108
+        ],
+        "foot": [
+          48,
+          111
+        ]
+      },
+      "collisionTiles": [
+        6,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/apartment-small-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 96x112, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "bicycle-parking",
+      "kind": "building",
+      "source": "assets/source/bicycle-parking-atlas-v1.png",
+      "sha256": "19bdef0fa75a281886089941dfdc8e8a077d81d71ebe97a6548941890c52e7fc",
+      "sourceSize": [
+        64,
+        48
+      ],
+      "runtimeSize": [
+        64,
+        48
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/bicycle-parking.png",
+      "spriteSha256": "6b85ceb3ff535189aaca0d6077ef7e130b9106e8921571830b29ccf0f40bf8a1",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          32,
+          46
+        ],
+        "foot": [
+          32,
+          47
+        ]
+      },
+      "collisionTiles": [
+        4,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/bicycle-parking-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 64x48, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision). Door anchor is the front access point of the rack, not a literal door."
+    },
+    {
+      "id": "cafe",
+      "kind": "building",
+      "source": "assets/source/cafe-atlas-v1.png",
+      "sha256": "d358cbf7a2dccb934edf0a7894b658d16ef6d3c59b7c27ec41fe945bd59edb93",
+      "sourceSize": [
+        80,
+        80
+      ],
+      "runtimeSize": [
+        80,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/cafe.png",
+      "spriteSha256": "b7523314beb64e77a7fca3f9d297e1c2328bfb2b3222b91d18518c2afef8b603",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          40,
+          75
+        ],
+        "foot": [
+          40,
+          78
+        ]
+      },
+      "collisionTiles": [
+        5,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/cafe-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 80x80, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
       "id": "char-guide",
       "kind": "character",
       "source": "assets/source/char-guide-atlas-v2.png",
@@ -177,6 +329,158 @@
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
+      "id": "house-2",
+      "kind": "building",
+      "source": "assets/source/house-2-atlas-v1.png",
+      "sha256": "f4256b96d505a767ce876cf612554293ac19fe9557cac11699f8fae0a7a81726",
+      "sourceSize": [
+        80,
+        96
+      ],
+      "runtimeSize": [
+        80,
+        96
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/house-2.png",
+      "spriteSha256": "386df44397a3b0323b2a09a9cc3450a7603e4d32f6300b31125deb2d83e68237",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          40,
+          93
+        ],
+        "foot": [
+          40,
+          95
+        ]
+      },
+      "collisionTiles": [
+        5,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/house-2-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 80x96, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "house-3",
+      "kind": "building",
+      "source": "assets/source/house-3-atlas-v1.png",
+      "sha256": "c002209d3c872b1c0138dfa8df9d961d7159b64245a0af6e248b16fe5e0513b1",
+      "sourceSize": [
+        80,
+        80
+      ],
+      "runtimeSize": [
+        80,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/house-3.png",
+      "spriteSha256": "f7f55730e90d196cb85a09b82773895834f3365360f309b6cab0f2e5b0d4e709",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          40,
+          74
+        ],
+        "foot": [
+          40,
+          79
+        ]
+      },
+      "collisionTiles": [
+        5,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/house-3-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 80x80, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "koban",
+      "kind": "building",
+      "source": "assets/source/koban-atlas-v1.png",
+      "sha256": "135d9b36ba2a69d300b712192c34de38437bbd3ec63ae51f95e200a92c512905",
+      "sourceSize": [
+        48,
+        64
+      ],
+      "runtimeSize": [
+        48,
+        64
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/koban.png",
+      "spriteSha256": "7e8d4ccbf59cc7acd626c962de0a66dbc68a81611a1f4627a45eea47ea58e42e",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          24,
+          60
+        ],
+        "foot": [
+          24,
+          62
+        ]
+      },
+      "collisionTiles": [
+        3,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Image Gen 2 raw assets/source/koban-raw-v1.png, assets/source/koban-raw-v2.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 48x64, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "konbini",
+      "kind": "building",
+      "source": "assets/source/konbini-atlas-v1.png",
+      "sha256": "cb55891407dd8d175f72e5eb95c7cab3466a6ad4229bee6ac9565e1677132b40",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/konbini.png",
+      "spriteSha256": "0a4c905979cadf335dd34a92f0948d8ee70f22e5e7615e3b140395e8876542a3",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          78
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/konbini-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 112x80, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
       "id": "liebe",
       "kind": "building",
       "source": "assets/source/liebe-v2.png",
@@ -251,6 +555,120 @@
       "generator": "Image Gen 2",
       "mode": "edit",
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
+    },
+    {
+      "id": "office-tower",
+      "kind": "building",
+      "source": "assets/source/office-tower-atlas-v1.png",
+      "sha256": "6a29b08c209f812f1519bd229d5ad8fb0043467d283c8a77575d4122f3fc9a2e",
+      "sourceSize": [
+        128,
+        192
+      ],
+      "runtimeSize": [
+        128,
+        192
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/office-tower.png",
+      "spriteSha256": "5345fca989fc2d0f9d6c36ac4ee610f32a2c1006b3005cb89d31aaf28897a1f8",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          64,
+          188
+        ],
+        "foot": [
+          64,
+          190
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/office-tower-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 128x192, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "sengakuji-gate",
+      "kind": "building",
+      "source": "assets/source/sengakuji-gate-atlas-v1.png",
+      "sha256": "5d9a0688b945b02d213ea33d54b63768e318dd18c3b08ce3d90b7a67adb837d1",
+      "sourceSize": [
+        128,
+        112
+      ],
+      "runtimeSize": [
+        128,
+        112
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/sengakuji-gate.png",
+      "spriteSha256": "c56fe91fde4763e1115d7e3965ad945c4bd0db3734f6c5552d6b2a4ee76acc78",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          64,
+          108
+        ],
+        "foot": [
+          64,
+          110
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/sengakuji-gate-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 128x112, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision). The passage through the gate is open; map owner must leave a walkable gap in the collision rectangle."
+    },
+    {
+      "id": "sengakuji-hall",
+      "kind": "building",
+      "source": "assets/source/sengakuji-hall-atlas-v1.png",
+      "sha256": "1070125a233dc8aabd4310a5bbb5c9549ecf0fe5d15fe217322cf392dd484f0a",
+      "sourceSize": [
+        160,
+        128
+      ],
+      "runtimeSize": [
+        160,
+        128
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/sengakuji-hall.png",
+      "spriteSha256": "463c9390d7b50d31de5265c2d3ff239de59a3101715d69c4f13727ac1c577496",
+      "colors": 24,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {
+        "door": [
+          80,
+          108
+        ],
+        "foot": [
+          80,
+          126
+        ]
+      },
+      "collisionTiles": [
+        9,
+        4
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Image Gen 2 raw assets/source/sengakuji-hall-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 160x128, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
     },
     {
       "id": "station",
@@ -348,6 +766,31 @@
       "generator": "Image Gen 2",
       "mode": "edit",
       "notes": "Agent visual review at 1x and 4x. Fixed T indices 0..31; 32..47 transparent. Tree quadrants 17,18,19,20 reconstruct one 32x32 tree. Collision remains map-owned. Source v1 generated, v2 edited to remove tree seams and improve ground. Crop boxes remove generated gutters and ground borders. Palette sampled from generated source regions to retain green, red, blue, cream, brown and slate; visually matched against building references. Manifest and loader integration belongs to #1. Export source is the assembled 128x96 atlas (built from rawSource via export.cropBoxesByRuntimeIndex); tools/art/export.mjs re-quantizes it 1:1."
+    },
+    {
+      "id": "tiles-outdoor-2",
+      "kind": "tileset",
+      "source": "assets/source/tiles-outdoor-2-atlas-v1.png",
+      "sha256": "e3f58febcd84963752732700eab06157b62ff66595ac341970d9f7f2114daae6",
+      "sourceSize": [
+        128,
+        32
+      ],
+      "runtimeSize": [
+        128,
+        32
+      ],
+      "sliceX": 8,
+      "sliceY": 2,
+      "sprite": "public/sprites/tiles-outdoor-2.png",
+      "spriteSha256": "69617e83289f424d77a1a832dc748cd9e948de57c60ee2d02874e0286dbae5d3",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Image Gen 2 4x4 source sheet (raw-v1) edited once (raw-v2); crops assembled row-major into the 8x2 atlas, each prop fit within 14x14 bottom-aligned, palette snapped to existing tiles-outdoor colours, hard alpha. Index 9 (manhole) is a full-cell ground tile whose edges match the tiles-outdoor sidewalk cell. Collision remains map-owned."
     }
   ]
 }

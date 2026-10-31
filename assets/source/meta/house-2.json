@@ -1,0 +1,42 @@
+{
+  "id": "house-2",
+  "kind": "building",
+  "source": "assets/source/house-2-atlas-v1.png",
+  "runtimeSize": [
+    80,
+    96
+  ],
+  "anchors": {
+    "door": [
+      40,
+      93
+    ],
+    "foot": [
+      40,
+      95
+    ]
+  },
+  "collisionTiles": [
+    5,
+    2
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "rawSource": "assets/source/house-2-raw-v1.png",
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Style references only. Create ONE isolated sprite: a two-storey Japanese residential house with blue-grey horizontal siding, dark slate tiled hipped roof, two floors clearly visible, warm wood front door centered at bottom, large simple blue windows. Final logical canvas 80x96. Large 1024px source, chunky logical pixels, no fine texture, full sprite centered filling frame with small transparent margin. Front wall square to viewer, roof visible above. No people, text or external ground/shadows.",
+  "references": [
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png",
+    "assets/source/home-v1.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png",
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png"
+  ],
+  "status": "approved",
+  "notes": "Image Gen 2 raw assets/source/house-2-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 80x96, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+}

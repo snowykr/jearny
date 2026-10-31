@@ -1,0 +1,45 @@
+{
+  "id": "tiles-outdoor-2",
+  "kind": "tileset",
+  "source": "assets/source/tiles-outdoor-2-atlas-v1.png",
+  "runtimeSize": [
+    128,
+    32
+  ],
+  "sliceX": 8,
+  "sliceY": 2,
+  "indices": {
+    "bicycle": 0,
+    "red postbox": 1,
+    "utility pole": 2,
+    "street sign": 3,
+    "round bush": 4,
+    "small tree": 5,
+    "stone lantern": 6,
+    "planter box with flowers": 7,
+    "bus stop pole": 8,
+    "manhole cover": 9,
+    "potted plant": 10,
+    "A-frame signboard": 11,
+    "traffic cone": 12,
+    "bollard": 13,
+    "bin": 14,
+    "cat": 15
+  },
+  "rawSource": "assets/source/tiles-outdoor-2-raw-v2.png",
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Use case: stylized-concept. Create ONE outdoor prop sprite sheet, 4 columns x 4 rows, equal square cells with NO gutters, borders or grid lines. Each cell represents exactly 16x16 logical pixels enlarged nearest-neighbor. Canvas exactly square; cells precisely quarter width and height. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Image 1 outdoor tiles is the primary palette and angle reference; other images are style references. Keep sprites chunky with dark navy outlines and very limited tiny details, 1 logical pixel minimum. One isolated small object per cell, centered horizontally, feet at bottom with 1px padding. All transparent except manhole cell. Row 1: bicycle (side view two wheels and teal frame), Japanese red rectangular postbox with black mail slot, wooden utility pole with short wires stub, blank cream street sign on metal pole. Row 2: round bush, small single-tile tree, stone Japanese toro lantern, wooden planter box with pink and cream flowers. Row 3: bus stop pole with blank round cream sign, manhole cover on full square warm grey sidewalk ground (match sidewalk upper row of outdoor reference, no border), terracotta potted leafy plant, wooden A-frame signboard with blank cream face. Row 4: vermilion traffic cone with cream stripe, short dark bollard, teal public bin, sitting ginger cat with upright ears and curled tail. Exactly sixteen objects total; no letters, no numbering, no decorative extra icons. Essential: silhouettes occupy about 12x14 logical pixels and render clearly at native16px; don't draw detailed high-resolution illustrations.\n---\nEdit of raw-v1 (prompt not recorded by the artist): removes the postal symbol from the postbox.",
+  "references": [
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png",
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png"
+  ],
+  "status": "approved",
+  "notes": "Image Gen 2 4x4 source sheet (raw-v1) edited once (raw-v2); crops assembled row-major into the 8x2 atlas, each prop fit within 14x14 bottom-aligned, palette snapped to existing tiles-outdoor colours, hard alpha. Index 9 (manhole) is a full-cell ground tile whose edges match the tiles-outdoor sidewalk cell. Collision remains map-owned."
+}
