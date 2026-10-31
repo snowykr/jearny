@@ -12,17 +12,19 @@ import { maps } from './index';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const metaDir = join(root, 'assets', 'source', 'meta');
 
-interface BuildingMeta {
+interface ArtMeta {
   id: string;
   kind: string;
   runtimeSize: [number, number];
-  collisionTiles: [number, number];
+  collisionTiles?: [number, number];
 }
 
-const metas: BuildingMeta[] = readdirSync(metaDir)
+// `kind: building` also covers single-sprite art (coupon icon/stamp) that has no
+// collision rect. Only metas that declare one are building collision.
+const metas = readdirSync(metaDir)
   .filter((name) => name.endsWith('.json'))
-  .map((name) => JSON.parse(readFileSync(join(metaDir, name), 'utf8')) as BuildingMeta)
-  .filter((meta) => meta.kind === 'building');
+  .map((name) => JSON.parse(readFileSync(join(metaDir, name), 'utf8')) as ArtMeta)
+  .filter((meta) => meta.kind === 'building' && Array.isArray(meta.collisionTiles));
 
 /** Opaque bounds of a sprite: what the player actually sees, in pixels. */
 function opaqueBounds(id: string) {
@@ -65,8 +67,8 @@ describe('building collision follows the exported art', () => {
   for (const entity of placed) {
     const meta = metas.find((candidate) => candidate.id === entity.assetId);
     it(`${entity.id}: matches a registry entry and sits on its painted rows`, () => {
-      expect(meta).toBeDefined();
-      if (!meta) return;
+      expect(meta?.collisionTiles).toBeDefined();
+      if (!meta?.collisionTiles) return;
       const bounds = opaqueBounds(meta.id);
       const [cols, rows] = meta.collisionTiles;
       expect(entity.size).toEqual([cols, rows]);
