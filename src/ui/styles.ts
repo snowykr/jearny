@@ -9,6 +9,10 @@ export const UI_STYLES = `
 .jq-hud-row { display: flex; gap: 6px; justify-content: space-between; }
 .jq-bag { opacity: .85; }
 .jq-quest-en { opacity: .7; font-size: .9em; }
+.jq-disclaimer { margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(139, 143, 154, .45);
+  font-size: 10px; line-height: 1.45; opacity: .8; }
+.jq-disclaimer-ja, .jq-disclaimer-en { display: block; }
+.jq-disclaimer-en { margin-top: 2px; font-size: .95em; }
 
 .jq-dialogue { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
   width: min(560px, calc(100vw - 24px)); padding: 10px 14px 14px; border-radius: 8px;
@@ -53,6 +57,7 @@ export const UI_STYLES = `
   clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .jq-root-large .jq-dialogue { font-size: 17px; }
 .jq-root-large .jq-hud { font-size: 14px; }
+.jq-root-large .jq-disclaimer { font-size: 12px; }
 
 /* index.html sets #ui-root > * { pointer-events: auto }; the HUD stays click-through. */
 #ui-root > .jq-hud, #ui-root > .jq-toast { pointer-events: none; }

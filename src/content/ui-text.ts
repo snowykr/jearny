@@ -11,6 +11,11 @@ export interface ObjectiveText {
 
 export interface UiText {
   title: string;
+  /**
+   * Legal note for the demo: the shop exists, the offer does not. Shown on every
+   * screen so a recorded walkthrough cannot ship without it.
+   */
+  disclaimer: ObjectiveText;
   speakers: Record<string, string>;
   items: Record<string, string>;
   objectives: Record<QuestStatus, ObjectiveText>;
@@ -45,6 +50,10 @@ export interface UiText {
 
 export const UI_TEXT: UiText = {
   title: '旅クエスト',
+  disclaimer: {
+    ja: '松島屋は実在の店舗ですが本作とは無関係です。作中の価格・割引は架空で、利用できません。',
+    en: 'Matsushimaya is a real shop, unaffiliated with this demo. Prices and offers shown are fictional.',
+  },
   speakers: {
     [ENTITY.guide]: 'ガイド',
     [ENTITY.stationStaff]: '駅員',

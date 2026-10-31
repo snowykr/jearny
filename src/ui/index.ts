@@ -86,10 +86,16 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   const bag = element('div', 'jq-bag');
   const quest = element('div');
   const questEn = element('div', 'jq-quest-en');
+  const disclaimer = element('aside', 'jq-disclaimer');
+  disclaimer.setAttribute('role', 'note');
+  disclaimer.append(
+    element('span', 'jq-disclaimer-ja', gameContent.ui.disclaimer.ja),
+    element('span', 'jq-disclaimer-en', gameContent.ui.disclaimer.en),
+  );
   const settingsButton = element('button', undefined, labels.settings);
   settingsButton.type = 'button';
   walletRow.append(wallet);
-  hud.append(hudTitle, walletRow, bag, quest, questEn, settingsButton);
+  hud.append(hudTitle, walletRow, bag, quest, questEn, disclaimer, settingsButton);
 
   // --- dialogue ------------------------------------------------------------
   const dialogue = element('div', 'jq-dialogue');

@@ -47,6 +47,9 @@ describe('dialogue overlay', () => {
     expect(root.textContent).toContain('¥1000');
     expect(root.textContent).toContain('ガイドに話しかける');
     expect(root.textContent).toContain('Talk to the guide at home');
+    // The demo shop is real; the offer is not. The note ships on every screen.
+    expect(root.textContent).toContain('実在の店舗');
+    expect(root.textContent).toContain('unaffiliated');
     expect(dialogueBox(root)?.hidden).toBe(true);
   });
 
