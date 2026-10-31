@@ -5,9 +5,13 @@
 import type { GameSnapshot, QuestStatus } from '../contracts';
 import { ITEM } from '../contracts';
 import { content } from '../content';
+import { mountTownMap } from './townmap';
+import type { TownMap, TownMapPlayer } from './townmap';
 
 export interface StartMenuOptions {
   getSnapshot(): GameSnapshot;
+  /** Runtime player pose for the map tab; omitted in DOM-only tests. */
+  getPlayer?(): TownMapPlayer | null;
   /** True while another DOM surface (dialogue, settings, modal) owns input. */
   isInputBlocked?(): boolean;
   onOpenChange?(open: boolean): void;
@@ -250,12 +254,19 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     return frag;
   };
 
+  const townMap: TownMap | null = opts.getPlayer
+    ? mountTownMap(doc, { getPlayer: opts.getPlayer, getSnapshot: opts.getSnapshot })
+    : null;
+
   const mapView = (): DocumentFragment => {
     const frag = doc.createDocumentFragment();
-    frag.append(
-      make('h3', 'jr-menu-heading', menuText.map),
-      make('p', 'jr-menu-placeholder', menuText.mapPlaceholder),
-    );
+    frag.append(make('h3', 'jr-menu-heading', menuText.map));
+    if (townMap) {
+      townMap.refresh();
+      frag.append(townMap.el);
+    } else {
+      frag.append(make('p', 'jr-menu-placeholder', menuText.mapPlaceholder));
+    }
     return frag;
   };
 
@@ -428,6 +439,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
         openState = false;
         opts.onOpenChange?.(false); // teardown must not leave a stale "open" belief
       }
+      townMap?.dispose();
       dialog.remove();
       trigger.remove();
       style.remove();

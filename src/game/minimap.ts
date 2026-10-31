@@ -7,21 +7,17 @@ import type { GameSnapshot, MapDefinition, SceneId, Tile } from '../contracts';
 import { maps } from '../content/maps';
 import { IT, T } from '../content/maps/tiles';
 import { VIEW_H, VIEW_W, cameraCenter } from './camera';
+import type { Dir } from './input';
+import { CATEGORY_COLOR } from './map-colors';
+import type { TileCategory } from './map-colors';
+import { allPois, nearestPoi, poisForMap } from './pois';
+import type { Poi } from './pois';
+
+export { CATEGORY_COLOR } from './map-colors';
+export { nearestPoi, poisForMap } from './pois';
+export type { TileCategory } from './map-colors';
 
 // ---------------------------------------------------------------- tile categories
-
-export type TileCategory =
-  | 'grass' | 'sidewalk' | 'road' | 'crossing' | 'rail' | 'gravel' | 'deck' | 'plaza' | 'path'
-  | 'water' | 'hedge' | 'tree' | 'building'
-  | 'floor-tatami' | 'floor-wood' | 'floor-shop' | 'floor-stone' | 'wall' | 'furniture';
-
-export const CATEGORY_COLOR: Record<TileCategory, string> = {
-  grass: '#5f9a52', sidewalk: '#cfc7b4', road: '#4b4e59', crossing: '#ece8d8', rail: '#2f2f3a', gravel: '#9a9084',
-  deck: '#8da6bd', plaza: '#dfcd9f', path: '#bb8c5e', water: '#4b88c9', hedge: '#3f7a48', tree: '#2e6a3b',
-  building: '#e7d6b8',
-  'floor-tatami': '#cdb97e', 'floor-wood': '#b0804f', 'floor-shop': '#dcc79d', 'floor-stone': '#a09a92',
-  wall: '#4d3b31', furniture: '#8c5d3b',
-};
 
 const OUTDOOR_GROUND: Record<number, TileCategory> = {
   [T.GRASS_A]: 'grass', [T.GRASS_B]: 'grass', [T.GRASS_C]: 'grass', [T.SIDEWALK]: 'sidewalk', [T.ROAD]: 'road',
@@ -54,53 +50,7 @@ export function indoorCategory(ground: number, decoration: number, onBorder: boo
   return INDOOR_FLOOR[ground] ?? 'floor-wood';
 }
 
-// ---------------------------------------------------------------- POIs
-
-export interface Poi {
-  id: string;
-  /** Short on-map label. */
-  label: string;
-  /** Spoken name for the accessible label. */
-  name: string;
-  /** Centre in (fractional) tile coordinates. */
-  center: [number, number];
-  /** Footprint colour (outdoor buildings). */
-  color: string;
-  /** Building footprint: top-left tile and size. */
-  rect: { x: number; y: number; w: number; h: number };
-}
-
-const POI_DEFS: Record<string, { label: string; name: string; color: string }> = {
-  [BUILDING.home]: { label: '家', name: '自宅', color: '#d0675a' },
-  [BUILDING.station]: { label: '駅', name: '高輪ゲートウェイ駅', color: '#6b92c6' },
-  [BUILDING.matsushimaya]: { label: '松島屋', name: '松島屋', color: '#dba04c' },
-  // 泉岳寺: no anchor on the map yet; add a POI_DEFS entry (and a building entity) when one lands.
-};
-
-/** POIs placed from the map's building entities. Entities without a definition are not POIs. */
-export function poisForMap(map: MapDefinition): Poi[] {
-  const out: Poi[] = [];
-  for (const e of map.entities) {
-    const def = POI_DEFS[e.id];
-    if (e.kind !== 'building' || !def) continue;
-    const [w, h] = e.size ?? [1, 1];
-    out.push({
-      id: e.id, ...def, center: [e.tile[0] + w / 2, e.tile[1] + h / 2],
-      rect: { x: e.tile[0], y: e.tile[1], w, h },
-    });
-  }
-  return out;
-}
-
-/** Nearest POI to a tile, by distance to its footprint centre (in tiles). */
-export function nearestPoi(pois: readonly Poi[], tile: readonly [number, number]): { poi: Poi; distance: number } | null {
-  let best: { poi: Poi; distance: number } | null = null;
-  for (const poi of pois) {
-    const d = Math.hypot(poi.center[0] - tile[0], poi.center[1] - tile[1]);
-    if (!best || d < best.distance) best = { poi, distance: d };
-  }
-  return best;
-}
+// ---------------------------------------------------------------- quest target
 
 /**
  * The next destination for the first-trip quest, as a POI id, or null for none.
@@ -208,8 +158,8 @@ export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; w
       const { x, y, w, h } = poi.rect;
       for (let yy = y; yy < y + h; yy++) {
         for (let xx = x; xx < x + w; xx++) {
-          // Tiny POIs stay fill: an outline would swallow a 3-tile footprint. Buildings (>=4 rows) get one.
-          const edge = Math.min(w, h) >= 4 && (xx === x || yy === y || xx === x + w - 1 || yy === y + h - 1);
+          // Small buildings are all fill: an outline would swallow most of a 5-6 tile footprint.
+          const edge = Math.min(w, h) >= 7 && (xx === x || yy === y || xx === x + w - 1 || yy === y + h - 1);
           put(xx, yy, edge ? '#3a2a22' : poi.color);
         }
       }
@@ -218,12 +168,94 @@ export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; w
   return { data, width: cols, height: rows };
 }
 
+// ---------------------------------------------------------------- icons
+
+/** Marker shape per place. Keeping it a union makes the two overlays draw the same symbols. */
+export type PoiGlyph = 'house' | 'station' | 'shop' | 'temple';
+
+export function poiGlyph(id: string): PoiGlyph {
+  switch (id) {
+    case BUILDING.home:
+      return 'house';
+    case BUILDING.station:
+      return 'station';
+    case BUILDING.matsushimaya:
+      return 'shop';
+    default:
+      return 'temple';
+  }
+}
+
+/** Unit vector for a facing direction, used to point the player arrow. */
+export function facingVector(facing: Dir): [number, number] {
+  switch (facing) {
+    case 'up': return [0, -1];
+    case 'down': return [0, 1];
+    case 'left': return [-1, 0];
+    default: return [1, 0];
+  }
+}
+
+/** A footprint of `w`x`h` minimap px is big enough for a readable glyph. */
+export function glyphFits(w: number, h: number): boolean {
+  return Math.min(w, h) >= 6;
+}
+
+/** Draws the small building symbol centred on (cx, cy). Pure canvas calls, no state. */
+export function drawPoiGlyph(
+  ctx: CanvasRenderingContext2D, glyph: PoiGlyph, cx: number, cy: number, size: number, color: string,
+): void {
+  const s = Math.max(5, Math.round(size));
+  const half = s / 2;
+  const left = Math.round(cx - half);
+  const top = Math.round(cy - half);
+  ctx.lineJoin = 'miter';
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#20182a';
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  if (glyph === 'house') {
+    // Gable roof over a body: two solid masses, one outline pass.
+    ctx.moveTo(left, top + s * 0.45);
+    ctx.lineTo(left + half, top);
+    ctx.lineTo(left + s, top + s * 0.45);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillRect(left + s * 0.15, top + s * 0.45, s * 0.7, s * 0.5);
+    ctx.strokeRect(left + s * 0.15, top + s * 0.45, s * 0.7, s * 0.5);
+    return;
+  }
+  if (glyph === 'temple') {
+    // Torii: two posts and two lintels, the 泉岳寺 approach marker.
+    ctx.fillRect(left + s * 0.05, top + s * 0.1, s * 0.9, s * 0.22);
+    ctx.strokeRect(left + s * 0.05, top + s * 0.1, s * 0.9, s * 0.22);
+    ctx.fillRect(left + s * 0.2, top + s * 0.32, s * 0.18, s * 0.62);
+    ctx.strokeRect(left + s * 0.2, top + s * 0.32, s * 0.18, s * 0.62);
+    ctx.fillRect(left + s * 0.62, top + s * 0.32, s * 0.18, s * 0.62);
+    ctx.strokeRect(left + s * 0.62, top + s * 0.32, s * 0.18, s * 0.62);
+    return;
+  }
+  // station / shop: a platform block; the station gets a track, the shop an awning stripe.
+  ctx.rect(left, top + s * 0.2, s, s * 0.65);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#20182a';
+  if (glyph === 'station') {
+    ctx.fillRect(left + s * 0.15, top + s * 0.62, s * 0.7, s * 0.12);
+  } else {
+    for (let i = 0; i < 3; i++) ctx.fillRect(left + s * (0.12 + i * 0.26), top + s * 0.3, s * 0.12, s * 0.28);
+  }
+}
+
 // ---------------------------------------------------------------- DOM overlay
 
 export interface MinimapPlayer {
   sceneId: SceneId;
   /** Fractional tile position (mid-step is interpolated). */
   tile: Tile | [number, number];
+  /** Direction the player faces; drawn as an arrow so the map answers "which way am I looking". */
+  facing?: Dir;
 }
 
 export interface MinimapOptions {
@@ -234,17 +266,20 @@ export interface MinimapOptions {
 
 const CSS = `
 .jr-minimap{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));
-  z-index:10;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-family:system-ui,"Hiragino Sans","Noto Sans JP",sans-serif;
-  pointer-events:none;user-select:none;-webkit-user-select:none}
+  z-index:10;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-family:"DotGothic16","Hiragino Kaku Gothic ProN","Noto Sans JP",ui-monospace,monospace;
+  pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .jr-minimap *{box-sizing:border-box}
-.jr-minimap-toggle{pointer-events:auto;min-width:32px;height:28px;padding:0 8px;border:1px solid #0b0c14;border-radius:4px;
-  background:rgba(20,21,31,.78);color:#e8e9f5;font:600 12px/1 system-ui,sans-serif;cursor:pointer}
-.jr-minimap-toggle:focus-visible{outline:2px solid #ffd54a;outline-offset:1px}
-.jr-minimap-toggle[aria-expanded="true"]{background:rgba(60,64,100,.85)}
-.jr-minimap-panel{border:1px solid #0b0c14;background:rgba(14,15,24,.72);padding:0;line-height:0;box-shadow:0 1px 4px rgba(0,0,0,.45)}
+.jr-minimap-toggle{pointer-events:auto;min-width:44px;height:28px;padding:0 8px;border:2px solid #0b0c14;
+  background:#2b2d42;color:#ffd54a;font:700 12px/1 "DotGothic16",ui-monospace,monospace;cursor:pointer;image-rendering:pixelated;
+  box-shadow:inset -2px -2px 0 #14151f,inset 2px 2px 0 #4a4e6d}
+.jr-minimap-toggle:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}
+.jr-minimap-toggle[aria-expanded="true"]{background:#3a3f5c;color:#fff}
+.jr-minimap-panel{position:relative;border:3px solid #0b0c14;background:#171a28;padding:0;line-height:0;
+  box-shadow:0 0 0 2px #d8d2c0,3px 3px 0 rgba(0,0,0,.55)}
 .jr-minimap-panel[hidden]{display:none}
 .jr-minimap-canvas{display:block;image-rendering:pixelated}
-.jr-minimap-label{display:block;padding:2px 4px;background:rgba(14,15,24,.85);color:#f0f0fa;font:600 11px/1.3 system-ui,"Hiragino Sans","Noto Sans JP",sans-serif;
+.jr-minimap-label{display:block;padding:2px 4px;background:#2b2d42;border-top:2px solid #0b0c14;color:#f7f3e6;
+  font:700 11px/1.3 "DotGothic16","Hiragino Kaku Gothic ProN","Noto Sans JP",ui-monospace,monospace;
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 `;
 
@@ -263,8 +298,8 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
   const toggle = doc.createElement('button');
   toggle.type = 'button';
   toggle.className = 'jr-minimap-toggle';
-  toggle.textContent = '🗺';
-  toggle.setAttribute('aria-label', 'ミニマップ');
+  toggle.textContent = 'MAP';
+  toggle.setAttribute('aria-label', 'ミニマップを表示・非表示');
   toggle.setAttribute('aria-expanded', 'true');
 
   const panel = doc.createElement('div');
@@ -302,7 +337,7 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
     base.width = img.width;
     base.height = img.height;
     base.getContext('2d')!.putImageData(new ImageData(img.data as Uint8ClampedArray<ArrayBuffer>, img.width, img.height), 0, 0);
-    pois = id === 'takanawa' ? poisForMap(map) : [];
+    pois = id === 'takanawa' ? allPois(map) : [];
     mapId = id;
     layout();
   };
@@ -370,6 +405,14 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#1b1620';
         ctx.stroke();
+        // Building symbol: the glyph only replaces the dot when the footprint can hold one,
+        // so the 1-tile landmark (泉岳寺) keeps a fixed marker of its own.
+        const gw = (poi.rect.w / frame.cols) * frame.w;
+        const gh = (poi.rect.h / frame.rows) * frame.h;
+        const landmark = poi.id.startsWith('landmark:');
+        if (landmark || glyphFits(gw, gh)) {
+          drawPoiGlyph(ctx, poiGlyph(poi.id), mx, my, landmark ? 8 : Math.min(gw, gh) * 0.9, poi.color);
+        }
         const tw = ctx.measureText(poi.label).width;
         const right = mx + 8 + tw <= frame.w - 2;
         ctx.textAlign = right ? 'left' : 'right';
@@ -391,11 +434,28 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
       }
     }
 
-    // Player dot: blinks between a bright dot and a dim one (steady under reduced motion).
+    // Player dot + facing arrow: blinks between bright and dim (steady under reduced motion).
     const [px, py] = worldToMinimap([p.tile[0] + 0.5, p.tile[1] + 0.5], frame);
     const on = blinkOn(t);
+    const radius = outdoor ? 3.5 : 4.5;
+    const [dx, dy] = facingVector(p.facing ?? 'down');
+    const tipX = px + dx * (radius + 5);
+    const tipY = py + dy * (radius + 5);
     ctx.beginPath();
-    ctx.arc(px, py, outdoor ? 3.5 : 4.5, 0, Math.PI * 2);
+    ctx.moveTo(px, py);
+    ctx.lineTo(tipX, tipY);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = on ? '#fff' : 'rgba(255,255,255,.45)';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(tipX, tipY);
+    ctx.lineTo(tipX - dx * 4 - dy * 3, tipY - dy * 4 + dx * 3);
+    ctx.lineTo(tipX - dx * 4 + dy * 3, tipY - dy * 4 - dx * 3);
+    ctx.closePath();
+    ctx.fillStyle = on ? '#fff' : 'rgba(255,255,255,.45)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(px, py, radius, 0, Math.PI * 2);
     ctx.fillStyle = on ? '#ff4d4d' : 'rgba(255,77,77,.35)';
     ctx.fill();
     ctx.lineWidth = 1.5;
@@ -414,7 +474,7 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
     const still = !!reducedMotion?.matches;
     const phase = still ? 0 : Math.floor(t / 66);
     const target = p.sceneId === 'takanawa' ? questTargetPoi(snap) : null;
-    const key = `${p.sceneId}|${p.tile[0].toFixed(2)}|${p.tile[1].toFixed(2)}|${target}|${still ? 'still' : phase}|${frame.w}|${dpr}`;
+    const key = `${p.sceneId}|${p.tile[0].toFixed(2)}|${p.tile[1].toFixed(2)}|${p.facing ?? 'down'}|${target}|${still ? 'still' : phase}|${frame.w}|${dpr}`;
     if (key === lastKey) return;
     lastKey = key;
     lastPaint = t;
@@ -431,9 +491,9 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
     toggle.setAttribute('aria-expanded', String(open));
     lastKey = '';
   };
-  // Click-only: the start menu (#65) owns M, so the minimap must not advertise a key it
-  // no longer receives. The full-screen map (#66) will re-bind M through the menu.
   toggle.addEventListener('click', () => setOpen(!open));
+  // No M listener here: the start menu (#65) owns M at capture phase, so a second handler would be dead.
+  // The visible MAP button and its 44px target keep the toggle reachable by touch and keyboard.
   raf = win.requestAnimationFrame(tick);
 
   return () => {

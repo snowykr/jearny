@@ -5,6 +5,7 @@ import { ITEM, QUEST } from '../contracts';
 import { content } from '../content';
 import { createInitialSnapshot } from '../domain';
 import { ITEM_DESCRIPTIONS, mountStartMenu } from './menu';
+import type { TownMapPlayer } from './townmap';
 
 const labels = { title: 'メニュー', quest: 'クエスト', map: 'マップ', close: 'とじる' } as const;
 // Literal copy, so a changed constant cannot make the assertions pass by construction.
@@ -23,7 +24,7 @@ function snapshot(overrides: Partial<GameSnapshot> = {}): GameSnapshot {
   return { ...createInitialSnapshot('menu-test', content.version), ...overrides };
 }
 
-function mount(snap = snapshot(), isInputBlocked?: () => boolean) {
+function mount(snap = snapshot(), isInputBlocked?: () => boolean, player?: TownMapPlayer | null) {
   document.body.innerHTML = '<div id="ui-root"></div><canvas id="game"></canvas>';
   const root = document.getElementById('ui-root');
   if (!root) throw new Error('missing ui root');
@@ -31,6 +32,7 @@ function mount(snap = snapshot(), isInputBlocked?: () => boolean) {
   const menu = mountStartMenu(root, {
     getSnapshot: () => snap,
     ...(isInputBlocked ? { isInputBlocked } : {}),
+    ...(player !== undefined ? { getPlayer: () => player } : {}),
     onOpenChange: (open) => events.push(open),
   });
   cleanup = () => menu.dispose();
@@ -121,7 +123,7 @@ describe('start menu', () => {
     );
   });
 
-  it('shows the minimap placeholder in マップ', () => {
+  it('shows the minimap placeholder in マップ when no runtime pose is wired', () => {
     const { menu } = mount();
     menu.open();
     click(labels.map);
@@ -129,6 +131,25 @@ describe('start menu', () => {
     const text = dialog()?.textContent ?? '';
     expect(text).toContain('ミニマップで今いる場所');
     expect(text).toContain('ミニマップ');
+  });
+
+  it('shows the full town map in マップ when the runtime pose is available', () => {
+    // jsdom has no canvas backend; the map panel must still mount and lay itself out.
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = (() => null) as typeof original;
+    try {
+      const { menu } = mount(snapshot(), undefined, { sceneId: 'takanawa', tile: [64, 48], facing: 'left' });
+      menu.open();
+      click(labels.map);
+
+      const map = dialog()?.querySelector('[data-testid="town-map"]');
+      expect(map).not.toBeNull();
+      expect(map?.querySelector('canvas')?.width).toBe(128 * 3);
+      expect(dialog()?.textContent).toContain('泉岳寺');
+      expect(dialog()?.textContent).not.toContain(MENU_TEXT.mapPlaceholder);
+    } finally {
+      HTMLCanvasElement.prototype.getContext = original;
+    }
   });
 
   it('closes on Escape and returns focus to the game canvas', () => {

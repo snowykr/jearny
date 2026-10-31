@@ -3,10 +3,13 @@ import { BUILDING, QUEST } from '../contracts';
 import { maps } from '../content/maps';
 import { IT, T } from '../content/maps/tiles';
 import { VIEW_H, VIEW_W } from './camera';
+import { CATEGORY_COLOR, CATEGORY_TILE } from './map-colors';
 import {
-  CATEGORY_COLOR, ariaLabel, buildBaseImage, indoorCategory, locationLabel, minimapWidth, nearestPoi,
-  outdoorCategory, poisForMap, questTargetPoi, viewportRect, worldToMinimap,
+  ariaLabel, buildBaseImage, facingVector, glyphFits, indoorCategory, locationLabel, minimapWidth,
+  outdoorCategory, poiGlyph, questTargetPoi, viewportRect, worldToMinimap,
 } from './minimap';
+import { allPois, nearestPoi, poisForMap, TEMPLE_APPROACH_TILE, templeApproach } from './pois';
+import worldPlan from '../../content/world-plan.json';
 
 const town = maps.takanawa;
 
@@ -29,9 +32,20 @@ describe('tile category mapping', () => {
     expect(outdoorCategory(T.GRASS_A, T.FLOWERS, -1)).toBe('grass');
   });
 
-  it('falls back to grass for unknown outdoor tiles and gives every category a colour', () => {
+  it('falls back to grass for unknown outdoor tiles and gives every category a sampled colour', () => {
     expect(outdoorCategory(-1)).toBe('grass');
-    for (const c of Object.values(CATEGORY_COLOR)) expect(c).toMatch(/^#[0-9a-f]{6}$/);
+    for (const [cat, color] of Object.entries(CATEGORY_COLOR)) {
+      expect(color, cat).toMatch(/^#[0-9a-f]{6}$/);
+      const tile = CATEGORY_TILE[cat as keyof typeof CATEGORY_TILE];
+      expect(tile, cat).toBeTruthy();
+      expect(tile.tile).toBeGreaterThanOrEqual(0);
+      expect(tile.tile).toBeLessThan(48); // 8x6 atlas
+    }
+    // The map must stay legible: road, grass, water and walls may not collapse into one colour.
+    expect(new Set([CATEGORY_COLOR.grass, CATEGORY_COLOR.road, CATEGORY_COLOR.water, CATEGORY_COLOR.wall]).size).toBe(4);
+    expect(CATEGORY_COLOR.crossing).not.toBe(CATEGORY_COLOR.road);
+    expect(CATEGORY_COLOR.deck).not.toBe(CATEGORY_COLOR.plaza);
+    expect(CATEGORY_COLOR.path).not.toBe(CATEGORY_COLOR.gravel);
   });
 
   it('classifies interior walls, furniture and floors', () => {
@@ -52,11 +66,11 @@ describe('base image', () => {
     expect(img.data.length).toBe(128 * 96 * 4);
     for (let i = 3; i < img.data.length; i += 4) expect(img.data[i]).toBe(255);
     const px = (x: number, y: number) => [...img.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 3)];
-    expect(px(44, 5)).toEqual([0x4b, 0x4e, 0x59]); // Route 15 asphalt
+    expect(px(44, 5)).toEqual([0x5c, 0x6c, 0x7c]); // Route 15 asphalt, sampled from T.ROAD
     expect(px(60, 43)).toEqual([0x6b, 0x92, 0xc6]); // station footprint interior
-    expect(px(58, 41)).toEqual([0x3a, 0x2a, 0x22]); // footprint border: station (12x5) is outlined
-    expect(px(58, 40)).toEqual([0x8d, 0xa6, 0xbd]); // deck row above the station stays uncovered
-    expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // home footprint interior stays fill
+    expect(px(58, 41)).toEqual([0x6b, 0x92, 0xc6]); // station (12x5) is all fill: no outline fits
+    expect(px(58, 40)).toEqual([0xe4, 0xd4, 0xbc]); // deck row above the station stays uncovered
+    expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // small home footprint is fill only
   });
 
   it('renders interiors as room thumbnails', () => {
@@ -80,6 +94,46 @@ describe('POIs', () => {
 
   it('has no POIs for interiors', () => {
     expect(poisForMap(maps['home-interior'])).toEqual([]);
+  });
+
+  it('derives the 泉岳寺 approach from the world plan anchor and keeps it on the temple path', () => {
+    // content/world-plan.json anchors[id=sengakuji_approach].tile is the contract.
+    const anchor = (worldPlan.anchors as unknown as Array<{ id: string; tile: [number, number] }>).find(
+      (a) => a.id === 'sengakuji_approach',
+    );
+    expect(anchor?.tile).toEqual(TEMPLE_APPROACH_TILE);
+    const [x, y] = TEMPLE_APPROACH_TILE;
+    expect(town.layers.ground[y * town.grid[0] + x]).toBe(T.TEMPLE_PATH);
+
+    const temple = templeApproach(town);
+    expect(temple).toMatchObject({ label: '泉岳寺', name: '泉岳寺（参道）' });
+    expect(temple?.center).toEqual([34.5, 24.5]);
+    expect(templeApproach(maps['shop-interior'])).toBeNull();
+  });
+
+  it('lists the temple landmark with the buildings, but keeps poisForMap buildings-only', () => {
+    expect(poisForMap(town)).toHaveLength(3);
+    expect(allPois(town).map((p) => p.id)).toEqual([
+      BUILDING.station, BUILDING.home, BUILDING.matsushimaya, 'landmark:temple-approach',
+    ]);
+    expect(allPois(maps['home-interior'])).toEqual([]);
+  });
+
+  it('picks the nearest place including the landmark', () => {
+    expect(nearestPoi(allPois(town), [35, 24])?.poi.label).toBe('泉岳寺');
+  });
+
+  it('maps each place to its glyph and only draws one when the footprint fits', () => {
+    expect(poiGlyph(BUILDING.home)).toBe('house');
+    expect(poiGlyph(BUILDING.station)).toBe('station');
+    expect(poiGlyph(BUILDING.matsushimaya)).toBe('shop');
+    expect(poiGlyph('landmark:temple-approach')).toBe('temple');
+    expect(glyphFits(6, 6)).toBe(true);
+    expect(glyphFits(5, 12)).toBe(false);
+    expect(facingVector('up')).toEqual([0, -1]);
+    expect(facingVector('down')).toEqual([0, 1]);
+    expect(facingVector('left')).toEqual([-1, 0]);
+    expect(facingVector('right')).toEqual([1, 0]);
   });
 
   it('finds the nearest POI', () => {
