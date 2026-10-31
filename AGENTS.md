@@ -13,5 +13,7 @@ Rules:
 - KAPLAY scenes and the DOM UI submit `Command`s and render the `GameSnapshot`. They never own quest or inventory state.
 - Use the IDs from `src/contracts/ids.ts`. Do not invent string IDs inline.
 - Never put `ELEVENLABS_*` in a `VITE_` variable or in client code.
+- All images come from **Image Gen 2** and follow `docs/ART.md`. To fix an existing source asset, edit it rather than regenerating it. Every new asset attaches the existing `assets/source/*.png` sprites as style references.
+- Work is tracked in GitHub issues labelled `track-a` / `track-b`. Reference the issue number in commits and PRs (`Closes #N`).
 
 Verify with `npm run check` (typecheck, vitest, voice tests). Before pushing, run `scripts/check-ownership.sh`.

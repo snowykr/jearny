@@ -1,5 +1,7 @@
 # Work split: two devices, two worktrees
 
+**The source of truth for tasks is GitHub Issues.** Filter by the `track-a` or `track-b` label and by milestone (M1/M2/M3). Pick an issue, assign yourself, branch or commit on your track branch, and close the issue from the PR with `Closes #N`. Art rules are in [ART.md](ART.md): Image Gen 2 only, matched to the existing source sprites.
+
 The goal is that both tracks can push all day without merge conflicts. Each track **owns directories**, not features. The only shared surface is `src/contracts/` plus a few root files, and they change only through small PRs to `main`.
 
 | | Track A — World | Track B — Logic & conversation |
