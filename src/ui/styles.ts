@@ -8,6 +8,7 @@ export const UI_STYLES = `
 .jq-hud-title { font-weight: 700; letter-spacing: .04em; }
 .jq-hud-row { display: flex; gap: 6px; justify-content: space-between; }
 .jq-bag { opacity: .85; }
+.jq-quest-en { opacity: .7; font-size: .9em; }
 
 .jq-dialogue { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
   width: min(560px, calc(100vw - 24px)); padding: 10px 14px 14px; border-radius: 8px;
