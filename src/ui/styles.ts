@@ -5,10 +5,14 @@ export const UI_STYLES = `
   font: 12px/1.5 system-ui, sans-serif; pointer-events: none; max-width: 220px; }
 .jq-hud button { pointer-events: auto; margin-top: 4px; font: inherit; padding: 2px 8px;
   border-radius: 4px; border: 1px solid #8b8f9a; background: #232636; color: inherit; cursor: pointer; }
+.jq-hud-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .jq-hud-title { font-weight: 700; letter-spacing: .04em; }
-.jq-hud-row { display: flex; gap: 6px; justify-content: space-between; }
-.jq-bag { opacity: .85; }
+.jq-wallet { opacity: .9; white-space: nowrap; }
 .jq-quest-en { opacity: .7; font-size: .9em; }
+.jq-disclaimer { margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(139, 143, 154, .45);
+  font-size: 10px; line-height: 1.45; opacity: .8; }
+.jq-disclaimer-ja, .jq-disclaimer-en { display: block; }
+.jq-disclaimer-en { margin-top: 2px; font-size: .95em; }
 
 .jq-dialogue { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
   width: min(560px, calc(100vw - 24px)); padding: 10px 14px 14px; border-radius: 8px;
@@ -46,6 +50,13 @@ export const UI_STYLES = `
   background: #141826; color: #f7f3e6; border: 2px solid #ffd479; text-align: center;
   font: 14px/1.7 system-ui, sans-serif; }
 .jq-modal-card h2 { margin: 0 0 6px; font-size: 16px; }
+.jq-modal-extra:empty { display: none; }
+.jq-coupon { margin: 10px 0 2px; padding: 10px 12px; border: 2px dashed #ffd479; border-radius: 8px;
+  background: rgba(255, 212, 121, .08); }
+.jq-coupon-title { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #ffd479; }
+.jq-coupon-shop { font-size: 16px; font-weight: 700; margin-top: 2px; }
+.jq-coupon-note { margin-top: 6px; font-size: 11px; opacity: .85; }
+.jq-coupon-en { display: block; margin-top: 2px; }
 .jq-modal-card button { margin-top: 12px; font: inherit; padding: 6px 14px; border-radius: 6px;
   border: 1px solid #ffd479; background: #2a2f45; color: inherit; cursor: pointer; }
 
@@ -53,6 +64,7 @@ export const UI_STYLES = `
   clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .jq-root-large .jq-dialogue { font-size: 17px; }
 .jq-root-large .jq-hud { font-size: 14px; }
+.jq-root-large .jq-disclaimer { font-size: 12px; }
 
 /* index.html sets #ui-root > * { pointer-events: auto }; the HUD stays click-through. */
 #ui-root > .jq-hud, #ui-root > .jq-toast { pointer-events: none; }

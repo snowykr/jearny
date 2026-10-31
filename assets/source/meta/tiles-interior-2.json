@@ -1,0 +1,126 @@
+{
+  "prompts": {
+    "furniture": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\noriginal design, not resembling any Nintendo/Game Freak/Pok\u00e9mon asset. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. First reference interior sheet is the primary runtime style; station and shop are style references only. Generate ONE furniture sheet 4 columns \u00d7 2 rows, no gutters, no labels. Each cell exactly 16x16 logical pixels enlarged, output 1024x512 if possible. Extremely chunky pixel art, one pixel outline, NOT detailed painted objects. Row 1: stairs going UP toward back wall, warm wood steps rising to pale landing at top with side railing; stairs going DOWN into dark opening at top with descending treads and dark walnut rim; wooden bed HEAD half with cream pillow and top of muted blue blanket; bed FOOT half with same blue blanket and wood footboard. The bed halves must stack vertically without seam (head bottom joins foot top), same width 12/16, centered. Row 2: small wooden writing DESK with pale paper; matching wooden DESK CHAIR; WARDROBE TOP half with cornice and upper double doors; WARDROBE BOTTOM half with continuing double doors, brass handles and feet. Wardrobe halves must stack seamlessly, 14/16 width centered. Transparent background around objects. Each cell uses almost full area. Walnut brown, ochre wood, cream, desaturated slate blue. Limit detail to true 16px shapes.",
+    "trim": "undefined\noriginal design, not resembling any Nintendo/Game Freak/Pok\u00e9mon asset. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Interior atlas is main runtime style, station/shop style only. ONE room-trim sheet, exact 4 columns x 2 rows with no margins/gutters/grid/text, 16x16 logical pixels per cell enlarged. Row1 cells: WALL_CORNICE, a full opaque cream plaster tile with dark walnut horizontal top molding, bottom cream matches existing WALL; WALL_SIDE, full-cell flat solid very dark walnut wall border without bright edges; RUG_EDGE_N full-cell muted terracotta red woven rug, thin ochre horizontal binding ONLY at north/top edge, all other edges red; RUG_EDGE_S same rug with thin ochre binding ONLY at south/bottom. Row2: RUG_EDGE_W same red rug with thin ochre binding ONLY on west/left edge; RUG_EDGE_E same red rug with binding ONLY on east/right edge; BEDROOM_WINDOW cream curtains, blue daylight pane and walnut sill, transparent around window; small ochre and walnut travel SUITCASE with handle and two straps, transparent around object. Override no floor for first six surface cells: those cells must be opaque edge to edge, no padding or outlines except requested binding. Rug interior must exactly match tile 29 in reference sheet (row4 col6), muted terracotta with sparse ochre flecks, designed to surround copies of it. Minimal chunky logical pixels, no tiny texture."
+  },
+  "references": [
+    "public/sprites/tiles-interior.png",
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png"
+  ],
+  "id": "tiles-interior-2",
+  "kind": "tileset",
+  "source": "assets/source/tiles-interior-2-atlas-v1.png",
+  "rawSource": [
+    "assets/source/tiles-interior-2-raw-v1.png",
+    "assets/source/tiles-interior-2-raw-v2.png",
+    "assets/source/tiles-interior-2-raw-v3.png",
+    "assets/source/tiles-interior-2-raw-v4.png"
+  ],
+  "runtimeSize": [
+    128,
+    32
+  ],
+  "sliceX": 8,
+  "sliceY": 2,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "indices": {
+    "STAIRS_UP": 0,
+    "STAIRS_DOWN": 1,
+    "BED_HEAD": 2,
+    "BED_FOOT": 3,
+    "DESK": 4,
+    "DESK_CHAIR": 5,
+    "WARDROBE_TOP": 6,
+    "WARDROBE_BOTTOM": 7,
+    "WALL_CORNICE": 8,
+    "WALL_SIDE": 9,
+    "RUG_EDGE_N": 10,
+    "RUG_EDGE_S": 11,
+    "RUG_EDGE_W": 12,
+    "RUG_EDGE_E": 13,
+    "BEDROOM_WINDOW": 14,
+    "SUITCASE": 15
+  },
+  "status": "review",
+  "export": {
+    "furnitureCropBoxes": [
+      [
+        55,
+        32,
+        455,
+        432
+      ],
+      [
+        483,
+        52,
+        863,
+        432
+      ],
+      [
+        937,
+        48,
+        1297,
+        408
+      ],
+      [
+        1360,
+        85,
+        1700,
+        425
+      ],
+      [
+        81,
+        478,
+        425,
+        822
+      ],
+      [
+        489,
+        478,
+        833,
+        822
+      ],
+      [
+        937,
+        463,
+        1277,
+        803
+      ],
+      [
+        1353,
+        505,
+        1693,
+        845
+      ]
+    ],
+    "trimRugCropBoxes": [
+      [
+        904,
+        54,
+        1296,
+        446
+      ],
+      [
+        1320,
+        24,
+        1712,
+        416
+      ],
+      [
+        66,
+        450,
+        442,
+        826
+      ],
+      [
+        482,
+        450,
+        858,
+        826
+      ]
+    ]
+  },
+  "notes": "Two themed Image Gen 2 sheets, each edited once. Square crops and nearest-neighbour reduction, hard alpha, exact existing interior palette. Rug edges composite generated one-pixel binding strips over existing RUG index 29 to retain its texture. Mock corners combine the corresponding horizontal and vertical strips. No game code changes."
+}

@@ -37,3 +37,20 @@ Image Gen 2 output is a *source*, not a runtime sprite. Before anything is used 
 5. **Review gate:** at 1× and 4× game scale, check exact dimensions, hard transparent edges, a coherent palette, legibility against light and dark ground, and correct anchors. If it fails, iterate with an Image Gen 2 *edit* instead of starting over.
 
 Missing or unapproved assets render as an obvious magenta placeholder in-game. The game never silently shows the wrong art.
+
+## Building collision comes from the art
+
+A building's `collisionTiles` in its meta file is the single source of its collision: the rows the
+sprite actually paints (alpha > 0), measured in 16px ground tiles. `src/content/maps/art-collision.test.ts`
+pins the declared box to the exported pixels, so a re-export that shifts or resizes the art fails
+before it ships.
+
+`footRow` on the map entity is the tile row where the sprite's bottom edge sits; the renderer
+bottom-aligns the sprite there and Y-sorts by it. It defaults to `tile.y + size.y`. Set it when
+`collisionTiles` is shorter than the sprite so the art does not move:
+
+    collision top row = footRow - spriteHeight/16 + floor(opaqueTopPx / 16)
+
+Rows the sprite paints are collision, including a painted roof overhang. Transparent padding above
+or below the painted rows is not. Map authors still place a walkable portal immediately in front of
+the door.

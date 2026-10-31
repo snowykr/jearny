@@ -20,6 +20,8 @@ const MANIFEST_URL = `${import.meta.env.BASE_URL}audio/manifest.json`;
 const MAX_REMEMBERED_EFFECTS = 100;
 
 let manifest: Promise<VoiceManifest | null> | null = null;
+/** Line ids with a clip in the published manifest; null until it has loaded. */
+let available: Set<string> | null = null;
 let current: HTMLAudioElement | null = null;
 let volume = 0.8;
 let muted = false;
@@ -53,9 +55,26 @@ export function parseManifest(value: unknown): VoiceManifest | null {
 function loadManifest(): Promise<VoiceManifest | null> {
   manifest ??= fetch(MANIFEST_URL)
     .then((response) => (response.ok ? response.json() : null))
-    .then((json: unknown) => parseManifest(json))
-    .catch(() => null);
+    .then((json: unknown) => {
+      const parsed = parseManifest(json);
+      available = new Set(parsed ? Object.keys(parsed.lines) : []);
+      return parsed;
+    })
+    .catch(() => {
+      available = new Set();
+      return null;
+    });
   return manifest;
+}
+
+/** Resolves once the manifest is known, so the UI can settle its replay buttons. */
+export function preloadAudio(): Promise<void> {
+  return loadManifest().then(() => undefined);
+}
+
+/** True only when a published clip exists for this line; no clip means no button. */
+export function canReplay(lineId: string): boolean {
+  return available?.has(lineId) ?? false;
 }
 
 /** Applies device-local settings; safe before the first clip. */
