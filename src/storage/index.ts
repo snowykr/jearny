@@ -10,7 +10,9 @@ export interface SaveSlot {
 export type SaveLoad =
   | { status: 'empty' }
   | { status: 'ok'; slot: SaveSlot }
-  | { status: 'corrupt' };
+  | { status: 'version_mismatch'; foundVersion: string }
+  | { status: 'corrupt' }
+  | { status: 'unavailable' };
 
 export interface SaveStore {
   /** `corrupt` means data existed but nothing usable matched `contentVersion`. */
@@ -126,6 +128,8 @@ export function readSlot(raw: unknown, contentVersion: string): SaveLoad {
   }
   if (previous && previous.contentVersion === contentVersion)
     return { status: 'ok', slot: { current: previous, previous: null } };
+  const found = current ?? previous;
+  if (found) return { status: 'version_mismatch', foundVersion: found.contentVersion };
   return { status: 'corrupt' };
 }
 
@@ -178,16 +182,20 @@ export function createIndexedDbStore(): SaveStore {
       try {
         return readSlot(await read(), contentVersion);
       } catch {
-        return { status: 'corrupt' };
+        return { status: 'unavailable' };
       }
     },
     async save(snapshot) {
       const handle = await db();
-      const raw = await read();
-      const previous = isRecord(raw) && decodeSnapshot(raw.current) ? raw.current : null;
       await new Promise<void>((resolve, reject) => {
         const transaction = handle.transaction(STORE_NAME, 'readwrite');
-        transaction.objectStore(STORE_NAME).put({ previous, current: structuredClone(snapshot) }, 'slot');
+        const store = transaction.objectStore(STORE_NAME);
+        const read = store.get('slot');
+        read.onsuccess = () => {
+          // Only a decodable current may become the previous save.
+          const previous = isRecord(read.result) ? decodeSnapshot(read.result.current) : null;
+          store.put({ previous, current: structuredClone(snapshot) }, 'slot');
+        };
         transaction.oncomplete = () => resolve();
         transaction.onerror = () => reject(transaction.error ?? new Error('IndexedDB write failed'));
         transaction.onabort = () => reject(transaction.error ?? new Error('IndexedDB write aborted'));

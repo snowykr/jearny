@@ -23,6 +23,9 @@ export const UI_STYLES = `
 .jq-choice:disabled { opacity: .45; cursor: not-allowed; }
 .jq-cue { display: block; text-align: right; color: #ffd479; font-size: 12px; }
 .jq-cue[hidden] { visibility: hidden; }
+.jq-replay { margin-top: 6px; font: 11px system-ui, sans-serif; padding: 2px 8px;
+  border-radius: 4px; border: 1px solid #7c8294; background: #1b1f2c; color: #d8d2c0; cursor: pointer; }
+.jq-replay[hidden] { display: none; }
 .jq-toast { position: absolute; left: 50%; top: 16px; transform: translateX(-50%);
   padding: 6px 12px; border-radius: 999px; background: rgba(12, 14, 22, .92); color: #ffe9b0;
   font: 13px system-ui, sans-serif; border: 1px solid #6b6f7d; }

@@ -34,6 +34,17 @@ function atShopOrder(): GameSnapshot {
   return step(s, { type: 'Choose', dialogueNodeId: 'shop.welcome', choiceId: 'order' }).snapshot;
 }
 
+/** Reaches the shop while the guide quest is still `not_started`. */
+function atShopOrderBeforeGuide(): GameSnapshot {
+  let s = initial();
+  s = step(s, { type: 'UsePortal', portalId: PORTAL.homeExit }).snapshot;
+  s = step(s, { type: 'Interact', entityId: ENTITY.stationZone }).snapshot;
+  s = step(s, { type: 'AdvanceDialogue', nodeId: 'station.directions' }).snapshot;
+  s = step(s, { type: 'UsePortal', portalId: PORTAL.shopDoor }).snapshot;
+  s = step(s, { type: 'Interact', entityId: ENTITY.shopkeeper }).snapshot;
+  return step(s, { type: 'Choose', dialogueNodeId: 'shop.welcome', choiceId: 'order' }).snapshot;
+}
+
 describe('reduce: revisions and illegal transitions', () => {
   it('rejects a stale expectedRevision without touching the snapshot', () => {
     const snapshot = initial();
@@ -141,6 +152,21 @@ describe('reduce: purchases', () => {
     );
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) expect(outcome.reason).toBe('not_available');
+  });
+
+  it('refuses an early purchase before the guide quest is active', () => {
+    const s = atShopOrderBeforeGuide();
+    expect(s.quests[QUEST.firstTrip]).toBe('not_started');
+    const outcome = reduce(
+      s,
+      command(s, { type: 'Buy', shopId: 'shop:matsushimaya', itemId: ITEM.mochi, quantity: 2 }),
+      content,
+    );
+    expect(outcome.ok).toBe(false);
+    if (outcome.ok) return;
+    expect(outcome.reason).toBe('prerequisite_missing');
+    expect(outcome.snapshot.walletYen).toBe(1000);
+    expect(outcome.snapshot.dialogue.nodeId).toBe('shop.quantity');
   });
 
   it('re-asks without charging when the quantity is not the mission quantity', () => {
@@ -271,5 +297,46 @@ describe('reduce: portals and effects', () => {
     const again = step(s, { type: 'Interact', entityId: ENTITY.stationZone });
     expect(again.effects).toHaveLength(0);
     expect(again.snapshot).toBe(s);
+  });
+});
+
+describe('reduce: dialogue branches', () => {
+  it('routes a wrong quantity through the clarification node', () => {
+    const s = atShopOrder();
+    const wrong = step(s, { type: 'Choose', dialogueNodeId: 'shop.quantity', choiceId: 'one' });
+    expect(wrong.snapshot.dialogue.nodeId).toBe('shop.wrong');
+    expect(wrong.snapshot.walletYen).toBe(1000);
+
+    const back = step(wrong.snapshot, {
+      type: 'Choose',
+      dialogueNodeId: 'shop.wrong',
+      choiceId: 'back',
+    });
+    expect(back.snapshot.dialogue.nodeId).toBe('shop.quantity');
+    expect(back.effects.map((effect) => effect.type)).toEqual(['ShowDialogue', 'PlayLine']);
+  });
+});
+
+describe('reduce: station staff and collect', () => {
+  it('lets the player re-read the directions from the station staff', () => {
+    let s = step(initial(), { type: 'UsePortal', portalId: PORTAL.homeExit }).snapshot;
+    s = step(s, { type: 'Interact', entityId: ENTITY.stationStaff }).snapshot;
+    expect(s.flags['visited:station']).toBe(true);
+    s = step(s, { type: 'AdvanceDialogue', nodeId: 'station.directions' }).snapshot;
+
+    const again = step(s, { type: 'Interact', entityId: ENTITY.stationStaff });
+    expect(again.snapshot.dialogue.nodeId).toBe('station.directions');
+    expect(again.effects.length).toBeGreaterThan(0);
+  });
+
+  it('rejects Collect until item anchors exist', () => {
+    const s = initial();
+    const known = reduce(s, command(s, { type: 'Collect', entityId: ENTITY.guide }), content);
+    expect(known.ok).toBe(false);
+    if (!known.ok) expect(known.reason).toBe('not_available');
+
+    const unknown = reduce(s, command(s, { type: 'Collect', entityId: 'item:nope' }), content);
+    expect(unknown.ok).toBe(false);
+    if (!unknown.ok) expect(unknown.reason).toBe('unknown_entity');
   });
 });

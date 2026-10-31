@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONVERSATION, ENTITY, ITEM, QUEST, SHOP } from '../contracts';
+import { CONVERSATION, ENTITY, ITEM, QUEST, SHOP, ZONE } from '../contracts';
 import worldPlan from '../../content/world-plan.json';
 import { content } from './index';
 import { SPOKEN_LINES } from './dialogue';
@@ -60,6 +60,26 @@ describe('content validation', () => {
     expect(content.conversations[CONVERSATION.guideIntro]).toBeDefined();
     expect(content.conversations[CONVERSATION.shopOrder]).toBeDefined();
     expect(quest?.transitions[2]?.when).toEqual([{ type: 'delivered', entityId: ENTITY.guide }]);
+
+    // The mission quantity is authored in the quest, the shop and the delivery.
+    const gate = quest?.transitions[1]?.when.find(
+      (condition) => condition.type === 'inventoryAtLeast' && condition.itemId === ITEM.mochi,
+    );
+    expect(gate).toEqual({ type: 'inventoryAtLeast', itemId: ITEM.mochi, quantity: 2 });
+    expect(shop?.requiredQuantity).toBe(2);
+  });
+
+  it('uses contract zone ids in every visited condition', () => {
+    const zones = new Set<string>(Object.values(ZONE));
+    for (const quest of Object.values(content.quests)) {
+      for (const transition of quest.transitions) {
+        for (const condition of transition.when) {
+          if (condition.type === 'visited') expect(zones.has(condition.zoneId)).toBe(true);
+          if (condition.type === 'conversationPassed')
+            expect(content.conversations[condition.conversationId]).toBeDefined();
+        }
+      }
+    }
   });
 
   it('points the guide and shop nodes at the entities Track A places', () => {

@@ -14,6 +14,8 @@ export interface GameSession {
   updateSettings(patch: SettingsPatch): void;
   /** Returns an unsubscribe function. Called immediately with the current snapshot. */
   subscribe(listener: SessionListener): () => void;
+  /** Drops the saved slot and starts a fresh session. Optional for read-only clients. */
+  reset?(): Promise<void>;
   close(): Promise<void>;
 }
 

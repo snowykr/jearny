@@ -54,30 +54,28 @@ export function hintText(reason: string, content: WorldContent): string {
   return content.ui.hints[reason as RejectReason] ?? reason;
 }
 
-/** Node choices plus, at a shop's order node, catalog-driven purchase choices. */
+/** Node choices plus, at a shop's order node, the catalog purchase choice. */
 export function visibleChoices(snapshot: GameSnapshot, content: WorldContent): ChoiceView[] {
   const node = currentNode(snapshot, content);
   if (!node) return [];
-  const views: ChoiceView[] = (node.choices ?? []).map((choice) => ({
-    kind: 'choice',
-    id: choice.id,
-    label: choice.displayText,
-  }));
+  const views: ChoiceView[] = [];
   for (const shop of Object.values(content.shops)) {
     if (shop.orderNodeId !== node.id) continue;
     for (const item of shop.items) {
-      for (let quantity = 1; quantity <= item.maxQuantity; quantity++) {
-        views.push({
-          kind: 'buy',
-          id: `${item.itemId}:${quantity}`,
-          label: `${quantity}こ`,
-          shopId: shop.shopId,
-          itemId: item.itemId,
-          quantity,
-          priceYen: item.priceYen * quantity,
-        });
-      }
+      const quantity = shop.requiredQuantity;
+      views.push({
+        kind: 'buy',
+        id: `${item.itemId}:${quantity}`,
+        label: `${quantity}こ`,
+        shopId: shop.shopId,
+        itemId: item.itemId,
+        quantity,
+        priceYen: item.priceYen * quantity,
+      });
     }
+  }
+  for (const choice of node.choices ?? []) {
+    views.push({ kind: 'choice', id: choice.id, label: choice.displayText });
   }
   return views;
 }

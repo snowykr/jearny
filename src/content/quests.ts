@@ -1,6 +1,6 @@
 // Quest data for the first journey (docs/ARCHITECTURE.md §6, content/world-plan.json).
 import type { QuestDefinition } from '../contracts';
-import { CONVERSATION, ENTITY, ITEM, QUEST } from '../contracts';
+import { CONVERSATION, ENTITY, ITEM, QUEST, ZONE } from '../contracts';
 
 export const QUESTS: Record<string, QuestDefinition> = {
   [QUEST.firstTrip]: {
@@ -16,7 +16,7 @@ export const QUESTS: Record<string, QuestDefinition> = {
         from: 'active',
         to: 'ready_to_return',
         when: [
-          { type: 'visited', zoneId: 'station' },
+          { type: 'visited', zoneId: ZONE.station },
           { type: 'conversationPassed', conversationId: CONVERSATION.shopOrder },
           { type: 'inventoryAtLeast', itemId: ITEM.mochi, quantity: 2 },
         ],

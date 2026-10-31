@@ -9,16 +9,27 @@ import type {
   QuestCondition,
   RejectReason,
 } from '../contracts';
-import { ENTITY, ITEM, QUEST } from '../contracts';
+import { ENTITY, ITEM, QUEST, ZONE } from '../contracts';
 import type { WorldContent } from '../content';
-
-const REQUIRED_MOCHI = 2;
 
 export type Update = { snapshot: GameSnapshot } | { reason: RejectReason };
 
 const flagVisited = (zoneId: string) => `visited:${zoneId}`;
 const flagConversation = (conversationId: string) => `conversationPassed:${conversationId}`;
 const flagDelivered = (entityId: string) => `delivered:${entityId}`;
+
+/** Reads the mission quantity from the quest data so it is authored once. */
+function requiredQuantity(content: WorldContent, itemId: string): number {
+  for (const questId of content.questOrder) {
+    for (const transition of content.quests[questId]?.transitions ?? []) {
+      for (const condition of transition.when) {
+        if (condition.type === 'inventoryAtLeast' && condition.itemId === itemId)
+          return condition.quantity;
+      }
+    }
+  }
+  throw new Error(`No quest requires ${itemId}`);
+}
 
 function reject(reason: RejectReason, snapshot: GameSnapshot): Outcome {
   return { ok: false, reason, snapshot };
@@ -114,9 +125,10 @@ function interact(
       const status = snapshot.quests[QUEST.firstTrip] ?? 'not_started';
       if (status === 'ready_to_return') {
         const held = snapshot.inventory[ITEM.mochi] ?? 0;
-        if (held < REQUIRED_MOCHI) return { reason: 'prerequisite_missing' };
+        const needed = requiredQuantity(content, ITEM.mochi);
+        if (held < needed) return { reason: 'prerequisite_missing' };
         const inventory = { ...snapshot.inventory };
-        const remaining = held - REQUIRED_MOCHI;
+        const remaining = held - needed;
         if (remaining > 0) inventory[ITEM.mochi] = remaining;
         else delete inventory[ITEM.mochi];
         const delivered = setFlag({ ...snapshot, inventory }, flagDelivered(ENTITY.guide));
@@ -130,11 +142,15 @@ function interact(
             : content.entries.guideReminder;
       return { snapshot: enterNode(snapshot, node, content, effects) };
     }
-    case ENTITY.stationZone:
-    case ENTITY.stationStaff: {
+    case ENTITY.stationZone: {
       // A dispatches this on entering the zone; repeat entries are side-effect free.
-      if (snapshot.flags[flagVisited('station')]) return { snapshot };
-      const visited = setFlag(snapshot, flagVisited('station'));
+      if (snapshot.flags[flagVisited(ZONE.station)]) return { snapshot };
+      const visited = setFlag(snapshot, flagVisited(ZONE.station));
+      return { snapshot: enterNode(visited, content.entries.station, content, effects) };
+    }
+    case ENTITY.stationStaff: {
+      // The NPC stays talkative so the directions can be re-read.
+      const visited = setFlag(snapshot, flagVisited(ZONE.station));
       return { snapshot: enterNode(visited, content.entries.station, content, effects) };
     }
     case ENTITY.shopkeeper:
@@ -157,6 +173,10 @@ function buy(
     return { reason: 'not_available' };
   const item = shop.items.find((candidate) => candidate.itemId === payload.itemId);
   if (!item) return { reason: 'unknown_entity' };
+  // The shop conversation is reachable before the quest starts; buying early
+  // would skip the active objective, so the order waits for the guide.
+  if ((snapshot.quests[QUEST.firstTrip] ?? 'not_started') === 'not_started')
+    return { reason: 'prerequisite_missing' };
   if (!Number.isInteger(payload.quantity) || payload.quantity < 1)
     return { reason: 'invalid_choice' };
   if (payload.quantity > item.maxQuantity) return { reason: 'capacity_exceeded' };
@@ -236,6 +256,8 @@ function apply(snapshot: GameSnapshot, command: Command, content: WorldContent, 
     case 'UsePortal':
       return usePortal(snapshot, payload.portalId, content, effects);
     case 'Collect': {
+      // Deferred: the v1 maps contain no item anchors. Reject by name instead of
+      // faking a pickup; items arrive with the quest that owns them.
       const entity = content.maps[snapshot.sceneId].entities.find(
         (candidate) => candidate.id === payload.entityId,
       );

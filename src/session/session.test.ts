@@ -113,7 +113,7 @@ describe('session: effects, settings and saves', () => {
     }
   });
 
-  it('delivers a boot hint to subscribers once', () => {
+  it('delivers a boot hint to subscribers once and never replays it', async () => {
     const bootEffect: Effect = { type: 'ShowHint', reason: 'content_version_mismatch', id: 'boot:0' };
     const { session } = make({ bootEffects: [bootEffect] });
     const first: Effect[] = [];
@@ -122,6 +122,77 @@ describe('session: effects, settings and saves', () => {
     session.subscribe((_snapshot, effects) => second.push(...effects));
     expect(first).toEqual([bootEffect]);
     expect(second).toEqual([bootEffect]);
+
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(first.filter((effect) => effect.id === bootEffect.id)).toHaveLength(1);
+    expect(second.filter((effect) => effect.id === bootEffect.id)).toHaveLength(1);
+  });
+
+  it('resets the store and the snapshot', async () => {
+    const { session, store } = make();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(session.snapshot.revision).toBe(1);
+
+    await session.reset?.();
+    expect(session.snapshot.revision).toBe(0);
+    expect(session.snapshot.dialogue.status).toBe('closed');
+    expect((await store.load(content.version)).status).toBe('empty');
+  });
+
+  it('rejects a reused commandId with a different payload', async () => {
+    const { session } = make();
+    const first = await session.dispatchCommand({
+      commandId: 'same-id',
+      expectedRevision: 0,
+      payload: { type: 'Interact', entityId: ENTITY.guide },
+    });
+    expect(first.ok).toBe(true);
+
+    const second = await session.dispatchCommand({
+      commandId: 'same-id',
+      expectedRevision: session.snapshot.revision,
+      payload: { type: 'UsePortal', portalId: PORTAL.homeExit },
+    });
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.reason).toBe('not_available');
+    expect(session.snapshot.sceneId).toBe('home-interior');
+  });
+
+  it('stops mutating after close', async () => {
+    const { session } = make();
+    await session.close();
+    const outcome = await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(outcome.ok).toBe(false);
+    if (!outcome.ok) expect(outcome.reason).toBe('not_available');
+    expect(session.snapshot.revision).toBe(0);
+  });
+
+  it('ignores a non-finite volume instead of persisting an invalid save', () => {
+    const { session } = make();
+    session.updateSettings({ volume: Number.NaN });
+    expect(session.snapshot.settings.volume).toBe(0.8);
+  });
+
+  it('hints once when the store cannot write', async () => {
+    const failing = {
+      load: async () => ({ status: 'empty' }) as const,
+      save: async () => {
+        throw new Error('quota');
+      },
+      clear: async () => undefined,
+    };
+    const session = createSession({
+      content,
+      store: failing,
+      initial: createInitialSnapshot('failing', content.version),
+    });
+    const hints: Effect[] = [];
+    session.subscribe((_snapshot, effects) => hints.push(...effects));
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(hints).toContainEqual(
+      expect.objectContaining({ type: 'ShowHint', reason: 'storage_unavailable' }),
+    );
   });
 
   it('stops notifying after close', async () => {

@@ -14,7 +14,14 @@ export interface UiText {
   speakers: Record<string, string>;
   items: Record<string, string>;
   objectives: Record<QuestStatus, ObjectiveText>;
-  hints: Record<RejectReason | 'shop_quantity_mismatch' | 'content_version_mismatch', string>;
+  hints: Record<
+    | RejectReason
+    | 'shop_quantity_mismatch'
+    | 'content_version_mismatch'
+    | 'save_corrupt'
+    | 'storage_unavailable',
+    string
+  >;
   labels: {
     wallet: string;
     quest: string;
@@ -30,6 +37,7 @@ export interface UiText {
     keyboard: string;
     touch: string;
     close: string;
+    replay: string;
     startOver: string;
     questComplete: string;
   };
@@ -59,7 +67,9 @@ export const UI_TEXT: UiText = {
     invalid_choice: '選べません',
     invalid_portal: 'そこへは行けません',
     shop_quantity_mismatch: 'もう一度、数を確認しましょう',
-    content_version_mismatch: 'セーブデータを新しく始めます',
+    content_version_mismatch: '古いセーブデータです。はじめから遊べます',
+    save_corrupt: 'セーブデータを読み込めませんでした',
+    storage_unavailable: 'セーブできません（保存領域が使えません）',
   },
   labels: {
     wallet: '所持金',
@@ -76,6 +86,7 @@ export const UI_TEXT: UiText = {
     keyboard: 'キーボード',
     touch: 'タッチ',
     close: '閉じる',
+    replay: 'もう一度聞く',
     startOver: 'はじめから',
     questComplete: 'クエスト達成！',
   },

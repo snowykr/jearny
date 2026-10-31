@@ -20,15 +20,23 @@ function snapshot(overrides: Partial<GameSnapshot> = {}): GameSnapshot {
 }
 
 describe('view model', () => {
-  it('lists node choices and catalog quantities at the shop order node', () => {
+  it('lists the catalog purchase and the dialogue choices at the shop order node', () => {
     const atOrder = snapshot({
       dialogue: { status: 'choosing', nodeId: 'shop.quantity', speakerId: ENTITY.shopkeeper },
     });
     const choices = visibleChoices(atOrder, content);
     const buys = choices.filter((choice) => choice.kind === 'buy');
-    expect(buys).toHaveLength(5);
-    expect(choices[0]).toEqual({ kind: 'choice', id: 'again', label: 'もう一度お願いします。' });
-    expect(buys[1]).toMatchObject({ quantity: 2, priceYen: 600, shopId: 'shop:matsushimaya' });
+    expect(buys).toHaveLength(1);
+    expect(choices[0]).toEqual({
+      kind: 'buy',
+      id: 'mochi:2',
+      label: '2こ',
+      shopId: 'shop:matsushimaya',
+      itemId: 'mochi',
+      quantity: 2,
+      priceYen: 600,
+    });
+    expect(choices.slice(1).map((choice) => choice.id)).toEqual(['again', 'one', 'three']);
   });
 
   it('has no choices when the dialogue is closed', () => {

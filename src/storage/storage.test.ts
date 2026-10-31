@@ -53,10 +53,13 @@ describe('storage: slot selection', () => {
     expect(loaded.slot.previous).toBeNull();
   });
 
-  it('treats a stale content version as corrupt instead of rewriting it', () => {
+  it('reports a version mismatch instead of rewriting it', () => {
     const stale = valid();
     stale.contentVersion = 'takanawa-v0';
-    expect(readSlot({ current: stale }, version)).toEqual({ status: 'corrupt' });
+    expect(readSlot({ current: stale }, version)).toEqual({
+      status: 'version_mismatch',
+      foundVersion: 'takanawa-v0',
+    });
   });
 });
 
@@ -83,6 +86,6 @@ describe('storage: memory store', () => {
   it('never returns a snapshot for another content version', async () => {
     const store = createMemoryStore();
     await store.save(createInitialSnapshot('one', version));
-    expect((await store.load('takanawa-v2')).status).toBe('corrupt');
+    expect((await store.load('takanawa-v2')).status).toBe('version_mismatch');
   });
 });

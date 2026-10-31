@@ -2,7 +2,7 @@
 // Japanese text from content/dialogue.ja.json so the TTS line and the on-screen
 // text can never drift apart.
 import type { DialogueNode } from '../contracts';
-import { ENTITY } from '../contracts';
+import { CONVERSATION, ENTITY } from '../contracts';
 import linesFile from '../../content/dialogue.ja.json';
 
 interface SpokenLine {
@@ -77,9 +77,19 @@ export const DIALOGUE_NODES: Record<string, DialogueNode> = {
   'shop.quantity': node('shop.quantity', ENTITY.shopkeeper, '', {
     ...spoken('shop.quantity'),
     // Quantity buttons are rendered from the catalog and dispatch `Buy`;
-    // this choice only asks the shopkeeper to repeat the question.
-    choices: [{ id: 'again', displayText: 'もう一度お願いします。', next: 'shop.quantity' }],
+    // these choices are the clarification branch.
+    choices: [
+      { id: 'again', displayText: 'もう一度お願いします。', next: 'shop.quantity' },
+      { id: 'one', displayText: 'ひとつで。', next: 'shop.wrong' },
+      { id: 'three', displayText: 'みっつで。', next: 'shop.wrong' },
+    ],
   }),
+  'shop.wrong': node(
+    'shop.wrong',
+    ENTITY.shopkeeper,
+    'すみません、二つですね。おいくつにしますか。',
+    { choices: [{ id: 'back', displayText: '二つでお願いします。', next: 'shop.quantity' }] },
+  ),
   'shop.confirm': node('shop.confirm', ENTITY.shopkeeper, '', {
     ...spoken('shop.confirm'),
   }),
@@ -87,8 +97,8 @@ export const DIALOGUE_NODES: Record<string, DialogueNode> = {
 
 /** Which conversation a node completes when it is entered. */
 export const CONVERSATIONS: Record<string, { startNodeId: string; completedNodeId: string }> = {
-  guide_intro: { startNodeId: 'guide.intro', completedNodeId: 'guide.depart' },
-  shop_order: { startNodeId: 'shop.welcome', completedNodeId: 'shop.confirm' },
+  [CONVERSATION.guideIntro]: { startNodeId: 'guide.intro', completedNodeId: 'guide.depart' },
+  [CONVERSATION.shopOrder]: { startNodeId: 'shop.welcome', completedNodeId: 'shop.confirm' },
 };
 
 /** Entry node for an interaction that is not chosen by quest state. */

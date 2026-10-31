@@ -147,13 +147,54 @@ describe('dialogue overlay', () => {
     expect(modal?.hidden).toBe(true);
   });
 
-  it('shows the start-over prompt for a corrupt save hint', () => {
-    const { root } = mount({
-      bootEffects: [{ type: 'ShowHint', reason: 'content_version_mismatch', id: 'boot:0' }],
+  it('shows the start-over prompt for an unreadable save and resets on confirm', async () => {
+    const { root, session } = mount({
+      bootEffects: [{ type: 'ShowHint', reason: 'save_corrupt', id: 'boot:0' }],
     });
     const modal = root.querySelector<HTMLElement>('.jq-modal');
     expect(modal?.hidden).toBe(false);
     expect(modal?.querySelector('h2')?.textContent).toBe('はじめから');
+
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(session.snapshot.revision).toBe(1);
+    press('Enter');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(modal?.hidden).toBe(true);
+    expect(session.snapshot.revision).toBe(0);
+  });
+
+  it('offers only the mission quantity plus the clarification choices', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await session.dispatch({ type: 'Choose', dialogueNodeId: 'guide.intro', choiceId: 'accept' });
+    await session.dispatch({ type: 'AdvanceDialogue', nodeId: 'guide.depart' });
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.homeExit });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.stationZone });
+    await session.dispatch({ type: 'AdvanceDialogue', nodeId: 'station.directions' });
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.shopDoor });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.shopkeeper });
+    await session.dispatch({ type: 'Choose', dialogueNodeId: 'shop.welcome', choiceId: 'order' });
+
+    expect(buttons(root).map((button) => button.textContent)).toEqual([
+      '2こ ¥600',
+      'もう一度お願いします。',
+      'ひとつで。',
+      'みっつで。',
+    ]);
+    buttons(root)[2]?.click();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(session.snapshot.dialogue.nodeId).toBe('shop.wrong');
+  });
+
+  it('shows the replay button only for nodes with a published line', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    const replay = root.querySelector<HTMLButtonElement>('.jq-replay');
+    expect(replay?.hidden).toBe(false);
+
+    await session.dispatch({ type: 'Choose', dialogueNodeId: 'guide.intro', choiceId: 'accept' });
+    expect(replay?.hidden).toBe(true);
   });
 
   it('toggles settings and applies the large text class', () => {

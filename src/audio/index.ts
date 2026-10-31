@@ -37,7 +37,8 @@ export function parseManifest(value: unknown): VoiceManifest | null {
   for (const [lineId, raw] of Object.entries(candidate.lines as Record<string, unknown>)) {
     if (typeof raw !== 'object' || raw === null) return null;
     const line = raw as Partial<ManifestLine>;
-    if (typeof line.path !== 'string' || !line.path.startsWith('/')) return null;
+    if (typeof line.path !== 'string' || !line.path.startsWith('/') || line.path.startsWith('//'))
+      return null;
     lines[lineId] = {
       path: line.path,
       hash: typeof line.hash === 'string' ? line.hash : '',
@@ -79,11 +80,23 @@ export function stopAudio(): void {
 function play(path: string): void {
   stopAudio();
   if (muted || typeof Audio === 'undefined') return;
-  const audio = new Audio(path);
+  // Manifest paths are root-absolute; a sub-path deploy still needs its base.
+  const url = `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
+  const audio = new Audio(url);
   audio.volume = volume;
   current = audio;
   void audio.play()?.catch(() => {
     if (current === audio) current = null;
+  });
+}
+
+/** Replays one published line on demand (the dialogue box button). */
+export function replayAudio(lineId: string): void {
+  if (muted) return;
+  void loadManifest().then((loaded) => {
+    const line = loaded?.lines[lineId];
+    if (!line) return;
+    play(line.path);
   });
 }
 

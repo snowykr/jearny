@@ -2,7 +2,7 @@
 // it owns no quest or inventory state. No KAPLAY imports.
 import type { Effect, GameSession, GameSnapshot } from '../contracts';
 import { content as gameContent } from '../content';
-import { applyAudioSettings, stopAudio } from '../audio';
+import { applyAudioSettings, replayAudio, stopAudio } from '../audio';
 import { UI_STYLES } from './styles';
 import {
   currentNode,
@@ -67,9 +67,11 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   const textEl = element('p', 'jq-text');
   const choicesEl = element('div', 'jq-choices');
   const cue = element('span', 'jq-cue', '▼');
+  const replay = element('button', 'jq-replay', labels.replay);
+  replay.type = 'button';
   const live = element('p', 'jq-sr');
   live.setAttribute('aria-live', 'polite');
-  dialogue.append(speaker, textEl, choicesEl, cue, live);
+  dialogue.append(speaker, textEl, replay, choicesEl, cue, live);
   dialogue.hidden = true;
 
   // --- toast / settings / modal -------------------------------------------
@@ -134,6 +136,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   let selected = 0;
   let announced = '';
   let modalOpen = false;
+  let modalAction: (() => void) | null = null;
   let toastTimer = 0;
 
   const renderText = (): void => {
@@ -180,6 +183,10 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       announced = '';
     }
     speaker.textContent = speakerName(snapshot, gameContent);
+    replay.hidden = !node.lineId;
+    replay.onclick = () => {
+      if (node.lineId) replayAudio(node.lineId);
+    };
     renderText();
     renderChoices(snapshot);
   };
@@ -212,10 +219,11 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     }, TOAST_MS);
   };
 
-  const openModal = (title: string, body: string, action: string): void => {
+  const openModal = (title: string, body: string, action: string, onAction?: () => void): void => {
     modalTitle.textContent = title;
     modalBody.textContent = body;
     modalButton.textContent = action;
+    modalAction = onAction ?? closeModal;
     modal.hidden = false;
     modalOpen = true;
     modalButton.focus();
@@ -228,8 +236,10 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
 
   const handleEffect = (effect: Effect, snapshot: GameSnapshot): void => {
     if (effect.type === 'ShowHint') {
-      if (effect.reason === 'content_version_mismatch') {
-        openModal(labels.startOver, hintText(effect.reason, gameContent), labels.startOver);
+      if (effect.reason === 'content_version_mismatch' || effect.reason === 'save_corrupt') {
+        openModal(labels.startOver, hintText(effect.reason, gameContent), labels.startOver, () => {
+          void session.reset?.();
+        });
       } else {
         showToast(hintText(effect.reason, gameContent));
       }
@@ -271,7 +281,9 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         event.stopPropagation();
+        const run = modalAction;
         closeModal();
+        run?.();
       }
       return;
     }
@@ -328,14 +340,18 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     settings.hidden = true;
   });
   mute.addEventListener('change', () => session.updateSettings({ muted: mute.checked }));
-  volume.addEventListener('input', () => session.updateSettings({ volume: Number(volume.value) }));
+  volume.addEventListener('change', () => session.updateSettings({ volume: Number(volume.value) }));
   textSize.addEventListener('change', () => {
     session.updateSettings({ textSize: textSize.value === 'large' ? 'large' : 'normal' });
   });
   inputMode.addEventListener('change', () => {
     session.updateSettings({ inputMode: inputMode.value === 'touch' ? 'touch' : 'keyboard' });
   });
-  modalButton.addEventListener('click', closeModal);
+  modalButton.addEventListener('click', () => {
+    const run = modalAction;
+    closeModal();
+    run?.();
+  });
   dialogue.addEventListener('click', () => {
     const snapshot = session.snapshot;
     const node = currentNode(snapshot, gameContent);
