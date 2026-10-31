@@ -11,15 +11,20 @@ A FireRed-style top-down pixel adventure for practising Japanese around Takanawa
 
 ## Setup (each device)
 
-Requires Node 20.6+ (22 recommended).
+Requires Node 22.x (pinned in `package.json`; this is also the Vercel runtime).
 
 ```bash
 git clone https://github.com/snowykr/jearny.git
 cd jearny
 npm install
 npm run check      # typecheck + unit tests + voice tests
-npm run dev        # http://localhost:5173 — arrow keys move the placeholder square
+npm run dev        # http://localhost:5173 — arrows/WASD walk, Space/Enter interacts
 ```
+
+Current state on `main` is **M1**: the authored Takanawa map, interiors, sprites, walking,
+collision, camera and touch controls are live, but `src/session/` is still the stub, so doors
+change scenes only in dev (a `DEV` fallback) and stay put in a production build until Track B's
+real session lands (WORKSPLIT M2).
 
 ### Make your track worktree
 

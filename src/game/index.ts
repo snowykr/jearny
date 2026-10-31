@@ -24,9 +24,11 @@ interface SceneArgs {
 
 export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
   const input = createInputBus();
-  attachKeyboard(input);
+  const detachKeyboard = attachKeyboard(input);
   // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input.
-  const unmountTouch = mountTouchControls(document.body, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
+  // Mounted inside the UI surface so it shares a stacking context with the dialogue overlay.
+  const uiRoot = document.getElementById('ui-root') ?? document.body;
+  const unmountTouch = mountTouchControls(uiRoot, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
 
   const k = kaplay({
     global: false,
@@ -71,9 +73,11 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
   });
   window.addEventListener(
     'pagehide',
-    () => {
+    (event) => {
+      if (event.persisted) return; // page may be restored from the back/forward cache
       unsubscribe();
       unmountTouch();
+      detachKeyboard();
     },
     { once: true },
   );
@@ -82,9 +86,14 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
     handleEffects(r.outcome.ok ? r.outcome.effects : []);
     // DEV FALLBACK until Track B session (#14): the stub session never emits ChangeScene,
     // so walk through the portal locally. Skipped if the session already moved us.
-    if (import.meta.env.DEV && r.portal && r.outcome.ok && token === sceneToken) {
-      console.warn(`[game] DEV FALLBACK: no ChangeScene for ${r.portal.id}; moving to ${r.portal.toScene}@${r.portal.toSpawn} locally`);
-      enter(r.portal.toScene, r.portal.toSpawn);
+    if (r.portal && r.outcome.ok && token === sceneToken) {
+      if (import.meta.env.DEV) {
+        console.warn(`[game] DEV FALLBACK: no ChangeScene for ${r.portal.id}; moving to ${r.portal.toScene}@${r.portal.toSpawn} locally`);
+        enter(r.portal.toScene, r.portal.toSpawn);
+      } else {
+        // Production is M1: the stub session does not emit ChangeScene yet (Track B, #14).
+        console.warn(`[game] portal ${r.portal.id} accepted but no ChangeScene effect; scene unchanged (needs the M2 session)`);
+      }
     }
   };
 

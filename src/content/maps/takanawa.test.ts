@@ -48,6 +48,13 @@ describe('authored Takanawa map', () => {
   });
 
   it('blocks all rail and road tiles and confines crossings to Route 15', () => {
+    // Guard the invariant itself: the loop below is vacuous if the layers lose these tiles.
+    const count = (tile: number) => map.layers.ground.filter((t) => t === tile).length;
+    const crossings = count(T.CROSSING_H);
+    expect(count(T.RAIL_V)).toBe(96 * 4);
+    expect(crossings).toBe(3 * 5);
+    // The crossing replaces the 3 crossing rows of each of the 3 road columns.
+    expect(count(T.ROAD)).toBe(3 * (96 - 3));
     const blocked = new Set<number>([T.ROAD, T.ROAD_EDGE_N, T.ROAD_EDGE_S,
       T.ROAD_EDGE_E, T.ROAD_EDGE_W, T.RAIL_H, T.RAIL_V]);
     map.layers.ground.forEach((tile, index) => {
