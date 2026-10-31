@@ -13,6 +13,7 @@ import { playerPixel } from './player';
 import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
+import { mountMinimap } from './minimap';
 import { mountTouchControls } from './touch';
 
 export { VIEW_H, VIEW_W };
@@ -41,6 +42,21 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
   });
 
   let current: SceneRuntime | null = null;
+
+  // minimap wiring (#40): reads the player from the runtime via a getter, no DOM polling.
+  const getPlayerTile = (): [number, number] | null => {
+    if (!current) return null;
+    const [px, py] = playerPixel(current.player, current.map.tileSize);
+    return [px / current.map.tileSize, py / current.map.tileSize];
+  };
+  const unmountMinimap = mountMinimap(uiRoot, {
+    getPlayer: () => {
+      const tile = getPlayerTile();
+      return current && tile ? { sceneId: current.map.id, tile } : null;
+    },
+    getSnapshot: () => session.snapshot,
+  });
+
   let sceneToken = 0; // bumps on every (re)entry; lets stale async results be ignored
   const dedupe = createEffectDeduper();
   let seenKey = `${session.snapshot.sceneId}@${session.snapshot.spawnId}`;
@@ -75,6 +91,7 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
     window.removeEventListener('pagehide', onPageHide);
     unsubscribe();
     unmountTouch();
+    unmountMinimap(); // minimap wiring (#40)
     detachKeyboard();
   };
   const onPageHide = (event: PageTransitionEvent) => {
