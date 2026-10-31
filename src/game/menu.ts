@@ -1,5 +1,5 @@
 // Start menu (#65): a pixel-styled, read-only window over the session snapshot.
-// Tabs are バッグ / クエスト / マップ / とじる; no command is ever dispatched here.
+// Tabs are 持ち物 / クエスト / マップ plus 閉じる; no command is ever dispatched here.
 // The menu owns its DOM, styles and key listener, so the game only has to OR
 // `isOpen()` into its input predicate.
 import type { GameSnapshot, QuestStatus } from '../contracts';
@@ -29,10 +29,7 @@ export interface StartMenu {
 export const MENU_TEXT = {
   title: 'メニュー',
   open: 'メニューを開く',
-  bag: 'バッグ',
-  quest: 'クエスト',
   map: 'マップ',
-  close: 'とじる',
 } as const;
 
 /** Item flavour text for the bag; unknown items fall back to the bare name. */
@@ -159,8 +156,8 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   tablist.setAttribute('aria-label', menuText.title);
 
   const tabLabels: Record<TabId, string> = {
-    bag: menuText.bag,
-    quest: menuText.quest,
+    bag: labels.bag,
+    quest: labels.quest,
     map: menuText.map,
   };
   const tabs = {} as Record<TabId, HTMLButtonElement>;
@@ -175,7 +172,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     tabs[id] = tab;
   }
 
-  const closeButton = make('button', 'jr-menu-close', menuText.close);
+  const closeButton = make('button', 'jr-menu-close', labels.close);
   closeButton.type = 'button';
   closeButton.dataset.testid = 'start-menu-close';
 
@@ -387,7 +384,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     }
 
     if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-      // Swallow arrows even when focus is on とじる or the panel: keyboard.ts maps them
+      // Swallow arrows even when focus is on 閉じる or the panel: keyboard.ts maps them
       // to the walk bus, and a held arrow must never start walking under the menu.
       event.preventDefault();
       event.stopImmediatePropagation();
