@@ -80,6 +80,7 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   // --- HUD -----------------------------------------------------------------
   // One compact chip: money, the current objective, and two small buttons. The
   // start menu's Bag/Quest tabs own inventory and quest detail (#65, #68).
+  const settingsPanelId = 'jq-settings-panel';
   const hud = element('div', 'jq-hud');
   // The chip drops the "所持金" prefix to stay narrow; screen readers still get it.
   const wallet = element('span', 'jq-wallet');
@@ -108,6 +109,8 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   noteButton.setAttribute('aria-controls', disclaimer.id);
   const settingsButton = element('button', 'jq-hud-settings', labels.settings);
   settingsButton.type = 'button';
+  settingsButton.setAttribute('aria-controls', settingsPanelId);
+  settingsButton.setAttribute('aria-expanded', 'false');
   hud.append(wallet, objectiveBox, noteButton, settingsButton, disclaimerShort, disclaimer);
   // --- dialogue ------------------------------------------------------------
   const dialogue = element('div', 'jq-dialogue');
@@ -132,6 +135,9 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   toast.setAttribute('aria-live', 'polite');
 
   const settings = element('div', 'jq-settings');
+  settings.id = settingsPanelId;
+  settings.setAttribute('role', 'dialog');
+  settings.setAttribute('aria-label', labels.settings);
   settings.hidden = true;
   const muteLabel = element('label');
   const mute = element('input');
@@ -408,7 +414,7 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
       if (event.key === 'Escape') {
         event.preventDefault();
         event.stopPropagation();
-        settings.hidden = true;
+        setSettingsOpen(false);
         return;
       }
       // The panel owns the game keys while it is open. Native defaults on the
@@ -470,12 +476,14 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
     disclaimer.hidden = expanded;
     noteButton.setAttribute('aria-expanded', String(!expanded));
   });
-  settingsButton.addEventListener('click', () => {
-    settings.hidden = !settings.hidden;
-  });
-  settingsClose.addEventListener('click', () => {
-    settings.hidden = true;
-  });
+  function setSettingsOpen(open: boolean): void {
+    settings.hidden = !open;
+    settingsButton.setAttribute('aria-expanded', String(open));
+    if (open) mute.focus();
+    else settingsButton.focus();
+  }
+  settingsButton.addEventListener('click', () => setSettingsOpen(settings.hidden));
+  settingsClose.addEventListener('click', () => setSettingsOpen(false));
   mute.addEventListener('change', () => session.updateSettings({ muted: mute.checked }));
   volume.addEventListener('change', () => session.updateSettings({ volume: Number(volume.value) }));
   textSize.addEventListener('change', () => {
