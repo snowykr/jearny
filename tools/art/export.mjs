@@ -4,10 +4,12 @@
 //
 //   node tools/art/export.mjs            export everything
 //   node tools/art/export.mjs station    export only the listed ids (manifest keeps the other entries)
+//
+// Importing this module only exposes renderSprite(meta); the CLI runs when the file is executed directly.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { PNG } from 'pngjs';
 import { countColors, processImage, runtimeSizeFor } from './lib.mjs';
 
@@ -54,15 +56,14 @@ function loadMetas() {
   return metas;
 }
 
-function exportAsset(meta) {
+/** Run the pipeline for one meta fragment without writing: returns the encoded sprite and its manifest entry. */
+export function renderSprite(meta) {
   const sourcePath = join(ROOT, meta.source);
   if (!existsSync(sourcePath)) throw new Error(`source not found: ${meta.source}`);
   const sourceBuf = readFileSync(sourcePath);
   const src = decodePng(sourceBuf);
   const out = processImage(src, meta);
   const spriteBuf = encodePng(out);
-  mkdirSync(SPRITES, { recursive: true });
-  writeFileSync(join(SPRITES, `${meta.id}.png`), spriteBuf);
   const entry = {
     id: meta.id,
     kind: meta.kind,
@@ -84,6 +85,13 @@ function exportAsset(meta) {
     ...(meta.mode ? { mode: meta.mode } : {}),
     ...(meta.notes ? { notes: meta.notes } : {}),
   };
+  return { spriteBuf, entry };
+}
+
+function exportAsset(meta) {
+  const { spriteBuf, entry } = renderSprite(meta);
+  mkdirSync(SPRITES, { recursive: true });
+  writeFileSync(join(SPRITES, `${meta.id}.png`), spriteBuf);
   return entry;
 }
 
@@ -116,9 +124,11 @@ function main() {
   writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
-try {
-  main();
-} catch (err) {
-  console.error(err.message);
-  process.exit(1);
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  try {
+    main();
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
 }
