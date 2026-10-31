@@ -1,27 +1,26 @@
 {
   "id": "char-player",
   "kind": "character",
-  "source": "assets/source/char-player-atlas.png",
-  "rawSource": "assets/source/char-player-v2.png",
+  "source": "assets/source/char-player-atlas-v3.png",
+  "rawSource": "assets/source/char-player-v3.png",
   "runtimeSize": [
     48,
-    96
+    80
   ],
   "sliceX": 3,
   "sliceY": 4,
   "generator": "Image Gen 2",
-  "mode": "edit",
-  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. EDIT the attached player sheet, preserve character design and 3-column 4-row layout. Fix row TWO column THREE to face LEFT like the other two figures in row TWO, with opposite leg forward from column TWO. Row THREE stays entirely facing RIGHT. Remove ALL background glow and backdrop: genuinely transparent empty pixels, no shadow or halo. Keep all twelve character silhouettes intact, dark crisp outlines, exact same size throughout. Simplify shading to flat chunky color clusters, no gradients. Rows DOWN, LEFT, RIGHT, UP. Columns idle, step A, step B. Each character fits a 16x24 logical cell. No other changes.",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Buildings are style references only. Original character design, not resembling any Nintendo/Game Freak/Pok\u00e9mon character. ONE sheet of young traveller: beige bucket hat with soft downward brim, short wavy brown hair, round friendly face, mint teal hoodie, navy shorts, mustard yellow backpack, white sneakers. No red cap, no spiky hair, no trainer jacket. Chibi proportions: head 9 logical pixels tall, entire figure 13 wide by 19 tall. EXACTLY 3 columns and 4 rows equally spaced; rows DOWN, LEFT, RIGHT, UP; columns IDLE, STEP A, STEP B with opposite feet advancing. All figures in row 2 face LEFT and all in row 3 face RIGHT. Logical sheet 48x80, each cell 16x20. Draw enlarged with chunky pixel blocks, minimal detail legible at 1x. Feet bottom centre, uniform scale. Transparent background, no grids, no labels, no glow.",
   "references": [
-    "assets/source/char-player-v1.png",
-    "assets/source/home-v1.png",
+    "assets/source/station-v1.png",
     "assets/source/matsushimaya-v1.png",
-    "assets/source/station-v1.png"
+    "assets/source/home-v1.png"
   ],
   "anchors": {
     "foot": [
       8,
-      24
+      20
     ]
   },
   "collisionTiles": [
@@ -29,120 +28,89 @@
     1
   ],
   "status": "approved",
-  "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB.",
+  "notes": "Original chibi redesign for #42. Rows down,left,right,up; columns idle,stepA,stepB. Requires #41 renderer and exporter support for 16x20 cells.",
   "export": {
-    "method": "Threshold alpha at 128; find 4 occupied row bands and 3 occupied column bands per row; crop each frame to alpha content; preserve aspect ratio and nearest-neighbour fit within 14x22; centre horizontally and bottom-align in 16x24 cells; assemble 48x96 sheet; median-cut quantize to 23 RGB colors with dithering disabled; restore hard alpha and zero transparent RGB.",
-    "palette": "Per-sheet median-cut from reference-matched generated art, <=23 opaque colors plus transparent.",
-    "frameOrder": [
-      "down-idle",
-      "down-stepA",
-      "down-stepB",
-      "left-idle",
-      "left-stepA",
-      "left-stepB",
-      "right-idle",
-      "right-stepA",
-      "right-stepB",
-      "up-idle",
-      "up-stepA",
-      "up-stepB"
-    ],
+    "method": "Threshold alpha at 128; identify occupied row and column bands; crop each frame to content; nearest-neighbour fit preserving aspect within 14x19; bottom-centre in 16x20 cells; assemble 48x80; quantize to 23 RGB colors without dithering; restore alpha and zero transparent RGB.",
     "sourceFrameBounds": [
       [
-        132,
-        84,
-        321,
-        391
+        41,
+        67,
+        284,
+        406
       ],
       [
-        415,
-        84,
-        607,
-        402
+        365,
+        67,
+        608,
+        415
       ],
       [
-        703,
-        84,
-        893,
-        402
+        687,
+        67,
+        928,
+        415
       ],
       [
-        101,
-        430,
-        309,
-        744
+        42,
+        439,
+        271,
+        775
       ],
       [
-        383,
-        430,
-        597,
-        742
+        360,
+        439,
+        588,
+        775
       ],
       [
-        677,
-        430,
-        891,
-        743
+        675,
+        439,
+        901,
+        775
       ],
       [
-        122,
-        775,
-        341,
-        1087
+        55,
+        803,
+        286,
+        1137
       ],
       [
-        415,
-        775,
-        641,
-        1090
+        376,
+        803,
+        605,
+        1137
       ],
       [
-        711,
-        775,
-        932,
-        1090
+        696,
+        803,
+        925,
+        1141
       ],
       [
-        126,
-        1115,
-        321,
-        1426
+        44,
+        1179,
+        281,
+        1539
       ],
       [
-        414,
-        1115,
-        609,
-        1436
+        369,
+        1179,
+        603,
+        1551
       ],
       [
-        702,
-        1115,
-        898,
-        1436
+        689,
+        1179,
+        925,
+        1549
       ]
     ]
   },
-  "history": [
-    {
-      "source": "assets/source/char-player-v1.png",
-      "mode": "generate",
-      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. The attached home, sweet shop and station are STYLE references only; do not draw buildings. Generate ONE player character walk sheet. Young traveller with red cap, blue jacket, tan backpack, dark trousers. EXACTLY 3 columns by 4 rows, twelve full-body poses. Rows top to bottom DOWN (front), LEFT (profile facing left), RIGHT (profile facing right), UP (back). Columns idle feet together, step A left leg forward/right arm forward, step B opposite leg and arm forward. Side-view walking legs must separate clearly. All poses same head size and body proportions, no diagonal poses. Logical canvas 48x96, cells 16x24. Render enlarged at 16x scale on a 768x1536 transparent canvas with no lines or labels; grid cells 256x384. Feet bottom centre of each cell. Simplify each figure to 14x22 logical pixels with chunky single-pixel dark outline. Identical garment colors across all frames. No floor shadows or stray pixels.",
-      "references": [
-        "assets/source/home-v1.png",
-        "assets/source/matsushimaya-v1.png",
-        "assets/source/station-v1.png"
-      ],
-      "decision": "Superseded: row 2 column 3 faced right. Corrected through built-in image edit."
-    }
-  ],
-  "sha256": "87f991949230db7924ac0bdd070891939ece75e1eb907fc9f5ec28a249f55a7c",
-  "sourceSha256": "c5eb7d79ade9117652781e7dcc1bf2507e160da9042b2197aac1f34cab2f77c5",
   "verification": {
     "dimensions": [
       48,
-      96
+      80
     ],
-    "rgbaColors": 24,
     "alphaValues": [
       0,
       255
@@ -152,6 +120,80 @@
     "reviewScales": [
       1,
       4
+    ],
+    "frameBounds": [
+      [
+        1,
+        1,
+        15,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        1,
+        1,
+        14,
+        20
+      ],
+      [
+        2,
+        1,
+        14,
+        20
+      ],
+      [
+        2,
+        1,
+        14,
+        20
+      ]
     ]
   }
 }

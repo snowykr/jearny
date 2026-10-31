@@ -4,14 +4,16 @@
 import type { Color, KAPLAYCtx } from 'kaplay';
 import type { EntityAnchor } from '../contracts';
 import { TILESET_FOR_SCENE } from '../content/maps/tiles';
-import { ASSETS, hasAsset } from './assets';
+import { ASSETS, DEFAULT_CELL, SHEET_COLS, characterCell, hasAsset } from './assets';
 import { visibleTiles } from './camera';
 import type { Dir } from './input';
-import { playerPixel } from './player';
+import { playerDrawPixel, walkColumn } from './player';
 import type { SceneRuntime } from './scene';
 
-const CHAR_W = 16;
-const CHAR_H = 24;
+/** Ground shadow under every character: 10×4 px ellipse, ~25% black. */
+const SHADOW_W = 10;
+const SHADOW_H = 4;
+const SHADOW_OPACITY = 0.25;
 /** Walk sheet rows: down, left, right, up. */
 const FACING_ROW: Record<Dir, number> = { down: 0, left: 1, right: 2, up: 3 };
 
@@ -43,6 +45,14 @@ const hashRgb = (s: string): RGB => {
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return [80 + (h & 127), 80 + ((h >> 7) & 127), 80 + ((h >> 14) & 127)];
 };
+
+/**
+ * Top-left of a character cell so that its bottom-centre sits on the bottom edge of the tile at
+ * (tileX, tileBottom), centred horizontally. Always integers: no sub-pixel drawing, no scaling.
+ */
+export function footAnchoredOrigin(tileX: number, tileBottom: number, tileSize: number, cellW: number, cellH: number): [number, number] {
+  return [Math.floor(tileX + (tileSize - cellW) / 2), tileBottom - cellH];
+}
 
 interface Drawable {
   foot: number;
@@ -95,14 +105,13 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
     const py = e.tile[1] * ts;
     if (px < minX || px > maxX || py < minY || py > maxY) continue;
     if (e.kind === 'building') items.push({ foot: (e.tile[1] + (e.size?.[1] ?? 1)) * ts, draw: () => drawBuilding(k, e, ts) });
-    else items.push({ foot: py + ts, draw: () => drawCharacter(k, charSprite(e), px, py + ts, e.facing ?? 'down', 0, hashRgb(e.id)) });
+    else items.push({ foot: py + ts, draw: () => drawCharacter(k, charSprite(e), px, py + ts, ts, rt.npcFacing(e.id) ?? e.facing ?? 'down', 0, hashRgb(e.id)) });
   }
-  const [ppx, ppy] = playerPixel(rt.player, ts);
+  const [ppx, ppy] = playerDrawPixel(rt.player, ts);
   const [bx, by] = rt.bumpOffset();
-  const walking = rt.player.to !== null;
   items.push({
     foot: ppy + ts,
-    draw: () => drawCharacter(k, 'char-player', Math.round(ppx) + bx, Math.round(ppy) + ts + by, rt.player.facing, walking ? 1 + rt.player.parity : 0, [230, 80, 80]),
+    draw: () => drawCharacter(k, 'char-player', ppx + bx, ppy + ts + by, ts, rt.player.facing, walkColumn(rt.player), [96, 150, 210]),
   });
   items.sort((a, b) => a.foot - b.foot);
   for (const it of items) it.draw();
@@ -126,16 +135,28 @@ function drawBuilding(k: KAPLAYCtx, e: EntityAnchor, ts: number): void {
   k.drawRect({ pos: k.vec2(e.tile[0] * ts, e.tile[1] * ts), width: fw, height: fh, color: cached(k, 'missing', [200, 0, 200]), outline: { width: 1, color: k.rgb(60, 0, 60) } });
 }
 
-/** (footX, bottomY) is the tile's bottom-left; the 16×24 cell sits on it. `col` is 0 idle, 1/2 walk. */
-function drawCharacter(k: KAPLAYCtx, sprite: string, x: number, bottomY: number, facing: Dir, col: number, fallback: RGB): void {
-  const y = bottomY - CHAR_H;
-  if (hasAsset(sprite)) {
-    k.drawSprite({ sprite, frame: FACING_ROW[facing] * 3 + col, pos: k.vec2(x, y) });
+/** (tileX, bottomY) is the tile's bottom-left; the sheet's real cell sits on it by the feet. `col` is 0 idle, 1/2 walk. */
+function drawCharacter(k: KAPLAYCtx, sprite: string, tileX: number, bottomY: number, ts: number, facing: Dir, col: number, fallback: RGB): void {
+  const loadedSprite = hasAsset(sprite);
+  const [cw, ch] = loadedSprite ? characterCell(sprite) : DEFAULT_CELL;
+  const [x, y] = footAnchoredOrigin(tileX, bottomY, ts, cw, ch);
+  k.drawEllipse({
+    pos: k.vec2(x + cw / 2, bottomY - 1),
+    radiusX: SHADOW_W / 2,
+    radiusY: SHADOW_H / 2,
+    color: cached(k, 'shadow', [0, 0, 0]),
+    opacity: SHADOW_OPACITY,
+  });
+  if (loadedSprite) {
+    k.drawSprite({ sprite, frame: FACING_ROW[facing] * SHEET_COLS + col, pos: k.vec2(x, y) });
     return;
   }
-  k.drawRect({ pos: k.vec2(x + 2, y + 6), width: CHAR_W - 4, height: CHAR_H - 8, color: cached(k, `c:${fallback}`, fallback), outline: { width: 1, color: k.rgb(20, 20, 30) } });
-  // Facing marker so direction is readable on the placeholder.
-  const fx = facing === 'left' ? x + 3 : facing === 'right' ? x + CHAR_W - 7 : x + 6;
-  const fy = facing === 'up' ? y + 8 : y + 12;
-  k.drawRect({ pos: k.vec2(fx, fy), width: 4, height: 3, color: k.rgb(255, 255, 255) });
+  // 16×20 placeholder: 8×8 head over a 10×9 body so the silhouette matches the chibi spec.
+  const outline = k.rgb(20, 20, 30);
+  k.drawRect({ pos: k.vec2(x + 3, y + 10), width: cw - 6, height: ch - 11, color: cached(k, `c:${fallback}`, fallback), outline: { width: 1, color: outline } });
+  k.drawRect({ pos: k.vec2(x + 4, y + 1), width: 8, height: 9, color: cached(k, 'c:head', [236, 200, 170]), outline: { width: 1, color: outline } });
+  // Facing marker (eyes) so direction is readable on the placeholder.
+  const eyeX = facing === 'left' ? x + 5 : facing === 'right' ? x + 9 : x + 6;
+  const eyeY = y + 5;
+  if (facing !== 'up') k.drawRect({ pos: k.vec2(eyeX, eyeY), width: 2, height: 2, color: outline });
 }

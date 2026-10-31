@@ -4,12 +4,12 @@ import kaplay from 'kaplay';
 import type { Effect, GameSession, SceneId } from '../contracts';
 import { maps } from '../content/maps';
 import { loadAssets } from './assets';
-import { VIEW_H, VIEW_W, cameraCenter } from './camera';
+import { VIEW_H, VIEW_W, sceneCamera } from './camera';
 import { createInputBus } from './input';
 import type { InputBus } from './input';
 import { createEffectDeduper } from './interaction';
 import { attachKeyboard } from './keyboard';
-import { playerPixel } from './player';
+import { playerDrawPixel } from './player';
 import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
@@ -23,13 +23,18 @@ interface SceneArgs {
   spawnId: string;
 }
 
-export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
+export function startGame(
+  canvas: HTMLCanvasElement,
+  session: GameSession,
+  /** True while the DOM UI owns input (dialogue, settings, modal). */
+  isInputBlocked: () => boolean = () => session.snapshot.dialogue.status !== 'closed',
+): { input: InputBus } {
   const input = createInputBus();
   const detachKeyboard = attachKeyboard(input);
-  // D-pad + A overlay on touch devices; hidden while B's dialogue UI owns input. Mounted inside
+  // D-pad + A overlay on touch devices; hidden while the DOM UI owns input. Mounted inside
   // #ui-root so it lives on the same DOM surface as the DOM UI (it still paints above it).
   const uiRoot = document.getElementById('ui-root') ?? document.body;
-  const unmountTouch = mountTouchControls(uiRoot, input, { isDialogueOpen: () => session.snapshot.dialogue.status !== 'closed' });
+  const unmountTouch = mountTouchControls(uiRoot, input, { isInputBlocked: isInputBlocked });
 
   const k = kaplay({
     global: false,
@@ -113,10 +118,7 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): { in
     const map = maps[sceneId];
     const rt = createSceneRuntime({ map, spawnId, session, bus: input, onResult: onResult(sceneToken) });
     current = rt;
-    const cam = (): [number, number] => {
-      const [px, py] = playerPixel(rt.player, map.tileSize);
-      return cameraCenter([px + map.tileSize / 2, py + map.tileSize / 2], [map.grid[0] * map.tileSize, map.grid[1] * map.tileSize]);
-    };
+    const cam = (): [number, number] => sceneCamera(map, playerDrawPixel(rt.player, map.tileSize));
     k.onUpdate(() => {
       rt.update(Math.min(k.dt(), 0.05));
       const [cx, cy] = cam();

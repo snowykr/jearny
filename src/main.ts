@@ -7,5 +7,5 @@ import { handleAudioEffects } from './audio';
 
 const session = await openSession('takanawa-v1');
 session.subscribe((_snapshot, effects) => handleAudioEffects(effects));
-mountUi(document.getElementById('ui-root')!, session);
-startGame(document.getElementById('game') as HTMLCanvasElement, session);
+const ui = mountUi(document.getElementById('ui-root')!, session);
+startGame(document.getElementById('game') as HTMLCanvasElement, session, ui.ownsInput);

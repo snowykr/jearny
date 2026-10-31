@@ -27,9 +27,9 @@ function mount(options: { bootEffects?: Effect[] } = {}) {
     initial: createInitialSnapshot('ui-test', content.version),
     ...options,
   });
-  const unmount = mountUi(root, session);
-  cleanup = unmount;
-  return { root, session, unmount };
+  const ui = mountUi(root, session);
+  cleanup = ui.unmount;
+  return { root, session, ui, unmount: ui.unmount };
 }
 
 const dialogueBox = (root: HTMLElement) => root.querySelector<HTMLElement>('.jq-dialogue');
@@ -312,6 +312,30 @@ describe('dialogue overlay', () => {
     // Only the explicit restart leaves the prompt.
     press('Enter');
     expect(modal?.hidden).toBe(true);
+  });
+
+  it('owns input while a dialogue, the settings panel or a modal is open', async () => {
+    const { root, session, ui } = mount();
+    expect(ui.ownsInput()).toBe(false);
+
+    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    expect(ui.ownsInput()).toBe(true);
+    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    expect(ui.ownsInput()).toBe(false);
+
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(ui.ownsInput()).toBe(true);
+    press('Escape');
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(ui.ownsInput()).toBe(false);
+  });
+
+  it('owns input while the completion notice is open', async () => {
+    const { ui } = mount({
+      bootEffects: [{ type: 'ShowHint', reason: 'save_corrupt', id: 'boot:corrupt' }],
+    });
+    expect(ui.ownsInput()).toBe(true);
   });
 
   it('removes its DOM and style on unmount', () => {

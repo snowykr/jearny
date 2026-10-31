@@ -14,7 +14,7 @@ import {
   type AssetMeta,
   type RgbaImage,
 } from '../../tools/art/lib.mjs';
-import { ASSETS, hasAsset, loadAssets, placeholderComps, spriteOrPlaceholder } from './assets';
+import { ASSETS, DEFAULT_CELL, cellSizeOfSheet, characterCell, hasAsset, loadAssets, placeholderComps, spriteOrPlaceholder } from './assets';
 
 /** Deterministic pseudo-random RGBA image (LCG) so tests need no fixtures. */
 function noise(w: number, h: number, seed = 1, alphaLevels = [0, 60, 127, 128, 200, 255]): RgbaImage {
@@ -164,6 +164,40 @@ describe('asset loader', () => {
         expect(player.anims).toHaveProperty(`idle-${dir}`);
       }
       expect(hasAsset('station')).toBe(true);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('cellSizeOfSheet reads the real cell size of 3×4 sheets', () => {
+    expect(cellSizeOfSheet(48, 96)).toEqual([16, 24]); // legacy
+    expect(cellSizeOfSheet(48, 80)).toEqual([16, 20]); // chibi spec
+    expect(cellSizeOfSheet(0, 0)).toBeNull();
+    expect(cellSizeOfSheet(Number.NaN, 80)).toBeNull();
+    expect(cellSizeOfSheet(2, 3)).toBeNull();
+  });
+
+  it('records each character sheet size from the decoded image; unknown sheets use the 16×20 default', async () => {
+    const sizes: Record<string, [number, number]> = { 'char-player': [48, 80], 'char-guide': [48, 96] };
+    class SizedImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      width = 0;
+      height = 0;
+      set src(url: string) {
+        const [w, h] = sizes[url.replace('/sprites/', '').replace('.png', '')] ?? [48, 80];
+        this.width = w;
+        this.height = h;
+        queueMicrotask(() => this.onload?.());
+      }
+    }
+    vi.stubGlobal('Image', SizedImage);
+    try {
+      await loadAssets(fakeKaplay());
+      expect(characterCell('char-player')).toEqual([16, 20]);
+      expect(characterCell('char-guide')).toEqual([16, 24]);
+      expect(characterCell('char-shopkeeper')).toEqual([16, 20]);
+      expect(characterCell('char-nobody')).toEqual(DEFAULT_CELL);
     } finally {
       vi.unstubAllGlobals();
     }
