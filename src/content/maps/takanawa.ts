@@ -19,6 +19,10 @@ const BUILDINGS: readonly EntityAnchor[] = [
   { id: BUILDING.liebe, kind: 'building', tile: [20, 30], size: [5, 5], footRow: 35, assetId: 'liebe' },
   // Residential row on the north side of the home lane: every door opens onto the pavement.
   { id: BUILDING.houseThree, kind: 'building', tile: [9, 34], size: [5, 4], footRow: 38, assetId: 'house-3' },
+  // The apartment block closes the west head of the lane. Its 128px sprite is centred over a 112px
+  // footprint, so 8px overhangs each side as paint only (render.ts drawBuilding); the door lands on
+  // the lane's own south row, which is why the plaza apron runs west from x8 along row 43.
+  { id: BUILDING.apartmentMid, kind: 'building', tile: [1, 35], size: [7, 8], footRow: 43, assetId: 'apartment-mid' },
   { id: BUILDING.apartmentSmall, kind: 'building', tile: [25, 31], size: [6, 7], footRow: 38, assetId: 'apartment-small' },
   { id: BUILDING.houseTwo, kind: 'building', tile: [37, 33], size: [5, 5], footRow: 38, assetId: 'house-2' },
   // Station corner: the police box and the convenience store front the walkway off the crossing.
@@ -28,6 +32,10 @@ const BUILDINGS: readonly EntityAnchor[] = [
   { id: BUILDING.cafe, kind: 'building', tile: [59, 28], size: [5, 5], footRow: 33, assetId: 'cafe' },
   // Bicycle parking at the foot of the deck stairs, south of the plaza.
   { id: BUILDING.bicycleParking, kind: 'building', tile: [52, 41], size: [4, 3], footRow: 44, assetId: 'bicycle-parking' },
+  // Office tower on the station block, filling the meadow between the forecourt plaza, the raised
+  // deck fence and the south lane. Twelve rows of art stay clear of the deck, station and road, and
+  // its door opens onto a plaza apron that meets the x54..55 sidewalk.
+  { id: BUILDING.officeTower, kind: 'building', tile: [47, 46], size: [7, 12], footRow: 58, assetId: 'office-tower' },
   // 泉岳寺: the hall sits behind a stone court, the gate opens onto the temple path (34,24 is the
   // approach marker on the minimap), and the gate's own paved apron is the path's north row.
   { id: BUILDING.sengakujiHall, kind: 'building', tile: [32, 6], size: [10, 8], footRow: 14, assetId: 'sengakuji-hall' },
@@ -259,6 +267,11 @@ paint('ground', T.SIDEWALK, 12, 16, 20, 20);
 // Doorstep pavements, one per new building: a door that opens onto bare lawn reads as scenery and
 // leaves the player guessing where the entrance is.
 paint('ground', T.PLAZA, 21, 35, 24, 37); // bakery forecourt below liebe's door
+// The apartment-mid door sits on the home lane's south row, so the lane's west end needs pavement
+// west of x8 rather than a lawn verge.
+paint('ground', T.PLAZA, 1, 43, 7, 43);
+// Office-tower forecourt: one row south of the footprint, joining the x54..55 sidewalk.
+paint('ground', T.PLAZA, 47, 58, 53, 58);
 paint('ground', T.PLAZA, 31, 14, 41, 15); // 泉岳寺 court between the hall and the gate
 paint('ground', T.PLAZA, 33, 22, 40, 22); // gate's paved apron on the temple path
 // The gate's central passage is the sanmon's painted opening, mandated by sengakuji-gate.json.
@@ -353,7 +366,7 @@ const BEDS: ReadonlyArray<[number, number, number, number]> = [
   [8, 44, 13, 44], [21, 44, 24, 44], [26, 44, 30, 44], [37, 44, 41, 44], // south shoulder of the lane
   [9, 33, 13, 33], [25, 30, 30, 30], [37, 32, 41, 32], [20, 29, 24, 29], // behind the houses
   [47, 20, 49, 20], [50, 20, 56, 20], // behind the police box and the store
-  [59, 27, 63, 27], [47, 46, 50, 46], // cafe back and bike-parking apron
+  [59, 27, 63, 27], [47, 45, 50, 45], // cafe back and office-tower frontage
   [31, 16, 31, 21], // along the temple wall
   [34, 2, 40, 2], [47, 6, 52, 7], [54, 3, 58, 3], // north meadow banks
   [62, 12, 68, 12], [70, 16, 72, 16], // station garden rim
@@ -374,7 +387,9 @@ for (const [x1, y1, x2, y2] of BEDS) paint('decoration', T.FLOWERS, x1, y1, x2, 
 // Trees: the original clusters, the garden copses, the park corners and the edge screens.
 for (const [x, y] of [[8, 10], [22, 12], [50, 4], [52, 14], [9, 30],
   [21, 56], [68, 30], [58, 6], [66, 10], [71, 28],
-  [4, 4], [24, 3], [29, 7], [4, 30], [6, 33], [5, 39], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
+  // (6,30) rather than (6,33): the apartment block on the lane's west head leaves only two rows of
+  // clearance below the garden, and a canopy that close reads as part of the roof.
+  [4, 4], [24, 3], [29, 7], [4, 30], [6, 30], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
   [5, 89], [10, 91], [25, 47], [32, 47], [36, 51], [60, 16], [66, 20],
   [50, 63], [57, 82], [57, 86], [72, 58], [71, 73],
   [24, 61], [37, 61], [24, 77], [37, 77], [20, 90], [24, 92], [30, 90], [35, 91], [39, 88],
@@ -415,7 +430,8 @@ const COPSES: ReadonlyArray<[number, number, number, number]> = [
   [5, 5, 3, 1], [5, 13, 4, 2], [10, 18, 3, 2], [24, 16, 4, 2], [5, 25, 3, 2],
   [50, 4, 5, 3], [57, 8, 4, 2], [64, 5, 8, 3], [70, 9, 3, 2],
   [50, 16, 5, 3], [55, 12, 4, 2], [62, 18, 6, 2], [66, 22, 2, 2], [63, 21, 1, 1],
-  [6, 53, 5, 2], [10, 49, 4, 2], [26, 57, 3, 2], [36, 55, 4, 2], [50, 52, 4, 2],
+  [6, 53, 5, 2], [10, 49, 4, 2], [26, 57, 3, 2], [36, 55, 4, 2],
+  // [50,52] dropped: the office tower now owns that meadow, so its four trees have nowhere to root.
   [54, 50, 2, 1], [6, 68, 5, 2], [10, 75, 4, 2], [5, 84, 5, 2], [11, 82, 4, 2],
   [62, 64, 7, 2], [67, 67, 3, 2], [48, 72, 3, 1], [20, 92, 1, 1],
   [26, 91, 3, 1], [48, 92, 2, 1], [63, 91, 2, 1],
