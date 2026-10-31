@@ -436,7 +436,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
@@ -474,7 +474,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
@@ -512,7 +512,7 @@
       },
       "collisionTiles": [
         8,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -740,7 +740,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -816,7 +816,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -892,7 +892,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -1069,7 +1069,7 @@
       },
       "collisionTiles": [
         7,
-        3
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
@@ -1107,7 +1107,7 @@
       },
       "collisionTiles": [
         6,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -1404,7 +1404,7 @@
       },
       "collisionTiles": [
         10,
-        4
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -1442,7 +1442,7 @@
       },
       "collisionTiles": [
         6,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
