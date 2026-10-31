@@ -14,6 +14,7 @@ import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
 import { mountMinimap } from './minimap';
+import { mountStartMenu } from './menu';
 import { mountTouchControls } from './touch';
 
 export { VIEW_H, VIEW_W };
@@ -28,13 +29,17 @@ export function startGame(
   session: GameSession,
   /** True while the DOM UI owns input (dialogue, settings, modal). */
   isInputBlocked: () => boolean = () => session.snapshot.dialogue.status !== 'closed',
-): { input: InputBus } {
+): { input: InputBus; openMenu: () => void } {
   const input = createInputBus();
   const detachKeyboard = attachKeyboard(input);
   // D-pad + A overlay on touch devices; hidden while the DOM UI owns input. Mounted inside
   // #ui-root so it lives on the same DOM surface as the DOM UI (it still paints above it).
   const uiRoot = document.getElementById('ui-root') ?? document.body;
-  const unmountTouch = mountTouchControls(uiRoot, input, { isInputBlocked: isInputBlocked });
+  // Start menu (#65): read-only snapshot window; M and the on-screen trigger toggle it.
+  const menu = mountStartMenu(uiRoot, { getSnapshot: () => session.snapshot, isInputBlocked });
+  // One predicate for every input surface, so walking stops the moment the menu opens.
+  const blocked = () => isInputBlocked() || menu.isOpen();
+  const unmountTouch = mountTouchControls(uiRoot, input, { isInputBlocked: blocked });
 
   const k = kaplay({
     global: false,
@@ -96,6 +101,7 @@ export function startGame(
     window.removeEventListener('pagehide', onPageHide);
     unsubscribe();
     unmountTouch();
+    menu.dispose();
     unmountMinimap(); // minimap wiring (#40)
     detachKeyboard();
   };
@@ -116,7 +122,7 @@ export function startGame(
 
   k.scene('map', ({ sceneId, spawnId }: SceneArgs) => {
     const map = maps[sceneId];
-    const rt = createSceneRuntime({ map, spawnId, session, bus: input, isInputBlocked, onResult: onResult(sceneToken) });
+    const rt = createSceneRuntime({ map, spawnId, session, bus: input, isInputBlocked: blocked, onResult: onResult(sceneToken) });
     current = rt;
     const cam = (): [number, number] => sceneCamera(map, playerDrawPixel(rt.player, map.tileSize));
     k.onUpdate(() => {
@@ -146,5 +152,5 @@ export function startGame(
     begin();
   });
 
-  return { input };
+  return { input, openMenu: () => menu.open() };
 }
