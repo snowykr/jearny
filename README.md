@@ -19,6 +19,7 @@ cd jearny
 npm install
 npm run check      # typecheck + unit tests + voice tests
 npm run dev        # http://localhost:5173 — arrows/WASD walk, Space/Enter interacts
+./scripts/serve-demo.sh   # production build + local preview (offline demo fallback)
 ```
 
 Current state on `main` is **M2**: the authored Takanawa map, interiors, sprites, walking,
