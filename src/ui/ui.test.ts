@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CommandPayload, Effect } from '../contracts';
 import { ENTITY, ITEM, PORTAL } from '../contracts';
 import { content } from '../content';
@@ -35,8 +35,8 @@ function mount(options: { bootEffects?: Effect[] } = {}) {
 const dialogueBox = (root: HTMLElement) => root.querySelector<HTMLElement>('.jq-dialogue');
 const buttons = (root: HTMLElement) => [...root.querySelectorAll<HTMLButtonElement>('.jq-choice')];
 
-function press(key: string): KeyboardEvent {
-  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+function press(key: string, init: { repeat?: boolean } = {}): KeyboardEvent {
+  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
   window.dispatchEvent(event);
   return event;
 }
@@ -257,6 +257,60 @@ describe('dialogue overlay', () => {
     }
     expect(session.snapshot.settings.textSize).toBe('large');
     expect(root.classList.contains('jq-root-large')).toBe(true);
+  });
+
+  it('keeps game keys inside the settings panel', () => {
+    const { root } = mount();
+    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    const settings = root.querySelector<HTMLElement>('.jq-settings');
+    expect(settings?.hidden).toBe(false);
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    const gameSaw = vi.fn();
+    window.addEventListener('keydown', gameSaw);
+    try {
+      press('ArrowDown');
+      press(' ');
+      expect(gameSaw).not.toHaveBeenCalled();
+      // Non-game keys (tab navigation) still reach the page.
+      press('Tab');
+      expect(gameSaw).toHaveBeenCalledTimes(1);
+    } finally {
+      window.removeEventListener('keydown', gameSaw);
+    }
+    expect(settings?.hidden).toBe(false);
+  });
+
+  it('ignores auto-repeat while the dialogue owns the keyboard', async () => {
+    const { session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    press('Enter'); // finish the typewriter
+    press('Enter', { repeat: true });
+    await Promise.resolve();
+    // A held Enter must not pick the first choice on its own.
+    expect(session.snapshot.dialogue.nodeId).toBe('guide.intro');
+
+    press('Enter');
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(session.snapshot.dialogue.nodeId).toBe('guide.depart');
+  });
+
+  it('does not dismiss the version-mismatch restart prompt with Escape', () => {
+    const { root } = mount({
+      bootEffects: [
+        { type: 'ShowHint', reason: 'content_version_mismatch', id: 'boot:version' },
+      ],
+    });
+    const modal = root.querySelector<HTMLElement>('.jq-modal');
+    expect(modal?.hidden).toBe(false);
+
+    press('Escape');
+    expect(modal?.hidden).toBe(false);
+
+    // Only the explicit restart leaves the prompt.
+    press('Enter');
+    expect(modal?.hidden).toBe(true);
   });
 
   it('removes its DOM and style on unmount', () => {
