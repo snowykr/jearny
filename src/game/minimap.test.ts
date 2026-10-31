@@ -41,6 +41,8 @@ describe('tile category mapping', () => {
     expect(indoorCategory(IT.TATAMI, -1, false)).toBe('floor-tatami');
     expect(indoorCategory(IT.SHOP_FLOOR, -1, false)).toBe('floor-shop');
     expect(indoorCategory(IT.GENKAN, -1, false)).toBe('floor-stone');
+    // Fence-ringed gardens are painted on the decoration layer; they must not read as grass.
+    expect(outdoorCategory(T.GRASS_C, T.FENCE)).toBe('hedge');
   });
 });
 

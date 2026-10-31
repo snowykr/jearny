@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDING, PORTAL, SPAWN } from '../../contracts';
 import type { Tile } from '../../contracts';
-import { takanawa as map } from './takanawa';
+import { takanawa as map, WALKWAY_TILES } from './takanawa';
 import { maps } from './index';
 import { T } from './tiles';
 import homeMeta from '../../../assets/source/meta/home.json';
@@ -40,6 +40,31 @@ describe('authored Takanawa map', () => {
       [17, 40], [64, 48], [54, 36], [44, 28], [34, 24], [17, 16],
     ] satisfies Tile[]]) expect(seen.has(cell(tile))).toBe(true);
     expect(map.spawns[SPAWN.homeDoor]).toEqual(home);
+  });
+
+  it('varies the meadow with both grass variants and keeps every spawn connected', () => {
+    const count = (tile: number) => map.layers.ground.filter((t) => t === tile).length;
+    expect(count(T.GRASS_B)).toBeGreaterThan(0);
+    expect(count(T.GRASS_C)).toBeGreaterThan(0);
+    // GRASS_A is the base shade, no longer the whole town.
+    expect(count(T.GRASS_A)).toBeLessThan(map.grid[0] * map.grid[1] / 2);
+    const seen = reachable(home, true);
+    for (const spawn of Object.values(map.spawns)) expect(seen.has(cell(spawn))).toBe(true);
+    // The new south neighbourhood is part of that walk, not a sealed block.
+    for (const tile of [[30, 69], [17, 60], [20, 86]] satisfies Tile[])
+      expect(seen.has(cell(tile))).toBe(true);
+  });
+
+  it('leaves no walkable pocket outside the sealed railway side', () => {
+    // Every walkable cell west of the rail tracks is reachable from home; the east bank stays sealed.
+    const seen = reachable(home, true);
+    const strays: Tile[] = [];
+    for (let y = 0; y < map.grid[1]; y++) {
+      for (let x = 0; x <= 81; x++) {
+        if (map.collision[cell([x, y])] === 0 && !seen.has(cell([x, y]))) strays.push([x, y]);
+      }
+    }
+    expect(strays).toEqual([]);
   });
 
   it('requires the deck portals to reach the station', () => {
@@ -95,6 +120,35 @@ describe('authored Takanawa map', () => {
       // Arriving from the interior drops the player on the tile in front of the door.
       expect(map.spawns[c.spawn]).toEqual([expected[0], expected[1] + 1]);
     }
+  });
+
+  it('never paints a flower bed over a walkway', () => {
+    const walkway = WALKWAY_TILES;
+    const bad: Tile[] = [];
+    map.layers.decoration.forEach((tile, index) => {
+      if (tile !== T.FLOWERS) return;
+      const ground = map.layers.ground[index] ?? -1;
+      if (walkway.has(ground)) bad.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it('keeps furniture at the landmarks the guard could empty', () => {
+    const props = new Map<number, Tile[]>();
+    map.layers.decoration.forEach((tile, index) => {
+      const list = props.get(tile) ?? [];
+      list.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
+      props.set(tile, list);
+    });
+    const near = (tile: number, box: [number, number, number, number]): number =>
+      (props.get(tile) ?? []).filter(([x, y]) => x >= box[0] && x <= box[2] && y >= box[1] && y <= box[3]).length;
+    // Prop placement moves to the shoulder when the authored cell is pavement, so counts here
+    // would silently go to zero if the guard started dropping props again.
+    expect(near(T.BENCH, [44, 24, 60, 44])).toBeGreaterThan(0); // station forecourt
+    expect(near(T.LAMPPOST, [44, 24, 60, 44])).toBeGreaterThan(0);
+    expect(near(T.BENCH, [48, 57, 73, 94])).toBeGreaterThan(0); // east neighbourhood
+    expect(near(T.LAMPPOST, [48, 57, 73, 94])).toBeGreaterThan(0);
+    expect(near(T.FLOWERS, [10, 14, 22, 22])).toBeGreaterThan(0); // shop doorstep planters
   });
 
   it('keeps every portal and its destination walkable', () => {
