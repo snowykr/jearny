@@ -7,7 +7,6 @@ import {
   currentNode,
   dialogueKeyAction,
   hintText,
-  inventoryRows,
   objectiveText,
   speakerName,
   typingDone,
@@ -51,14 +50,6 @@ describe('view model', () => {
     expect(
       objectiveText(snapshot({ quests: { [QUEST.firstTrip]: 'ready_to_return' } }), content).ja,
     ).toContain('家に帰って');
-  });
-
-  it('labels inventory rows and hides empty stacks', () => {
-    expect(inventoryRows(snapshot(), content)).toEqual([]);
-    expect(inventoryRows(snapshot({ inventory: { mochi: 2, mystery: 1 } }), content)).toEqual([
-      { itemId: 'mochi', label: 'おもち', count: 2 },
-      { itemId: 'mystery', label: 'mystery', count: 1 },
-    ]);
   });
 
   it('translates reject reasons and falls back to the raw code', () => {

@@ -7,6 +7,7 @@ import { createInitialSnapshot } from '../domain';
 import { createSession } from '../session';
 import { createMemoryStore } from '../storage';
 import { mountUi } from './index';
+import { UI_STYLES } from './styles';
 
 const audio = vi.hoisted(() => ({
   applyAudioSettings: vi.fn(),
@@ -65,6 +66,7 @@ describe('dialogue overlay', () => {
     // Status only: the bag lives in the menu now, so the HUD must not duplicate it.
     expect(root.querySelector('.jq-bag')).toBeNull();
     expect(root.querySelector('.jq-wallet')?.textContent).toContain('¥1000');
+    expect(root.querySelector('.jq-wallet')?.textContent).toContain('所持金');
     expect(root.querySelector('.jq-hud-title')).toBeNull();
     // The chip keeps the notice itself, not just a collapsed button.
     expect(root.querySelector('.jq-disclaimer-short')?.textContent).toContain('架空');
@@ -118,6 +120,8 @@ describe('dialogue overlay', () => {
         expect(event.defaultPrevented).toBe(false);
       }
     }
+    // The dialogue must not advance behind the focused button.
+    expect(session.snapshot.dialogue.nodeId).toBe('guide.intro');
     // Anywhere else, the dialogue still owns the key.
     const arrow = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true });
     dialogueBox(root)?.dispatchEvent(arrow);
@@ -331,9 +335,13 @@ describe('dialogue overlay', () => {
 
   it('toggles settings and applies the large text class', () => {
     const { root, session } = mount();
-    root.querySelector<HTMLButtonElement>('.jq-hud-settings')?.click();
+    const trigger = root.querySelector<HTMLButtonElement>('.jq-hud-settings');
+    trigger?.click();
     const settings = root.querySelector<HTMLElement>('.jq-settings');
     expect(settings?.hidden).toBe(false);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-controls')).toBe(settings?.id);
+    expect(document.activeElement).toBe(settings?.querySelector('input'));
     const textSize = settings?.querySelector<HTMLSelectElement>('select');
     if (textSize) {
       textSize.value = 'large';
@@ -341,6 +349,25 @@ describe('dialogue overlay', () => {
     }
     expect(session.snapshot.settings.textSize).toBe('large');
     expect(root.classList.contains('jq-root-large')).toBe(true);
+  });
+
+  it('closes settings with Escape and returns focus to the trigger', () => {
+    const { root } = mount();
+    const trigger = root.querySelector<HTMLButtonElement>('.jq-hud-settings');
+    trigger?.click();
+    expect(root.querySelector<HTMLElement>('.jq-settings')?.hidden).toBe(false);
+    press('Escape');
+    expect(root.querySelector<HTMLElement>('.jq-settings')?.hidden).toBe(true);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it('keeps the compact chip inside the short-viewport envelope', () => {
+    expect(UI_STYLES).toContain('box-sizing: border-box');
+    expect(UI_STYLES).toContain('max-width: min(260px, calc(100vw - 128px))');
+    expect(UI_STYLES).toContain('max-height: calc(100vh - 16px)');
+    expect(UI_STYLES).toContain('@media (max-height: 220px)');
+    expect(UI_STYLES).toContain('max-width: min(120px, calc(100vw - 128px))');
   });
 
   it('keeps game keys inside the settings panel', () => {
