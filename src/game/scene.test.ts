@@ -2,18 +2,34 @@ import { describe, expect, it } from 'vitest';
 import { ENTITY, PORTAL } from '../contracts';
 import type { CommandPayload, GameSession, GameSnapshot, Outcome } from '../contracts';
 import { maps } from '../content/maps';
-import { createInitialSnapshot } from '../domain/initial';
 import { createInputBus } from './input';
 import { STEP_SECONDS } from './player';
 import { createSceneRuntime, spawnFacing, spawnTile } from './scene';
 import type { CommandResult } from './scene';
 
+/** Local fixture: the scene runtime only reads `dialogue.status`, so it must not depend on Track B's domain. */
+const snapshotWith = (dialogue: GameSnapshot['dialogue']['status']): GameSnapshot => ({
+  schemaVersion: 1,
+  contentVersion: 'test',
+  sessionId: 't',
+  revision: 0,
+  sceneId: 'takanawa',
+  spawnId: 'home-door',
+  inventory: {},
+  walletYen: 0,
+  quests: {},
+  flags: {},
+  dialogue: { status: dialogue, nodeId: null, speakerId: null },
+  cosmetics: [],
+  settings: { volume: 1, muted: true, textSize: 'normal', inputMode: 'keyboard' },
+});
+
 function fakeSession(opts: { reject?: boolean; dialogue?: GameSnapshot['dialogue']['status'] } = {}) {
   const sent: CommandPayload[] = [];
-  const snap = createInitialSnapshot('t');
+  const snap = snapshotWith('closed');
   const session = {
     get snapshot() {
-      return { ...snap, dialogue: { ...snap.dialogue, status: opts.dialogue ?? 'closed' } } as GameSnapshot;
+      return { ...snap, dialogue: { ...snap.dialogue, status: opts.dialogue ?? 'closed' } };
     },
     async dispatch(payload: CommandPayload): Promise<Outcome> {
       sent.push(payload);
