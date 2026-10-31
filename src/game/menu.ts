@@ -407,6 +407,13 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
       return;
     }
 
+    // Up/Down are not menu navigation: keep them off the walk bus but leave the
+    // native scroll alone so a focused panel/select still scrolls.
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.stopImmediatePropagation();
+      return;
+    }
+
     if (MOVE_KEYS.has(event.key.toLowerCase())) {
       event.preventDefault();
       event.stopImmediatePropagation();

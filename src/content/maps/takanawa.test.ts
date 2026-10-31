@@ -114,7 +114,8 @@ describe('authored Takanawa map', () => {
       const spriteW = c.meta.runtimeSize[0] as number;
       const doorX = c.meta.anchors.door[0] as number;
       const worldX = entity!.tile[0] * map.tileSize + (w * map.tileSize - spriteW) / 2 + doorX;
-      const expected: Tile = [Math.floor(worldX / map.tileSize), entity!.tile[1] + h];
+      const footRow = entity!.footRow ?? entity!.tile[1] + h;
+      const expected: Tile = [Math.floor(worldX / map.tileSize), footRow];
       const portal = map.portals.find((p) => p.id === c.portal);
       expect(portal?.tile).toEqual(expected);
       // Arriving from the interior drops the player on the tile in front of the door.
