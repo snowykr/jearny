@@ -19,6 +19,12 @@ export interface EntityAnchor {
   tile: Tile;
   /** Footprint in tiles for buildings/zones. Defaults to [1, 1]. */
   size?: Tile;
+  /**
+   * Tile row of the sprite's bottom edge (draw, Y-sort and camera lift). Defaults to tile.y + size.y.
+   * Set it when the collision footprint is shorter than the sprite, so the art stays where it was
+   * drawn and only the opaque rows block. Collision top = footRow - spriteHeight/16 + floor(opaqueTop/16).
+   */
+  footRow?: number;
   assetId?: string;
   facing?: 'up' | 'down' | 'left' | 'right';
 }
