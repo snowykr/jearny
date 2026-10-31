@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { synthesisInput, cacheKey, createSpeech, validateMp3, validateManifest } from './elevenlabs.mjs';
+import { synthesisInput, cacheKey, createSpeech, validateMp3, validateManifest, resolveVoiceId } from './elevenlabs.mjs';
 
 const line = { id: 'shop.welcome', spokenText: 'いらっしゃいませ。' };
 const input = synthesisInput(line, 'testVoice');
@@ -40,4 +40,21 @@ test('provider errors never return audio or expose provider message', async () =
 test('rejects successful JSON or corrupt audio responses', async () => {
   await assert.rejects(createSpeech(input, 'mock-key', async () => new Response('{}', { headers: { 'content-type': 'application/json' } })), /Expected audio/);
   await assert.rejects(createSpeech(input, 'mock-key', async () => new Response('bad', { headers: { 'content-type': 'audio/mpeg' } })), /Invalid/);
+});
+test('per-speaker voice falls back to the single demo voice', () => {
+  const env = { ELEVENLABS_VOICE_ID: 'demoVoice' };
+  assert.equal(resolveVoiceId('guide', env), 'demoVoice');
+  assert.equal(resolveVoiceId(undefined, env), 'demoVoice');
+});
+
+test('per-speaker voice overrides the demo voice', () => {
+  const env = { ELEVENLABS_VOICE_ID: 'demoVoice', ELEVENLABS_VOICE_ID_STATION_STAFF: 'staffVoice' };
+  assert.equal(resolveVoiceId('station_staff', env), 'staffVoice');
+  assert.equal(resolveVoiceId('guide', env), 'demoVoice');
+  assert.equal(resolveVoiceId('shopkeeper', env), 'demoVoice');
+});
+
+test('unset voices resolve empty and a malformed speaker never reads another env key', () => {
+  assert.equal(resolveVoiceId('guide', {}), '');
+  assert.equal(resolveVoiceId('../x', { ELEVENLABS_VOICE_ID: 'demoVoice' }), 'demoVoice');
 });
