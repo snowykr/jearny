@@ -9,7 +9,7 @@ The goal is that both tracks can push all day without merge conflicts. Each trac
 | Who | Device 1 (this machine) | Device 2 (teammate) |
 | Branch | `track-a/world` | `track-b/logic` |
 | Worktree | `../jearny-world` | `../jearny-logic` |
-| Owns | `src/game/`, `src/content/maps/`, `public/sprites/`, `assets/` | `src/domain/`, `src/session/`, `src/storage/`, `src/ui/`, `src/audio/`, `src/content/` (except `maps/`), `content/`, `tools/voice/`, `public/audio/` |
+| Owns | `src/game/`, `src/content/maps/`, `public/sprites/`, `assets/`, `tools/art/` | `src/domain/`, `src/session/`, `src/storage/`, `src/ui/`, `src/audio/`, `src/content/` (except `maps/`), `content/`, `tools/voice/`, `public/audio/` |
 | Runs against | Stub session in `src/session/` (until B ships the real one) | Placeholder map and gray box (until A ships real maps) |
 | Spec sections | ARCHITECTURE §2, §5 (maps), §10 | ARCHITECTURE §5–8 |
 

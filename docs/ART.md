@@ -31,9 +31,9 @@ The original prompts are in `assets/source/prompts.json`. The architecture refer
 Image Gen 2 output is a *source*, not a runtime sprite. Before anything is used in-game:
 
 1. Save the raw output as `assets/source/<id>-v<N>.png`. Never overwrite an earlier version.
-2. Add an entry to `assets/source/prompts.json` with the generator (`"Image Gen 2"`), mode (`edit`/`generate`), the full prompt, and the list of reference images.
-3. Export to `public/sprites/<id>.png` with the export script (Track A issue): nearest-neighbour downscale to the runtime size, quantize to the shared palette, hard alpha threshold, no stretching.
-4. Update `assets/source/manifest.json` with the sha256, sizes, status, door/foot anchor and collision footprint.
+2. Add or update `assets/source/meta/<id>.json` with the generator (`"Image Gen 2"`), mode (`edit`/`generate`), the full prompt, the reference images, and the output anchors (`anchors.door`, `anchors.foot`) and `collisionTiles` when the asset is a building. This metadata file is the asset registry.
+3. Export to `public/sprites/<id>.png` with `npm run art:export` (`tools/art/`): nearest-neighbour downscale to the runtime size, quantize to the shared palette, hard alpha threshold, no stretching.
+4. Do not hand-edit `assets/source/manifest.json`. The exporter derives it from `meta/<id>.json` and the exported sprites (sha256, sizes, status, anchors, collision footprint); an export that fails leaves the manifest untouched.
 5. **Review gate:** at 1× and 4× game scale, check exact dimensions, hard transparent edges, a coherent palette, legibility against light and dark ground, and correct anchors. If it fails, iterate with an Image Gen 2 *edit* instead of starting over.
 
 Missing or unapproved assets render as an obvious magenta placeholder in-game. The game never silently shows the wrong art.
