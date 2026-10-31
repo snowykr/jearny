@@ -35,7 +35,7 @@ function mount(options: { bootEffects?: Effect[] } = {}) {
 const dialogueBox = (root: HTMLElement) => root.querySelector<HTMLElement>('.jq-dialogue');
 const buttons = (root: HTMLElement) => [...root.querySelectorAll<HTMLButtonElement>('.jq-choice')];
 
-function press(key: string, init: { repeat?: boolean } = {}): KeyboardEvent {
+function press(key: string, init: KeyboardEventInit = {}): KeyboardEvent {
   const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
   window.dispatchEvent(event);
   return event;
@@ -345,5 +345,22 @@ describe('dialogue overlay', () => {
     cleanup = null;
     expect(root.children.length).toBe(0);
     expect(document.head.querySelector('style[data-jq-ui]')).toBeNull();
+  });
+});
+
+describe('ui: modal focus', () => {
+  it('keeps keyboard focus inside the restart prompt', () => {
+    const { root } = mount({
+      bootEffects: [{ type: 'ShowHint', reason: 'save_corrupt', id: 'boot:0' }],
+    });
+    const button = root.querySelector<HTMLButtonElement>('.jq-modal button');
+    expect(button).toBeTruthy();
+    button?.blur();
+    expect(document.activeElement).not.toBe(button);
+
+    press('Tab');
+    expect(document.activeElement).toBe(button);
+    press('Tab', { shiftKey: true });
+    expect(document.activeElement).toBe(button);
   });
 });

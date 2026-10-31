@@ -343,6 +343,13 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   const intercept = (event: KeyboardEvent): void => {
     const snapshot = session.snapshot;
     if (modalOpen) {
+      if (event.key === 'Tab') {
+        // One control; keep keyboard focus inside the dialog.
+        event.preventDefault();
+        event.stopPropagation();
+        modalButton.focus();
+        return;
+      }
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         event.stopPropagation();
