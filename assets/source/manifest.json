@@ -297,11 +297,11 @@
     {
       "id": "tiles-interior",
       "kind": "tileset",
-      "source": "assets/source/tiles-interior-v1.png",
-      "sha256": "abfbc4372b870c5bedf44003c9045603ee5a09762cf3aa1389477f6134af1a81",
+      "source": "assets/source/tiles-interior-atlas-v2.png",
+      "sha256": "da99f0ae864b3fc4e7a446ce2792499b03b12bfa8e88c970a539f73229faef9a",
       "sourceSize": [
-        1774,
-        887
+        128,
+        64
       ],
       "runtimeSize": [
         128,
@@ -310,7 +310,7 @@
       "sliceX": 8,
       "sliceY": 4,
       "sprite": "public/sprites/tiles-interior.png",
-      "spriteSha256": "927daa4fbf8f70ef7bf4cd1e3d5181b34cc3505a2c9d84b93cdfde7d207aa703",
+      "spriteSha256": "151951c33083785657690515a8052b9130c9a1f8a71cc5f43f9a7aa0aea6d3d6",
       "colors": 24,
       "alpha": true,
       "status": "approved",
@@ -322,7 +322,7 @@
       },
       "generator": "Image Gen 2",
       "mode": "generate",
-      "notes": "Reviewed at 1x and 4x. IT order 0..15; 16..31 transparent. Door anchor is bottom-center boundary of NOREN_DOOR tile 12 in atlas coordinates. Fictional interior, no text. Source crops assembled in IT order with nearest-neighbour 16x16 downscale; generated floor quadrants mirrored to guarantee matching opposite edges (0,1,8); wall left half mirrored horizontally. Shared export palette quantized to 23 opaque colors plus transparency, alpha threshold 128. Counter source cropped continuously and split at x449, no separating end walls. Integration of authored rooms and portal rendering belongs to #5; asset registry and pipeline metadata merge belong to #1."
+      "notes": "Reviewed at 1x and 4x. IT order 0..15; 16..31 transparent. Door anchor is bottom-center boundary of NOREN_DOOR tile 12 in atlas coordinates. Fictional interior, no text. Source crops assembled in IT order with nearest-neighbour 16x16 downscale; generated floor quadrants mirrored to guarantee matching opposite edges (0,1,8); wall left half mirrored horizontally. Shared export palette quantized to 23 opaque colors plus transparency, alpha threshold 128. Counter source cropped continuously and split at x449, no separating end walls. Integration of authored rooms and portal rendering belongs to #5; asset registry and pipeline metadata merge belong to #1. Ground tiles 0,1,2,3,6,7,8,12 stretched from their opaque bbox to fill the full 16x16 cell (the generated sheet left transparent gutters, which showed as grid gaps in game)."
     },
     {
       "id": "tiles-outdoor",

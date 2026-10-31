@@ -1,7 +1,7 @@
 {
   "id": "tiles-interior",
   "kind": "tileset",
-  "source": "assets/source/tiles-interior-v1.png",
+  "source": "assets/source/tiles-interior-atlas-v2.png",
   "runtimeSize": [
     128,
     64
@@ -24,7 +24,7 @@
     ]
   },
   "status": "approved",
-  "notes": "Reviewed at 1x and 4x. IT order 0..15; 16..31 transparent. Door anchor is bottom-center boundary of NOREN_DOOR tile 12 in atlas coordinates. Fictional interior, no text. Source crops assembled in IT order with nearest-neighbour 16x16 downscale; generated floor quadrants mirrored to guarantee matching opposite edges (0,1,8); wall left half mirrored horizontally. Shared export palette quantized to 23 opaque colors plus transparency, alpha threshold 128. Counter source cropped continuously and split at x449, no separating end walls. Integration of authored rooms and portal rendering belongs to #5; asset registry and pipeline metadata merge belong to #1.",
+  "notes": "Reviewed at 1x and 4x. IT order 0..15; 16..31 transparent. Door anchor is bottom-center boundary of NOREN_DOOR tile 12 in atlas coordinates. Fictional interior, no text. Source crops assembled in IT order with nearest-neighbour 16x16 downscale; generated floor quadrants mirrored to guarantee matching opposite edges (0,1,8); wall left half mirrored horizontally. Shared export palette quantized to 23 opaque colors plus transparency, alpha threshold 128. Counter source cropped continuously and split at x449, no separating end walls. Integration of authored rooms and portal rendering belongs to #5; asset registry and pipeline metadata merge belong to #1. Ground tiles 0,1,2,3,6,7,8,12 stretched from their opaque bbox to fill the full 16x16 cell (the generated sheet left transparent gutters, which showed as grid gaps in game).",
   "export": {
     "sourceSize": [
       1774,
@@ -128,5 +128,6 @@
         505
       ]
     ]
-  }
+  },
+  "rawSource": "assets/source/tiles-interior-v1.png"
 }
