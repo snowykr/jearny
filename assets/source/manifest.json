@@ -1,74 +1,106 @@
 {
-  "version": 1,
-  "stage": "source_art_not_runtime_atlas",
+  "version": 2,
+  "stage": "exported_runtime_sprites",
   "assets": [
     {
-      "id": "station",
-      "source": "assets/source/station-v1.png",
-      "sha256": "9ab0c914772f3b115b705029443de46faf40c4521743b3bc432de9daf069daff",
-      "sourceSize": [
-        1536,
-        1024
-      ],
-      "proposedRuntimeSize": [
-        192,
-        128
-      ],
-      "status": "needs_edge_cleanup_and_grid_export",
-      "alpha": true,
-      "collision": "not_yet_authored",
-      "doorAnchor": "not_yet_authored"
-    },
-    {
-      "id": "matsushimaya",
-      "source": "assets/source/matsushimaya-v1.png",
-      "sha256": "52ac958effd7cb4d7c7cd1ce3e4a942412c03ab337ab5e8f1069cf2cc15c668c",
-      "sourceSize": [
-        1374,
-        1145
-      ],
-      "proposedRuntimeSize": [
-        96,
-        80
-      ],
-      "status": "needs_grid_palette_export",
-      "alpha": true,
-      "collision": "not_yet_authored",
-      "doorAnchor": "not_yet_authored"
-    },
-    {
-      "id": "liebe",
-      "source": "assets/source/liebe-v1.png",
-      "sha256": "684126cd2e5d3836d54775a6029da15a5b95ed78bcc601d7bc0b2c6807bd96a2",
-      "sourceSize": [
-        1254,
-        1254
-      ],
-      "proposedRuntimeSize": [
-        80,
-        80
-      ],
-      "status": "optional_outside_first_map",
-      "alpha": true,
-      "collision": "not_yet_authored",
-      "doorAnchor": "not_yet_authored"
-    },
-    {
       "id": "home",
+      "kind": "building",
       "source": "assets/source/home-v1.png",
       "sha256": "bd8126a76857e487482c1549b2d037209669a74e1b4d691b3db502e4edacb90b",
       "sourceSize": [
         1145,
         1374
       ],
-      "proposedRuntimeSize": [
+      "runtimeSize": [
         80,
         96
       ],
-      "status": "fictional_needs_grid_export",
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/home.png",
+      "spriteSha256": "e82e1072a52da0b01f29a05bb904a53e35ca4006ebc3096788dde519e281997c",
+      "colors": 24,
       "alpha": true,
-      "collision": "not_yet_authored",
-      "doorAnchor": "not_yet_authored"
+      "status": "draft",
+      "anchors": {},
+      "generator": "built-in image_gen",
+      "mode": "generate",
+      "notes": "v1 draft source; legacy status: fictional_needs_grid_export"
+    },
+    {
+      "id": "liebe",
+      "kind": "building",
+      "source": "assets/source/liebe-v1.png",
+      "sha256": "684126cd2e5d3836d54775a6029da15a5b95ed78bcc601d7bc0b2c6807bd96a2",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "runtimeSize": [
+        80,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/liebe.png",
+      "spriteSha256": "5b6e946f8beb92d24977bcb58f2cfcf3e8533cbcb66a09bb13acdcabe9e2732b",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {},
+      "generator": "built-in image_gen",
+      "mode": "generate",
+      "notes": "v1 draft source; legacy status: optional_outside_first_map"
+    },
+    {
+      "id": "matsushimaya",
+      "kind": "building",
+      "source": "assets/source/matsushimaya-v1.png",
+      "sha256": "52ac958effd7cb4d7c7cd1ce3e4a942412c03ab337ab5e8f1069cf2cc15c668c",
+      "sourceSize": [
+        1374,
+        1145
+      ],
+      "runtimeSize": [
+        96,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/matsushimaya.png",
+      "spriteSha256": "12d430f60825866d0b0f83f0b112b16703b9dbd734d9dbe9458be7ef5811270b",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {},
+      "generator": "built-in image_gen",
+      "mode": "generate",
+      "notes": "v1 draft source; legacy status: needs_grid_palette_export"
+    },
+    {
+      "id": "station",
+      "kind": "building",
+      "source": "assets/source/station-v1.png",
+      "sha256": "9ab0c914772f3b115b705029443de46faf40c4521743b3bc432de9daf069daff",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "runtimeSize": [
+        192,
+        128
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/station.png",
+      "spriteSha256": "6d8332342cb6fb1e8d86c8cdad702ae7870c3fad410d17d796bb7dcc1e1d2897",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {},
+      "generator": "built-in image_gen",
+      "mode": "generate",
+      "notes": "v1 draft source; legacy status: needs_edge_cleanup_and_grid_export"
     }
   ]
 }
