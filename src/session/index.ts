@@ -1,38 +1,238 @@
-// Track B owns src/session/. This is a STUB so Track A can run scenes today:
-// it accepts every command, bumps the revision and only handles UsePortal naively.
-// Replace with the real reducer-backed local session.
-import type { Command, CommandPayload, GameSession, GameSnapshot, OpenSession, Outcome, SessionListener } from '../contracts';
-import { createInitialSnapshot } from '../domain/initial';
+// Local session (docs/ARCHITECTURE.md §5, §8): one command queue, revision
+// checks, idempotent command ids, deduplicated effects and passive saves.
+import type {
+  Command,
+  CommandPayload,
+  Effect,
+  GameSession,
+  GameSnapshot,
+  OpenSession,
+  Outcome,
+  SettingsPatch,
+} from '../contracts';
+import { content as gameContent, type WorldContent } from '../content';
+import { createInitialSnapshot, reduce } from '../domain';
+import { createIndexedDbStore, decodeSnapshot, type SaveStore } from '../storage';
 
-export const openSession: OpenSession = async (worldId) => {
-  let snapshot: GameSnapshot = createInitialSnapshot(`${worldId}-${Date.now()}`);
-  const listeners = new Set<SessionListener>();
-  let seq = 0;
+const MAX_EFFECT_IDS = 100;
+const MAX_APPLIED_COMMANDS = 500;
 
-  const dispatchCommand = async (command: Command): Promise<Outcome> => {
-    if (command.expectedRevision !== snapshot.revision) return { ok: false, reason: 'stale_revision', snapshot };
-    console.debug('[stub session]', command.payload);
-    snapshot = { ...snapshot, revision: snapshot.revision + 1 };
-    const outcome: Outcome = { ok: true, snapshot, effects: [] };
-    listeners.forEach((l) => l(snapshot, outcome.effects));
-    return outcome;
+export interface SessionDeps {
+  content: WorldContent;
+  store: SaveStore;
+  initial?: GameSnapshot;
+}
+
+export interface SessionOptions extends SessionDeps {
+  /** Effects replayed to every subscriber until the first command, e.g. a save notice. */
+  bootEffects?: Effect[];
+  /** A mismatched save must not be overwritten until the player confirms a restart. */
+  saveBlocked?: boolean;
+}
+
+function mergeSettings(current: GameSnapshot['settings'], patch: SettingsPatch): GameSnapshot['settings'] {
+  const next = { ...current };
+  if (typeof patch.volume === 'number' && Number.isFinite(patch.volume))
+    next.volume = Math.min(1, Math.max(0, patch.volume));
+  if (typeof patch.muted === 'boolean') next.muted = patch.muted;
+  if (patch.textSize === 'normal' || patch.textSize === 'large') next.textSize = patch.textSize;
+  if (patch.inputMode === 'keyboard' || patch.inputMode === 'touch') next.inputMode = patch.inputMode;
+  return next;
+}
+
+let bootSequence = 0;
+
+/** randomUUID needs a secure context; HTTP LAN dev and file:// fall back. */
+function guardedId(): string {
+  return typeof globalThis.crypto?.randomUUID === 'function'
+    ? globalThis.crypto.randomUUID()
+    : `${Date.now()}-${++bootSequence}`;
+}
+
+export function createSession(options: SessionOptions): GameSession {
+  const { content, store } = options;
+  let snapshot: GameSnapshot =
+    options.initial ?? createInitialSnapshot(`${Date.now()}`, content.version);
+  const listeners = new Set<(snapshot: GameSnapshot, effects: Effect[]) => void>();
+  const applied = new Map<string, string>();
+  const seenEffectIds: string[] = [];
+  let pending: Effect[] = [...(options.bootEffects ?? [])];
+  let saveBlocked = options.saveBlocked ?? false;
+  let saveFailed = false;
+  let resetting = false;
+  let saveChain: Promise<void> = Promise.resolve();
+  let closed = false;
+  let queue: Promise<unknown> = Promise.resolve();
+
+  const dedupe = (effects: Effect[]): Effect[] => {
+    const fresh = effects.filter((effect) => !seenEffectIds.includes(effect.id));
+    for (const effect of fresh) seenEffectIds.push(effect.id);
+    while (seenEffectIds.length > MAX_EFFECT_IDS) seenEffectIds.shift();
+    return fresh;
   };
 
-  const session: GameSession = {
-    get snapshot() { return snapshot; },
-    dispatch: (payload: CommandPayload) =>
-      dispatchCommand({ commandId: `c${++seq}`, expectedRevision: snapshot.revision, payload }),
-    dispatchCommand,
-    updateSettings(patch) {
-      snapshot = { ...snapshot, settings: { ...snapshot.settings, ...patch } };
-      listeners.forEach((l) => l(snapshot, []));
+  const notify = (effects: Effect[] = []): void => {
+    // Boot effects are delivered by subscribe() and cleared by the first command.
+    for (const listener of listeners) {
+      try {
+        listener(snapshot, effects);
+      } catch (error) {
+        console.error('[session] listener failed', error);
+      }
+    }
+  };
+
+  const persist = (): void => {
+    if (saveBlocked || resetting) return;
+    const toSave = snapshot;
+    saveChain = saveChain.then(async () => {
+      if (!decodeSnapshot(toSave)) {
+        console.warn('[session] refusing to save an invalid snapshot');
+        return;
+      }
+      try {
+        await store.save(toSave);
+        saveFailed = false;
+      } catch (error) {
+        console.warn('[session] save failed', error);
+        if (!saveFailed) {
+          saveFailed = true;
+          notify([
+            {
+              type: 'ShowHint',
+              reason: 'storage_unavailable',
+              id: `boot:save-failed:${++bootSequence}`,
+            },
+          ]);
+        }
+      }
+    });
+  };
+
+  const execute = (command: Command): Outcome => {
+    if (closed) return { ok: false, reason: 'not_available', snapshot };
+    // Boot effects live until the first command, whatever the outcome.
+    pending = [];
+    const payloadKey = JSON.stringify(command.payload);
+    const previousPayload = applied.get(command.commandId);
+    // Retried transport => the same command id must not advance state twice.
+    if (previousPayload !== undefined) {
+      if (previousPayload !== payloadKey) return { ok: false, reason: 'not_available', snapshot };
+      return { ok: true, snapshot, effects: [] };
+    }
+
+    const before = snapshot.revision;
+    const outcome = reduce(snapshot, command, content);
+    if (!outcome.ok) {
+      // A rejection is still worth showing: the UI turns this into a hint toast.
+      notify(
+        dedupe([
+          { type: 'ShowHint', reason: outcome.reason, id: `${command.commandId}:reject` },
+        ]),
+      );
+      return outcome;
+    }
+    snapshot = outcome.snapshot;
+    applied.set(command.commandId, payloadKey);
+    if (applied.size > MAX_APPLIED_COMMANDS) {
+      const oldest = applied.keys().next().value;
+      if (oldest !== undefined) applied.delete(oldest);
+    }
+    const effects = dedupe(outcome.effects);
+    if (snapshot.revision !== before) persist();
+    notify(effects);
+    return { ok: true, snapshot, effects };
+  };
+
+  const enqueue = (task: () => Outcome): Promise<Outcome> => {
+    const result = queue.then(task, task);
+    queue = result.catch(() => undefined);
+    return result;
+  };
+
+  const newCommandId = (): string => `${snapshot.sessionId}:${guardedId()}`;
+
+  return {
+    get snapshot() {
+      return snapshot;
+    },
+    dispatch(payload: CommandPayload) {
+      // Stamp at run time: commands queued together must not share a revision.
+      return enqueue(() =>
+        execute({
+          commandId: newCommandId(),
+          expectedRevision: snapshot.revision,
+          payload,
+        }),
+      );
+    },
+    dispatchCommand(command: Command) {
+      return enqueue(() => execute(command));
+    },
+    updateSettings(patch: SettingsPatch) {
+      if (closed) return;
+      const settings = mergeSettings(snapshot.settings, patch);
+      if (JSON.stringify(settings) === JSON.stringify(snapshot.settings)) return;
+      snapshot = { ...snapshot, settings };
+      persist();
+      notify();
     },
     subscribe(listener) {
       listeners.add(listener);
-      listener(snapshot, []);
+      listener(snapshot, [...pending]);
       return () => listeners.delete(listener);
     },
-    async close() { listeners.clear(); },
+    async reset() {
+      if (closed) return;
+      // One serialization rule: reset is a queued mutation like any command.
+      const task = queue.then(async () => {
+        resetting = true;
+        try {
+          // Let an in-flight save finish so it cannot land after the clear.
+          await saveChain;
+          await store.clear();
+          snapshot = createInitialSnapshot(guardedId(), content.version);
+          applied.clear();
+          seenEffectIds.length = 0;
+          saveBlocked = false;
+          saveFailed = false;
+        } finally {
+          resetting = false;
+        }
+        notify();
+      });
+      queue = task.catch(() => undefined);
+      await task;
+    },
+    async close() {
+      closed = true;
+      await queue.catch(() => undefined);
+      await saveChain;
+      listeners.clear();
+      pending = [];
+    },
   };
+}
+
+function bootEffect(reason: string): Effect {
+  return { type: 'ShowHint', reason, id: `boot:${reason}:${++bootSequence}` };
+}
+
+export const openSession: OpenSession = async (worldId) => {
+  const store = createIndexedDbStore();
+  const loaded = await store.load(gameContent.version);
+  const slot = loaded.status === 'ok' ? loaded.slot : null;
+  const bootEffects: Effect[] = [];
+  if (loaded.status === 'corrupt') bootEffects.push(bootEffect('save_corrupt'));
+  if (loaded.status === 'version_mismatch') bootEffects.push(bootEffect('content_version_mismatch'));
+  if (loaded.status === 'unavailable') bootEffects.push(bootEffect('storage_unavailable'));
+  const session = createSession({
+    content: gameContent,
+    store,
+    initial: slot?.current ?? createInitialSnapshot(`${worldId}-${Date.now()}`, gameContent.version),
+    ...(bootEffects.length > 0 ? { bootEffects } : {}),
+    ...(loaded.status === 'version_mismatch' ? { saveBlocked: true } : {}),
+  });
+  if (slot) await session.dispatch({ type: 'Resume' });
   return session;
 };

@@ -1,0 +1,18 @@
+{
+  "id": "home",
+  "kind": "building",
+  "source": "assets/source/home-v1.png",
+  "runtimeSize": [
+    80,
+    96
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "built-in image_gen",
+  "mode": "generate",
+  "prompt": "Create one original compact Japanese two-story neighborhood apartment building sprite for a top-down GBA-era pixel RPG, FireRed overworld aesthetic. Fictional home, not a real residence. Frontal orthographic north-facing building with roof visible from above, horizontal facade, no isometric perspective. Cream plaster, muted terracotta tiled roof, tiny upper balcony with blue laundry, two lower windows, a blue front door at bottom center, small mailbox and two potted plants. Chunky crisp pixel clusters and dark colored outlines, sunlight upper left. Simple and readable at 80x96 logical pixels. Entire building visible centered. Transparent background, no floor, no shadow, no glow, no text, no people. Match restrained 24-color shop sprites.",
+  "references": [],
+  "anchors": {},
+  "status": "draft",
+  "notes": "v1 draft source; legacy status: fictional_needs_grid_export"
+}

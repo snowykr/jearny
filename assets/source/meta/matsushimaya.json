@@ -1,0 +1,20 @@
+{
+  "id": "matsushimaya",
+  "kind": "building",
+  "source": "assets/source/matsushimaya-v1.png",
+  "runtimeSize": [
+    96,
+    80
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "built-in image_gen",
+  "mode": "generate",
+  "prompt": "Create ONE isolated building sprite for an original Japanese top-down pixel RPG visually inspired by Pokemon FireRed's overworld. This is a game asset, not an illustration or full scene. Orthographic north-facing street elevation viewed from above at a fixed three-quarter TOP-DOWN RPG angle, front facade facing directly down to player, horizontal facade baseline, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background with no floor, no shadow beyond building footprint, no people, no text or logos. Entire building visible and centered with transparent margins. Simplify details to remain readable when scaled down in a 16px-grid game. Original pixel drawing based on supplied reference architecture, do not paste photo pixels. REFERENCE ROLE: actual shop facade reference only. Subject Matsushimaya Japanese sweets shop. Preserve red-and-cream striped scalloped awning, white noren curtains with plain red decorative marks but no words, left glass sweets display, right recessed doorway, burgundy small tiles below display, modest beige upper facade. Add a shallow simple neutral roof so this is one complete low-rise storefront sprite. Do not invent a tall second story. Remove all customers and poster text. Intended display 96x80 logical pixels. Make facade frontal horizontal, roof visible from above.",
+  "references": [
+    "research/shops/matsushimaya-facade-2026.jpg"
+  ],
+  "anchors": {},
+  "status": "draft",
+  "notes": "v1 draft source; legacy status: needs_grid_palette_export"
+}
