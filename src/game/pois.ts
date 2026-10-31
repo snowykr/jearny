@@ -2,7 +2,6 @@
 // the DOM/canvas overlays only paint what these functions return.
 import { BUILDING } from '../contracts';
 import type { MapDefinition } from '../contracts';
-import { T } from '../content/maps/tiles';
 
 export interface Poi {
   id: string;
@@ -40,34 +39,23 @@ export function poisForMap(map: MapDefinition): Poi[] {
 }
 
 /**
- * The 泉岳寺 approach: the western end of the authored temple path (T.TEMPLE_PATH).
- * The temple itself is off-map, so the marker sits on the path's last drawn tile.
- * Derived from tiles, not from a new entity id: the path is already the map's statement
- * that the approach exists. Returns null for maps without a temple path.
+ * 泉岳寺 approach, from content/world-plan.json anchors[id=sengakuji_approach].tile.
+ * Kept as a constant here (world-plan is planning data, not game content) and pinned by
+ * a test: the anchor must match the plan and sit on an authored TEMPLE_PATH tile.
  */
+export const TEMPLE_APPROACH_TILE: [number, number] = [34, 24];
+
+/** The 泉岳寺 approach marker; the temple itself is off-map. Null for other scenes. */
 export function templeApproach(map: MapDefinition): Poi | null {
-  const [cols] = map.grid;
-  let westX = Infinity;
-  for (let i = 0; i < map.layers.ground.length; i++) {
-    if (map.layers.ground[i] !== T.TEMPLE_PATH) continue;
-    westX = Math.min(westX, i % cols);
-  }
-  if (!Number.isFinite(westX)) return null;
-  const rows: number[] = [];
-  for (let i = 0; i < map.layers.ground.length; i++) {
-    if (map.layers.ground[i] === T.TEMPLE_PATH && i % cols === westX) rows.push(Math.floor(i / cols));
-  }
-  if (rows.length === 0) return null;
-  const top = Math.min(...rows);
-  const bottom = Math.max(...rows);
-  const midY = (top + bottom) / 2;
+  if (map.id !== 'takanawa') return null;
+  const [x, y] = TEMPLE_APPROACH_TILE;
   return {
     id: 'landmark:temple-approach',
     label: '泉岳寺',
     name: '泉岳寺（参道）',
-    center: [westX + 0.5, midY + 0.5],
+    center: [x + 0.5, y + 0.5],
     color: '#b4553c',
-    rect: { x: westX, y: Math.floor(midY), w: 1, h: 1 },
+    rect: { x, y, w: 1, h: 1 },
   };
 }
 
