@@ -19,6 +19,11 @@ export interface EntityAnchor {
   tile: Tile;
   /** Footprint in tiles for buildings/zones. Defaults to [1, 1]. */
   size?: Tile;
+  /**
+   * Tile row where the sprite's bottom edge sits (render + Y-sort). Defaults to tile.y + size.y.
+   * Use it when the collision rect is smaller than the sprite.
+   */
+  footRow?: number;
   assetId?: string;
   facing?: 'up' | 'down' | 'left' | 'right';
 }

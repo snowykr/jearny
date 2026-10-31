@@ -37,3 +37,7 @@ Image Gen 2 output is a *source*, not a runtime sprite. Before anything is used 
 5. **Review gate:** at 1× and 4× game scale, check exact dimensions, hard transparent edges, a coherent palette, legibility against light and dark ground, and correct anchors. If it fails, iterate with an Image Gen 2 *edit* instead of starting over.
 
 Missing or unapproved assets render as an obvious magenta placeholder in-game. The game never silently shows the wrong art.
+
+## Building collision comes from the art
+
+A building's `collisionTiles` in its meta file is the single source of its collision: the opaque sprite rows (alpha > 0), measured in 16px ground tiles. The map entity's `size` must repeat those tiles and a map test checks it, so transparent padding, roof overhang and base shadow never block walkable ground. `footRow` on the entity is the tile row where the sprite's bottom edge sits; the renderer bottom-aligns the sprite to it and Y-sorts by it, and it defaults to `tile.y + size.y`. When `collisionTiles` is shorter than the sprite, set `footRow` explicitly so the art stays exactly where it was while only the collision shrinks.
