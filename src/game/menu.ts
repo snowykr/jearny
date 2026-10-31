@@ -82,7 +82,8 @@ const CSS = `
 .jr-menu-tab[aria-selected="true"]{background:#4d5b9a;color:#fff;box-shadow:inset 0 -4px 0 #ffd54a}
 .jr-menu-close{background:#5a2f39;color:#ffe1e1}
 .jr-menu-tab:hover,.jr-menu-close:hover{filter:brightness(1.15)}
-.jr-menu-tab:focus-visible,.jr-menu-close:focus-visible,.jr-menu-trigger:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}
+.jr-menu-tab:focus-visible,.jr-menu-close:focus-visible,.jr-menu-trigger:focus-visible,.jr-menu-panel:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}
+.jr-menu-panel:focus-visible{outline-offset:-3px}
 .jr-menu-panel{flex:1 1 auto;overflow:auto;padding:14px 16px 18px;font-size:14px;line-height:1.7}
 .jr-menu-heading{margin:12px 0 6px;font-size:13px;letter-spacing:.12em;color:#ffd479}
 .jr-menu-heading:first-child{margin-top:0}
@@ -291,8 +292,10 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
 
   const restoreFocus = (): void => {
     // Back to whatever opened it (keyboard, the trigger button, a screen reader),
-    // falling back to the canvas only when that element is gone.
-    if (previousFocus && previousFocus !== doc.body && previousFocus.isConnected) {
+    // falling back to the canvas when it is gone or was hidden while we were open
+    // (the menu yields to a dialogue/settings/modal by hiding its trigger).
+    if (previousFocus && previousFocus !== doc.body && previousFocus.isConnected &&
+      !previousFocus.hidden && !previousFocus.closest('[hidden]')) {
       previousFocus.focus({ preventScroll: true });
       return;
     }

@@ -263,6 +263,9 @@ describe('start menu', () => {
     const { menu } = mount(snapshot({ settings: { ...snapshot().settings, textSize: 'large' } }));
     menu.open();
     expect(dialog()?.classList.contains('jr-menu-large')).toBe(true);
+    const title = dialog()?.querySelector<HTMLElement>('.jr-menu-title');
+    if (!title) throw new Error('missing title');
+    expect(getComputedStyle(title).fontSize).toBe('18px');
   });
 
   it('closes when another surface takes ownership', async () => {
@@ -288,6 +291,27 @@ describe('menu accessibility contracts', () => {
     expect(menu.isOpen()).toBe(true);
     press('Escape');
     expect(document.activeElement).toBe(button);
+  });
+
+  it('does not restore focus to the trigger that the yield path hid', async () => {
+    let blocked = false;
+    const { menu } = mount(undefined, () => blocked);
+    const button = trigger();
+    if (!button) throw new Error('missing trigger');
+    button.focus();
+    button.click();
+    blocked = true;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(menu.isOpen()).toBe(false);
+    expect(button.hidden).toBe(true);
+    expect(document.activeElement).not.toBe(button);
+    expect(document.activeElement?.id).toBe('game');
+  });
+
+  it('gives the tabbed panel the same focus ring as the tabs', () => {
+    mount();
+    const css = document.querySelector('style[data-jr-menu]')?.textContent ?? '';
+    expect(css).toContain('.jr-menu-panel:focus-visible');
   });
 
   it('keeps the scrolling panel in the tab order after the last button', () => {
