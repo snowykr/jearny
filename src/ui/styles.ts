@@ -1,16 +1,31 @@
 // Injected once by mountUi, so index.html stays free of gameplay styling.
 export const UI_STYLES = `
-.jq-hud { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 2px;
-  padding: 6px 8px; border-radius: 6px; background: rgba(12, 14, 22, .82); color: #f4f1e8;
-  font: 12px/1.5 system-ui, sans-serif; pointer-events: none; max-width: 220px; }
-.jq-hud button { pointer-events: auto; margin-top: 4px; font: inherit; padding: 2px 8px;
+/* One compact chip: money, objective, two small buttons and the one-line legal
+   notice. The full note expands on its own line inside the chip, so it stays
+   clear of the dialogue box even though the chip floats over the field. */
+.jq-hud { position: absolute; top: 8px; left: 8px; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 2px 6px; padding: 3px 6px; border-radius: 6px; background: rgba(12, 14, 22, .82); color: #f4f1e8;
+  font: 11px/1.35 system-ui, sans-serif; pointer-events: none; max-width: min(260px, 62vw); }
+.jq-hud button { pointer-events: auto; flex: 0 0 auto; display: inline-flex; align-items: center;
+  justify-content: center; min-height: 24px; font: inherit; line-height: 1.35; padding: 1px 6px;
   border-radius: 4px; border: 1px solid #8b8f9a; background: #232636; color: inherit; cursor: pointer; }
-.jq-hud-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.jq-hud-title { font-weight: 700; letter-spacing: .04em; }
-.jq-wallet { opacity: .9; white-space: nowrap; }
+.jq-wallet { opacity: .9; white-space: nowrap; font-weight: 700; letter-spacing: .02em; }
+/* The 140px basis keeps the objective on a readable line: narrower than that it
+   wraps onto its own row instead of collapsing to one glyph per line. */
+.jq-objective { display: flex; flex-direction: column; flex: 1 1 140px; min-width: 0; }
 .jq-quest-en { opacity: .7; font-size: .9em; }
-.jq-disclaimer { margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(139, 143, 154, .45);
-  font-size: 10px; line-height: 1.45; opacity: .8; }
+/* The one-line notice stays on screen; the full text below is opt-in. */
+.jq-disclaimer-short { flex: 1 0 100%; margin: 0; padding-top: 2px; border-top: 1px solid rgba(139, 143, 154, .45);
+  font-size: 9px; line-height: 1.3; opacity: .75; }
+.jq-disclaimer { flex: 1 0 100%; padding-top: 3px; border-top: 1px solid rgba(139, 143, 154, .45);
+  font-size: 10px; line-height: 1.45; opacity: .8; max-height: min(140px, 34vh); overflow-y: auto; }
+.jq-disclaimer[hidden] { display: none; }
+/* Expanded, the note is the only scrollable part of the chip; the rest stays
+   click-through. */
+.jq-disclaimer:not([hidden]) { pointer-events: auto; }
+/* Below a 320px viewport the chip would wrap into three rows; drop the English
+   objective line there, the Japanese line already names the task. */
+@media (max-width: 319px) { .jq-quest-en { display: none; } .jq-hud { font-size: 10px; } }
 .jq-disclaimer-ja, .jq-disclaimer-en { display: block; }
 .jq-disclaimer-en { margin-top: 2px; font-size: .95em; }
 
@@ -63,7 +78,7 @@ export const UI_STYLES = `
 .jq-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .jq-root-large .jq-dialogue { font-size: 17px; }
-.jq-root-large .jq-hud { font-size: 14px; }
+.jq-root-large .jq-hud { font-size: 13px; }
 .jq-root-large .jq-disclaimer { font-size: 12px; }
 
 /* index.html sets #ui-root > * { pointer-events: auto }; the HUD stays click-through. */

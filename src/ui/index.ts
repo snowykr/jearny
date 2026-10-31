@@ -78,25 +78,37 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // --- HUD -----------------------------------------------------------------
-  // Status only. Inventory and quest detail live in the start menu's Bag/Quest tabs
-  // (#68); the HUD keeps the money and the current objective visible at all times.
+  // One compact chip: money, the current objective, and two small buttons. The
+  // start menu's Bag/Quest tabs own inventory and quest detail (#65, #68).
   const hud = element('div', 'jq-hud');
-  const hudHead = element('div', 'jq-hud-head');
-  const hudTitle = element('span', 'jq-hud-title', gameContent.ui.title);
+  // The chip drops the "所持金" prefix to stay narrow; screen readers still get it.
   const wallet = element('span', 'jq-wallet');
-  const quest = element('div');
+  const walletLabel = element('span', 'jq-sr', labels.wallet);
+  const walletValue = element('span');
+  wallet.append(walletLabel, walletValue);
+  const quest = element('div', 'jq-quest');
   const questEn = element('div', 'jq-quest-en');
+  const objectiveBox = element('div', 'jq-objective');
+  objectiveBox.append(quest, questEn);
+  // The one-line notice stays on screen (ui-text.ts promises a recording cannot
+  // ship without one); the full text is one button away so it cannot cover a
+  // quarter of the play field.
+  const disclaimerShort = element('p', 'jq-disclaimer-short', gameContent.ui.disclaimerShort);
   const disclaimer = element('aside', 'jq-disclaimer');
+  disclaimer.id = 'jq-hud-disclaimer';
   disclaimer.setAttribute('role', 'note');
+  disclaimer.hidden = true;
   disclaimer.append(
     element('span', 'jq-disclaimer-ja', gameContent.ui.disclaimer.ja),
     element('span', 'jq-disclaimer-en', gameContent.ui.disclaimer.en),
   );
-  const settingsButton = element('button', undefined, labels.settings);
+  const noteButton = element('button', 'jq-hud-note', labels.note);
+  noteButton.type = 'button';
+  noteButton.setAttribute('aria-expanded', 'false');
+  noteButton.setAttribute('aria-controls', disclaimer.id);
+  const settingsButton = element('button', 'jq-hud-settings', labels.settings);
   settingsButton.type = 'button';
-  hudHead.append(hudTitle, wallet);
-  hud.append(hudHead, quest, questEn, disclaimer, settingsButton);
-
+  hud.append(wallet, objectiveBox, noteButton, settingsButton, disclaimerShort, disclaimer);
   // --- dialogue ------------------------------------------------------------
   const dialogue = element('div', 'jq-dialogue');
   dialogue.setAttribute('role', 'dialog');
@@ -256,9 +268,10 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   const render = (snapshot: GameSnapshot, effects: Effect[]): void => {
     applyAudioSettings(snapshot.settings);
     root.classList.toggle('jq-root-large', snapshot.settings.textSize === 'large');
-    wallet.textContent = `${labels.wallet} ¥${snapshot.walletYen}`;
+    walletValue.textContent = `¥${snapshot.walletYen}`;
+    wallet.title = labels.wallet;
     const objective = objectiveText(snapshot, gameContent);
-    quest.textContent = `${labels.quest}: ${objective.ja}`;
+    quest.textContent = objective.ja;
     questEn.textContent = objective.en;
     quest.title = objective.en;
     mute.checked = snapshot.settings.muted;
@@ -408,6 +421,11 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
     if (event.target instanceof Node && replay.contains(event.target)) {
       if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') return;
     }
+    // Same rule for the chip's buttons: 設定 and ご注意 stay operable with the
+    // keyboard while a dialogue is up, so the legal notice is never pointer-only.
+    if (event.target instanceof Node && hud.contains(event.target)) {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') return;
+    }
 
     const navigation = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     if (!navigation.includes(event.key) && !['Enter', ' ', 'Spacebar', 'Escape'].includes(event.key))
@@ -447,6 +465,11 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   const onKeyDown = (event: KeyboardEvent): void => intercept(event);
 
   // --- wiring --------------------------------------------------------------
+  noteButton.addEventListener('click', () => {
+    const expanded = noteButton.getAttribute('aria-expanded') === 'true';
+    disclaimer.hidden = expanded;
+    noteButton.setAttribute('aria-expanded', String(!expanded));
+  });
   settingsButton.addEventListener('click', () => {
     settings.hidden = !settings.hidden;
   });
