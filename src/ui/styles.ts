@@ -5,9 +5,9 @@ export const UI_STYLES = `
   font: 12px/1.5 system-ui, sans-serif; pointer-events: none; max-width: 220px; }
 .jq-hud button { pointer-events: auto; margin-top: 4px; font: inherit; padding: 2px 8px;
   border-radius: 4px; border: 1px solid #8b8f9a; background: #232636; color: inherit; cursor: pointer; }
+.jq-hud-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .jq-hud-title { font-weight: 700; letter-spacing: .04em; }
-.jq-hud-row { display: flex; gap: 6px; justify-content: space-between; }
-.jq-bag { opacity: .85; }
+.jq-wallet { opacity: .9; white-space: nowrap; }
 .jq-quest-en { opacity: .7; font-size: .9em; }
 .jq-disclaimer { margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(139, 143, 154, .45);
   font-size: 10px; line-height: 1.45; opacity: .8; }

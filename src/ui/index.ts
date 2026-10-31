@@ -2,13 +2,12 @@
 // it owns no quest or inventory state. No KAPLAY imports.
 import type { Effect, GameSession, GameSnapshot } from '../contracts';
 import { content as gameContent } from '../content';
-import { applyAudioSettings, replayAudio, stopAudio } from '../audio';
+import { applyAudioSettings, canReplay, preloadAudio, replayAudio, stopAudio } from '../audio';
 import { UI_STYLES } from './styles';
 import {
   currentNode,
   dialogueKeyAction,
   hintText,
-  inventoryRows,
   objectiveText,
   speakerName,
   typingDone,
@@ -79,11 +78,12 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // --- HUD -----------------------------------------------------------------
+  // Status only. Inventory and quest detail live in the start menu's Bag/Quest tabs
+  // (#68); the HUD keeps the money and the current objective visible at all times.
   const hud = element('div', 'jq-hud');
-  const hudTitle = element('div', 'jq-hud-title', gameContent.ui.title);
-  const walletRow = element('div', 'jq-hud-row');
-  const wallet = element('span');
-  const bag = element('div', 'jq-bag');
+  const hudHead = element('div', 'jq-hud-head');
+  const hudTitle = element('span', 'jq-hud-title', gameContent.ui.title);
+  const wallet = element('span', 'jq-wallet');
   const quest = element('div');
   const questEn = element('div', 'jq-quest-en');
   const disclaimer = element('aside', 'jq-disclaimer');
@@ -94,8 +94,8 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   );
   const settingsButton = element('button', undefined, labels.settings);
   settingsButton.type = 'button';
-  walletRow.append(wallet);
-  hud.append(hudTitle, walletRow, bag, quest, questEn, disclaimer, settingsButton);
+  hudHead.append(hudTitle, wallet);
+  hud.append(hudHead, quest, questEn, disclaimer, settingsButton);
 
   // --- dialogue ------------------------------------------------------------
   const dialogue = element('div', 'jq-dialogue');
@@ -241,7 +241,9 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
       announced = '';
     }
     speaker.textContent = speakerName(snapshot, gameContent);
-    replay.hidden = !node.lineId;
+    // A replay button with no clip behind it is a dead control: hide it until the
+    // published manifest proves the line exists.
+    replay.hidden = !node.lineId || !canReplay(node.lineId);
     replay.onclick = (event) => {
       // The button lives inside the click-to-advance box; never advance it.
       event.stopPropagation();
@@ -255,10 +257,6 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
     applyAudioSettings(snapshot.settings);
     root.classList.toggle('jq-root-large', snapshot.settings.textSize === 'large');
     wallet.textContent = `${labels.wallet} ¥${snapshot.walletYen}`;
-    const rows = inventoryRows(snapshot, gameContent);
-    bag.textContent = `${labels.bag}: ${
-      rows.length > 0 ? rows.map((row) => `${row.label}×${row.count}`).join('  ') : labels.empty
-    }`;
     const objective = objectiveText(snapshot, gameContent);
     quest.textContent = `${labels.quest}: ${objective.ja}`;
     questEn.textContent = objective.en;
@@ -495,11 +493,17 @@ export function mountUi(root: HTMLElement, session: GameSession): MountedUi {
   }, TYPE_STEP_MS);
 
   const unsubscribe = session.subscribe(render);
+  // The manifest decides which lines can replay; re-render once it is known.
+  let mounted = true;
+  void preloadAudio().then(() => {
+    if (mounted) render(session.snapshot, []);
+  });
 
   return {
     ownsInput: () =>
       modalOpen || !settings.hidden || currentNode(session.snapshot, gameContent) !== null,
     unmount() {
+      mounted = false;
       unsubscribe();
       window.clearInterval(timer);
       window.clearTimeout(toastTimer);

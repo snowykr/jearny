@@ -1,0 +1,84 @@
+{
+  "id": "coupon-card",
+  "kind": "building",
+  "source": "assets/source/coupon-card-atlas-v1.png",
+  "rawSource": "assets/source/coupon-card-raw-v1.png",
+  "runtime": "public/sprites/coupon-card.png",
+  "runtimeSize": [
+    320,
+    96
+  ],
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Style references: station-v1.png and matsushimaya-v1.png shown above, plus the runtime interior/player references. original design; no real brand, logo, QR code or barcode; no text.\nOne sheet, exactly 2 columns x 1 row, equal cells 160x96 logical pixels, total 320x96. Two same-size horizontal cream SAMPLE tickets with scalloped perforated edges, flat front-facing UI. Left active: red cream generic striped awning top band, tiny mochi lower left; pale EMPTY rectangular text panels: shop x12 y24 w96 h12, offer x12 y40 w96 h16, conditions x12 y60 w96 h10, prominent red-bordered notice x12 y76 w136 h12. Right side x116 y28 a circular red sample seal space with blank center. Decorative spaced flower crosses, absolutely no scannable pattern. Right frame: identical layout desaturated and faded, circle marked with large diagonal red cancellation cross. No letters or numbers in any panel. Tickets fill each cell with 3px transparent margin. Strict aligned pixel grid, large flat blank panels.",
+  "references": [
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "status": "approved",
+  "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors. Full exporter rejects 160x96 cells; runtime is a direct copy of the exact-size atlas. Manifest registration awaits code owner support for custom cell sizes. Exported as a single 320x96 sprite (kind building) because the exporter sizes tileset cells at 16x16; code slices the two 160x96 frames using meta.frames.",
+  "textPanels": [
+    {
+      "id": "shop",
+      "rect": [
+        19,
+        32,
+        75,
+        7
+      ]
+    },
+    {
+      "id": "offer",
+      "rect": [
+        19,
+        44,
+        75,
+        12
+      ]
+    },
+    {
+      "id": "conditions",
+      "rect": [
+        19,
+        61,
+        75,
+        4
+      ]
+    },
+    {
+      "id": "notice",
+      "rect": [
+        48,
+        74,
+        90,
+        6
+      ]
+    }
+  ],
+  "textPanelCoordinates": "Frame-local [x,y,width,height], same for both frames; add 160 to x for atlas frame 1. For long Japanese copy, render at a larger UI scale or wrap outside the sprite; do not omit the notice.",
+  "stampArea": [
+    105,
+    34,
+    37,
+    36
+  ],
+  "frames": {
+    "count": 2,
+    "frameSize": [
+      160,
+      96
+    ],
+    "layout": "horizontal",
+    "order": [
+      "active",
+      "used"
+    ]
+  },
+  "collisionTiles": [
+    20,
+    6
+  ]
+}

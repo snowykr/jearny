@@ -1,0 +1,29 @@
+{
+  "id": "coupon-stamp",
+  "kind": "building",
+  "source": "assets/source/coupon-stamp-atlas-v1.png",
+  "rawSource": "assets/source/coupon-stamp-raw-v1.png",
+  "runtime": "public/sprites/coupon-stamp.png",
+  "runtimeSize": [
+    48,
+    48
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Style references: station-v1.png and matsushimaya-v1.png shown above, plus the runtime interior/player references. original design; no real brand, logo, QR code or barcode; no text.\nOne single sprite, 48x48 logical pixels. A red circular rubber stamp double ring, slightly rough pixel edge, transparent empty center with absolutely no letters, symbols or image inside. Circle fills image with 2 logical pixels padding. Flat front facing UI.",
+  "references": [
+    "assets/source/station-v1.png",
+    "assets/source/matsushimaya-v1.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "status": "approved",
+  "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors.",
+  "collisionTiles": [
+    3,
+    3
+  ]
+}

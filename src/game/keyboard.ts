@@ -15,11 +15,18 @@ function isTextTarget(t: EventTarget | null): boolean {
   return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable;
 }
 
+/** Native controls own Enter/Space; otherwise a focused button would "interact" instead of activate. */
+function isNativeControl(t: EventTarget | null): boolean {
+  const el = t as HTMLElement | null;
+  return !!el?.closest?.('button, a[href], [role="button"], [role="link"]');
+}
+
 /** Wires keydown/keyup/blur to the bus. Returns a detach function. */
 export function attachKeyboard(bus: InputBus, target: Window = window): () => void {
   const onDown = (e: KeyboardEvent) => {
     const action = KEYS[e.key.toLowerCase()];
     if (!action || e.ctrlKey || e.metaKey || e.altKey || isTextTarget(e.target)) return;
+    if (action === 'interact' && (e.key === 'Enter' || e.key === ' ') && isNativeControl(e.target)) return;
     e.preventDefault();
     if (!e.repeat) bus.press(action); // OS key-repeat must not re-fire interact or re-tap directions
   };
