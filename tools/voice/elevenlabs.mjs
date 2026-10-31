@@ -18,6 +18,16 @@ export function cacheKey(input) {
   return createHash('sha256').update(JSON.stringify(input)).digest('hex');
 }
 
+/**
+ * Per-speaker voice override, falling back to the single demo voice.
+ * Speaker names come from content/dialogue.ja.json (guide, station_staff, shopkeeper).
+ */
+export function resolveVoiceId(speaker, env = process.env) {
+  const suffix = typeof speaker === 'string' && /^[a-z0-9_]+$/i.test(speaker) ? speaker.toUpperCase() : null;
+  const perSpeaker = suffix ? env[`ELEVENLABS_VOICE_ID_${suffix}`] : undefined;
+  return perSpeaker || env.ELEVENLABS_VOICE_ID || '';
+}
+
 export function validateMp3(bytes) {
   const id3 = bytes.subarray(0, 3).toString() === 'ID3';
   const frame = bytes.length > 1 && bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0;

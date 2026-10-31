@@ -45,12 +45,15 @@ cd ../jearny-logic && npm install && npm run dev -- --port 5174
 
 Leave the original `jearny/` checkout on `main` and use it to review and merge PRs.
 
-## ElevenLabs (Track B, later)
+## ElevenLabs (Track B)
 
-Copy `.env.example` to `.env.local`, which git ignores, and fill in the key there. Never use a `VITE_` prefix.
+Copy `.env.example` to `.env.local` (gitignored) and fill in `ELEVENLABS_API_KEY` there. Never use a `VITE_` prefix.
+
+`ELEVENLABS_VOICE_ID` is the single demo voice (currently Ayaka, `dp4HJlekKt0HZFHL2jQg`; see `research/voice/elevenlabs-design.md`). For one voice per NPC, set `ELEVENLABS_VOICE_ID_GUIDE`, `ELEVENLABS_VOICE_ID_STATION_STAFF` or `ELEVENLABS_VOICE_ID_SHOPKEEPER`; unset speakers fall back to the single voice.
 
 ```bash
-node --env-file=.env.local tools/voice/render.mjs check            # list Japanese voices, no synthesis
+node tools/voice/render.mjs plan                                      # validate all 6 lines: voice, cache key, cached/pending (no key, no network)
+node --env-file=.env.local tools/voice/render.mjs check               # list account Japanese voices, no synthesis
 node --env-file=.env.local tools/voice/render.mjs render shop.welcome
 ```
 
