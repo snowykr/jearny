@@ -6,37 +6,51 @@ export const DELTA: Record<Dir, Tile> = { up: [0, -1], down: [0, 1], left: [-1, 
 
 export const facingTile = (tile: Tile, dir: Dir): Tile => [tile[0] + DELTA[dir][0], tile[1] + DELTA[dir][1]];
 
+const covers = (e: EntityAnchor, [x, y]: Tile): boolean => {
+  const [w, h] = e.size ?? [1, 1];
+  return x >= e.tile[0] && x < e.tile[0] + w && y >= e.tile[1] && y < e.tile[1] + h;
+};
+
 /** Solid entities (npc, shop, item, building) win over zones that overlap the same tile. */
-export function entityAt(map: MapDefinition, [x, y]: Tile): EntityAnchor | null {
+export function entityAt(map: MapDefinition, tile: Tile): EntityAnchor | null {
   let zone: EntityAnchor | null = null;
   for (const e of map.entities) {
-    const [w, h] = e.size ?? [1, 1];
-    if (x >= e.tile[0] && x < e.tile[0] + w && y >= e.tile[1] && y < e.tile[1] + h) {
-      if (e.kind !== 'zone') return e;
-      zone ??= e;
-    }
+    if (!covers(e, tile)) continue;
+    if (e.kind !== 'zone') return e;
+    zone ??= e;
   }
   return zone;
 }
 
 export function zoneAt(map: MapDefinition, tile: Tile): EntityAnchor | null {
-  for (const e of map.entities) {
-    if (e.kind !== 'zone') continue;
-    const [w, h] = e.size ?? [1, 1];
-    if (tile[0] >= e.tile[0] && tile[0] < e.tile[0] + w && tile[1] >= e.tile[1] && tile[1] < e.tile[1] + h) return e;
-  }
-  return null;
+  return map.entities.find((e) => e.kind === 'zone' && covers(e, tile)) ?? null;
+}
+
+/**
+ * Entity kinds that block a step on their own. A `building` is deliberately absent: the map author
+ * paints every footprint into the collision grid, so the grid is the single source of truth for the
+ * walls and a building may carve a walkable passage (the 泉岳寺 sanmon).
+ */
+const BLOCKING_KINDS: ReadonlySet<EntityAnchor['kind']> = new Set(['npc', 'shop', 'item']);
+
+/** True when a blocking entity (not a zone, not a building) stands on the tile. */
+export function entityBlocks(map: MapDefinition, tile: Tile): boolean {
+  return map.entities.some((e) => BLOCKING_KINDS.has(e.kind) && covers(e, tile));
 }
 
 export const portalAt = (map: MapDefinition, [x, y]: Tile): Portal | null =>
   map.portals.find((p) => p.tile[0] === x && p.tile[1] === y) ?? null;
 
+/**
+ * The one movement rule, shared by `updatePlayer` and the map validator: the collision grid decides
+ * walls (building footprints included), and only non-building entities block on top of it. Tests and
+ * the validator call this instead of re-reading `map.collision`, so authored movement cannot drift.
+ */
 export function isBlocked(map: MapDefinition, [x, y]: Tile): boolean {
   const [cols, rows] = map.grid;
   if (x < 0 || y < 0 || x >= cols || y >= rows) return true;
   if (map.collision[y * cols + x] === 1) return true;
-  const e = entityAt(map, [x, y]);
-  return !!e && e.kind !== 'zone';
+  return entityBlocks(map, [x, y]);
 }
 
 export function interactCommand(map: MapDefinition, tile: Tile, dir: Dir): CommandPayload | null {

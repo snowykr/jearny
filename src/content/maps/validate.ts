@@ -1,5 +1,6 @@
 import { BUILDING, ENTITY, SPAWN } from '../../contracts';
 import type { MapDefinition, SceneId, Tile } from '../../contracts';
+import { isBlocked } from '../../game/interaction';
 import { T, TILESET_FOR_SCENE, TILESETS } from './tiles';
 
 type MapRegistry = Partial<Record<SceneId, MapDefinition>>;
@@ -15,13 +16,8 @@ function inBounds(map: MapDefinition, [x, y]: Tile): boolean {
 }
 
 function walkable(map: MapDefinition, tile: Tile): boolean {
-  const [x, y] = tile;
-  return inBounds(map, tile) && map.collision[y * map.grid[0] + x] === 0 &&
-    !map.entities.some((entity) => {
-      const [w, h] = entity.size ?? [1, 1];
-      return entity.kind !== 'zone' && x >= entity.tile[0] && x < entity.tile[0] + w &&
-        y >= entity.tile[1] && y < entity.tile[1] + h;
-    });
+  // Same rule the player walks by: grid collision plus non-building entity blocking.
+  return !isBlocked(map, tile);
 }
 
 export function validateMaps(registry: MapRegistry): string[] {

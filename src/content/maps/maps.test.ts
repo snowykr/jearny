@@ -79,15 +79,39 @@ describe('map registry validation', () => {
     expect(errors).toContainEqual(expect.stringContaining('duplicate portal tile'));
   });
 
-  it.each(['npc', 'building'] as const)('reports a target spawn blocked by a %s footprint even under a zone', (kind) => {
+  it('reports a target spawn blocked by an NPC footprint even under a zone', () => {
     const broken = copyMaps();
     const map = broken['home-interior'];
     const spawn = map.spawns[SPAWN.entry];
     assert(spawn);
     const [x, y] = spawn;
     map.entities.unshift({ id: ENTITY.stationZone, kind: 'zone', tile: [x, y] });
-    map.entities.push({ id: kind === 'npc' ? ENTITY.guide : BUILDING.home, kind, tile: [x - 1, y - 1], size: [2, 2] });
+    map.entities.push({ id: ENTITY.guide, kind: 'npc', tile: [x - 1, y - 1], size: [2, 2] });
     expect(validateMaps(broken)).toContainEqual(expect.stringContaining('target spawn entry is not walkable'));
+  });
+
+  it('reports a target spawn on a painted building footprint', () => {
+    const broken = copyMaps();
+    const map = broken['home-interior'];
+    const spawn = map.spawns[SPAWN.entry];
+    assert(spawn);
+    const [x, y] = spawn;
+    map.entities.push({ id: BUILDING.home, kind: 'building', tile: [x - 1, y - 1], size: [2, 2] });
+    // The authoring loop paints every footprint into the grid; the validator reads that same grid.
+    map.collision[y * map.grid[0] + x] = 1;
+    expect(validateMaps(broken)).toContainEqual(expect.stringContaining('target spawn entry is not walkable'));
+  });
+
+  it('does not treat a building entity alone as a wall, so a carved passage stays walkable', () => {
+    // The grid owns building walls. A building whose footprint is not painted must not block, which
+    // is exactly what lets the 泉岳寺 sanmon passage through its gate entity.
+    const broken = copyMaps();
+    const map = broken['home-interior'];
+    const spawn = map.spawns[SPAWN.entry];
+    assert(spawn);
+    const [x, y] = spawn;
+    map.entities.push({ id: BUILDING.home, kind: 'building', tile: [x - 1, y - 1], size: [2, 2] });
+    expect(validateMaps(broken)).toEqual([]);
   });
 
   it.each([T.CROSSING_H, T.CROSSING_V])('requires crossing %i to be walkable', (tile) => {

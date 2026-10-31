@@ -7,6 +7,7 @@ import { CATEGORY_COLOR, CATEGORY_TILE } from './map-colors';
 import {
   ariaLabel, buildBaseImage, facingVector, glyphSize, indoorCategory, locationLabel, minimapWidth,
   outdoorCategory, poiGlyph, questTargetPoi, viewportRect, worldToMinimap, OUTDOOR_GROUND, INDOOR_FLOOR, INDOOR_WALL,
+  STRUCTURE_COLOR,
 } from './minimap';
 import { allPois, nearestPoi, poisForMap, TEMPLE_APPROACH_TILE, templeApproach } from './pois';
 import worldPlan from '../../content/world-plan.json';
@@ -74,6 +75,20 @@ describe('base image', () => {
     expect(px(58, 41)).toEqual([0x6b, 0x92, 0xc6]); // station (12x5) is all fill: no outline fits
     expect(px(58, 40)).toEqual([0xda, 0xcc, 0xb4]); // deck (mean, kept distinct from crossing)
     expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // small home footprint is fill only
+  });
+
+  it('paints every building footprint and keeps the three named POIs on top', () => {
+    const img = buildBaseImage(town);
+    const buildings = town.entities.filter((entity) => entity.kind === 'building');
+    expect(img.structures).toBe(buildings.length);
+    const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    const px = (x: number, y: number) => [...img.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 3)];
+    // Unnamed pack buildings are no longer invisible: the hall and the gate posts show structure fill.
+    expect(px(37, 10)).toEqual(rgb(STRUCTURE_COLOR)); // sengakuji hall interior
+    expect(px(35, 18)).toEqual(rgb(STRUCTURE_COLOR)); // gate post beside the passage
+    // The named POIs still win their own footprint pixels.
+    expect(px(60, 43)).toEqual(rgb('#6b92c6')); // station
+    expect(px(16, 36)).toEqual(rgb('#d0675a')); // home
   });
 
   it('outlines the footprint once a POI is 7+ tiles on its short side', () => {

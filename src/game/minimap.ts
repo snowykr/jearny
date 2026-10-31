@@ -125,14 +125,21 @@ const hexToRgb = (hex: string): [number, number, number] => {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 };
 
+/** Structure fill for every building footprint, so unnamed pack buildings still show on the map. */
+export const STRUCTURE_COLOR = '#7a5240';
+
 /**
  * Base image at 1 px per tile as RGBA bytes (cols*rows pixels): ground colours by category,
- * then building footprints (outdoor) with a darker 1 px outline. Rendered once per map.
+ * then every building footprint (outdoor), then the named POIs with a darker 1 px outline.
+ * `structures` is the number of building entities actually painted. Rendered once per map.
  */
-export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; width: number; height: number } {
+export function buildBaseImage(map: MapDefinition): {
+  data: Uint8ClampedArray; width: number; height: number; structures: number;
+} {
   const [cols, rows] = map.grid;
   const data = new Uint8ClampedArray(cols * rows * 4);
   const outdoor = map.id === 'takanawa';
+  let structures = 0;
   const put = (x: number, y: number, hex: string) => {
     if (x < 0 || y < 0 || x >= cols || y >= rows) return;
     const [r, g, b] = hexToRgb(hex);
@@ -151,6 +158,17 @@ export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; w
     }
   }
   if (outdoor) {
+    // Every building, named or not: the ten pack buildings used to vanish from the minimap and the
+    // town map because only the three POI footprints were painted.
+    for (const entity of map.entities) {
+      if (entity.kind !== 'building') continue;
+      structures++;
+      const [w, h] = entity.size ?? [1, 1];
+      for (let yy = entity.tile[1]; yy < entity.tile[1] + h; yy++) {
+        for (let xx = entity.tile[0]; xx < entity.tile[0] + w; xx++) put(xx, yy, STRUCTURE_COLOR);
+      }
+    }
+    // Named places keep their own colours on top of the structure fill.
     for (const poi of poisForMap(map)) {
       const { x, y, w, h } = poi.rect;
       for (let yy = y; yy < y + h; yy++) {
@@ -162,7 +180,7 @@ export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; w
       }
     }
   }
-  return { data, width: cols, height: rows };
+  return { data, width: cols, height: rows, structures };
 }
 
 // ---------------------------------------------------------------- icons

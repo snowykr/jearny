@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { KAPLAYCtx } from 'kaplay';
 import {
   applyAlphaThreshold,
@@ -163,7 +166,8 @@ describe('asset loader', () => {
       const k = fakeKaplay();
       await loadAssets(k);
       const calls = (k.loadSprite as unknown as ReturnType<typeof vi.fn>).mock.calls as [string, unknown, Record<string, unknown>?][];
-      expect(calls).toHaveLength(4 + 2 + 4);
+      expect(calls).toHaveLength(Object.keys(ASSETS.buildings).length
+        + Object.keys(ASSETS.tilesets).length + ASSETS.characters.length);
       expect(calls.find((c) => c[0] === 'station')?.[2]).toBeUndefined();
       expect(calls.find((c) => c[0] === 'tiles-outdoor')?.[2]).toEqual({ sliceX: 8, sliceY: 6 });
       const player = calls.find((c) => c[0] === 'char-player')?.[2] as { sliceX: number; sliceY: number; anims: Record<string, unknown> };
@@ -175,6 +179,17 @@ describe('asset loader', () => {
       expect(hasAsset('station')).toBe(true);
     } finally {
       vi.unstubAllGlobals();
+    }
+  });
+
+  it('declares every preloaded building at its registry runtime size', () => {
+    // The renderer falls back to a magenta placeholder for a sprite missing from ASSETS. Deriving
+    // the list from ASSETS itself catches a new entry without a meta and a stale meta size; a
+    // hand-typed list let apartment-mid and office-tower ship with nothing placing them.
+    const metaDir = fileURLToPath(new URL('../../assets/source/meta/', import.meta.url));
+    for (const id of Object.keys(ASSETS.buildings)) {
+      const meta = JSON.parse(readFileSync(join(metaDir, `${id}.json`), 'utf8')) as { runtimeSize: [number, number] };
+      expect(ASSETS.buildings[id as keyof typeof ASSETS.buildings], id).toEqual(meta.runtimeSize);
     }
   });
 

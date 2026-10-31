@@ -3,7 +3,13 @@
 import type { Comp, KAPLAYCtx, LoadSpriteOpt, SpriteAnims } from 'kaplay';
 
 export const ASSETS = {
-  buildings: { station: [192, 128], matsushimaya: [96, 80], home: [80, 96], liebe: [80, 80] },
+  buildings: {
+    station: [192, 128], matsushimaya: [96, 80], home: [80, 96], liebe: [80, 80],
+    // Neighbourhood pack (#83/#94). Sizes are `runtimeSize` from assets/source/meta/<id>.json.
+    'house-2': [80, 96], 'house-3': [80, 80], 'apartment-small': [96, 112],
+    cafe: [80, 80], konbini: [112, 80], koban: [48, 64],
+    'sengakuji-gate': [128, 112], 'sengakuji-hall': [160, 128], 'bicycle-parking': [64, 48],
+  },
   tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 } },
   /** Walk sheets: 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up). Cells are 16×20 (16×24 on the legacy sheets); the real size is read from the loaded image. */
   characters: ['char-player', 'char-guide', 'char-station_staff', 'char-shopkeeper'],
