@@ -1,13 +1,30 @@
 // Track A owns src/game/. KAPLAY renders and reads input; it never owns quest state.
-// PLACEHOLDER: gray-box map + grid-walking square + camera follow.
+// startGame wires keyboard → InputBus → scene runtime → session commands (#7, #19).
 import kaplay from 'kaplay';
-import type { GameSession, MapDefinition } from '../contracts';
+import type { Effect, GameSession, SceneId } from '../contracts';
 import { maps } from '../content/maps';
+import { loadAssets } from './assets';
+import { VIEW_H, VIEW_W, cameraCenter } from './camera';
+import { createInputBus } from './input';
+import type { InputBus } from './input';
+import { createEffectDeduper } from './interaction';
+import { attachKeyboard } from './keyboard';
+import { playerPixel } from './player';
+import { drawScene } from './render';
+import { createSceneRuntime } from './scene';
+import type { CommandResult, SceneRuntime } from './scene';
 
-export const VIEW_W = 240;
-export const VIEW_H = 160;
+export { VIEW_H, VIEW_W };
 
-export function startGame(canvas: HTMLCanvasElement, session: GameSession): void {
+interface SceneArgs {
+  sceneId: SceneId;
+  spawnId: string;
+}
+
+export function startGame(canvas: HTMLCanvasElement, session: GameSession): { input: InputBus } {
+  const input = createInputBus();
+  attachKeyboard(input);
+
   const k = kaplay({
     global: false,
     canvas,
@@ -18,35 +35,72 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): void
     background: [24, 24, 32],
   });
 
-  k.scene('map', (map: MapDefinition) => {
-    const ts = map.tileSize;
-    const [cols, rows] = map.grid;
-    const blocked = (x: number, y: number) =>
-      x < 0 || y < 0 || x >= cols || y >= rows || map.collision[y * cols + x] === 1;
+  let current: SceneRuntime | null = null;
+  let sceneToken = 0; // bumps on every (re)entry; lets stale async results be ignored
+  const dedupe = createEffectDeduper();
+  let seenKey = `${session.snapshot.sceneId}@${session.snapshot.spawnId}`;
 
-    k.onDraw(() => {
-      for (let y = 0; y < rows; y++)
-        for (let x = 0; x < cols; x++)
-          k.drawRect({ pos: k.vec2(x * ts, y * ts), width: ts, height: ts, color: blocked(x, y) ? k.rgb(70, 70, 90) : k.rgb(150, 170, 130) });
-    });
+  const enter = (sceneId: SceneId, spawnId: string) => {
+    sceneToken++;
+    current?.dispose(); // cancel the old scene's listeners before mounting the next
+    current = null;
+    input.reset();
+    k.go('map', { sceneId, spawnId } satisfies SceneArgs);
+  };
 
-    let tile = map.spawns[session.snapshot.spawnId] ?? Object.values(map.spawns)[0] ?? [1, 1];
-    const player = k.add([k.rect(ts, ts), k.color(230, 80, 80), k.pos(tile[0] * ts, tile[1] * ts), k.z(10)]);
+  const handleEffects = (effects: Effect[]) => {
+    for (const e of dedupe(effects)) {
+      if (e.type === 'ChangeScene') {
+        seenKey = `${e.sceneId}@${e.spawnId}`;
+        enter(e.sceneId, e.spawnId);
+      }
+    }
+  };
 
-    const step = (dx: number, dy: number) => {
-      const next: [number, number] = [tile[0] + dx, tile[1] + dy];
-      if (blocked(...next)) return;
-      tile = next;
-      player.pos = k.vec2(tile[0] * ts, tile[1] * ts);
+  // Snapshot-driven re-entry: only when the session's scene/spawn actually changed.
+  const unsubscribe = session.subscribe((snapshot, effects) => {
+    handleEffects(effects);
+    const key = `${snapshot.sceneId}@${snapshot.spawnId}`;
+    if (key !== seenKey) {
+      seenKey = key;
+      enter(snapshot.sceneId, snapshot.spawnId);
+    }
+  });
+  window.addEventListener('pagehide', unsubscribe, { once: true });
+
+  const onResult = (token: number) => (r: CommandResult) => {
+    handleEffects(r.outcome.ok ? r.outcome.effects : []);
+    // DEV FALLBACK until Track B session (#14): the stub session never emits ChangeScene,
+    // so walk through the portal locally. Skipped if the session already moved us.
+    if (import.meta.env.DEV && r.portal && r.outcome.ok && token === sceneToken) {
+      console.warn(`[game] DEV FALLBACK: no ChangeScene for ${r.portal.id}; moving to ${r.portal.toScene}@${r.portal.toSpawn} locally`);
+      enter(r.portal.toScene, r.portal.toSpawn);
+    }
+  };
+
+  k.scene('map', ({ sceneId, spawnId }: SceneArgs) => {
+    const map = maps[sceneId];
+    const rt = createSceneRuntime({ map, spawnId, session, bus: input, onResult: onResult(sceneToken) });
+    current = rt;
+    const cam = (): [number, number] => {
+      const [px, py] = playerPixel(rt.player, map.tileSize);
+      return cameraCenter([px + map.tileSize / 2, py + map.tileSize / 2], [map.grid[0] * map.tileSize, map.grid[1] * map.tileSize]);
     };
-    k.onKeyPress('left', () => step(-1, 0));
-    k.onKeyPress('right', () => step(1, 0));
-    k.onKeyPress('up', () => step(0, -1));
-    k.onKeyPress('down', () => step(0, 1));
-    k.onKeyPress('space', () => void session.dispatch({ type: 'Interact', entityId: 'debug' }));
-
-    k.onUpdate(() => k.setCamPos(player.pos.add(ts / 2, ts / 2)));
+    k.onUpdate(() => {
+      rt.update(Math.min(k.dt(), 0.05));
+      const [cx, cy] = cam();
+      k.setCamPos(cx, cy);
+    });
+    k.onDraw(() => drawScene(k, rt, cam()));
+    if (import.meta.env.DEV) (window as unknown as { __jearny?: unknown }).__jearny = { activeListeners: () => rt.activeListeners, sceneToken: () => sceneToken };
   });
 
-  k.go('map', maps[session.snapshot.sceneId]);
+  // Art may still be landing (#1): never block or fail on it, everything has a placeholder.
+  const begin = () => enter(session.snapshot.sceneId, session.snapshot.spawnId);
+  loadAssets(k).then(begin, (err: unknown) => {
+    console.warn('[game] asset load failed; using placeholders', err);
+    begin();
+  });
+
+  return { input };
 }
