@@ -34,6 +34,17 @@ const BUILDINGS: readonly EntityAnchor[] = [
   { id: BUILDING.sengakujiGate, kind: 'building', tile: [33, 16], size: [8, 6], footRow: 22, assetId: 'sengakuji-gate' },
 ];
 
+/**
+ * The gate's central passage, carved out of its footprint. sengakuji-gate.json says the sanmon art
+ * paints an open passage and that the map owner must leave a walkable gap in the collision
+ * rectangle; the sprite's transparent opening spans these two central columns. The flanking posts
+ * stay solid, and this is the only exemption from building-footprint collision on the map.
+ */
+export const PASSAGES: readonly Tile[] = [
+  [36, 16], [37, 16], [36, 17], [37, 17], [36, 18], [37, 18],
+  [36, 19], [37, 19], [36, 20], [37, 20], [36, 21], [37, 21],
+];
+
 const map: MapDefinition = makeRoom({
   id: 'takanawa',
   grid: [128, 96],
@@ -94,9 +105,9 @@ function meadow(): void {
 }
 
 /**
- * True when a `size`×`size` art cell at (x, y) would touch a building footprint. One extra row
- * above the footprint covers the sprite overhang (gate, house rows and konbini stand one tile taller
- * than they block), so a canopy never clips a roof.
+ * True when a `size`×`size` art cell at (x, y) would touch a building footprint. Painted rows equal
+ * collision rows for every placed sprite, so this is visual clearance rather than a roof overhang:
+ * a two-row canopy needs breathing room above and beside a facade or it reads as part of the roof.
  */
 function onBuilding(x: number, y: number, size = 1): boolean {
   return BUILDINGS.some((b) => {
@@ -106,30 +117,70 @@ function onBuilding(x: number, y: number, size = 1): boolean {
   });
 }
 
-/** One decoration prop. Props block their tile, so they sit beside a walkway, never on it. */
 /** Ground tiles a prop must never stand on: a planter on the lane would block the route. */
 export const WALKWAY_TILES: ReadonlySet<number> = new Set([
   T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V, T.DECK, T.STAIRS,
 ]);
 
-const isWalkway = (x: number, y: number): boolean =>
-  WALKWAY_TILES.has(map.layers.ground[y * map.grid[0] + x] ?? -1);
+/**
+ * Ground a prop cannot stand on even though it is not pavement: asphalt, the crossing, the rail bed,
+ * the deck's raised lip, gravel, stone walls, hedges and water. A lamppost on the Route 15 stripe is
+ * an invisible wall in the road, which is worse than a dropped prop.
+ */
+const PROPS_FORBIDDEN: ReadonlySet<number> = new Set([
+  T.ROAD, T.ROAD_EDGE_N, T.ROAD_EDGE_S, T.ROAD_EDGE_E, T.ROAD_EDGE_W,
+  T.CROSSING_H, T.CROSSING_V, T.RAIL_H, T.RAIL_V,
+  T.DECK_EDGE, T.GRAVEL, T.STONE_WALL, T.HEDGE, T.WATER,
+]);
 
+const groundAt = (x: number, y: number): number => map.layers.ground[y * map.grid[0] + x] ?? -1;
 const decorationAt = (x: number, y: number): number => map.layers.decoration[y * map.grid[0] + x] ?? -1;
+
+/** Props whose shoulder search found nowhere. Tests require this to stay empty. */
+export const PROP_MISSES: Tile[] = [];
+
+/**
+ * Neighbour offsets in outward spiral order: the authored cell first, then each square ring from
+ * the top-left corner round clockwise. Four rings are enough to reach the shoulder of a five-row
+ * pavement like the home lane without letting a prop wander across the map.
+ */
+function* shoulderSearch(): Generator<Tile> {
+  yield [0, 0];
+  for (let r = 1; r <= 4; r++) {
+    for (let dx = -r; dx <= r; dx++) yield [dx, -r];
+    for (let dy = -r + 1; dy <= r; dy++) yield [r, dy];
+    for (let dx = r - 1; dx >= -r; dx--) yield [dx, r];
+    for (let dy = r - 1; dy >= -r + 1; dy--) yield [-r, dy];
+  }
+}
 
 /**
  * Prop on the shoulder of a walkway. Authored coordinates aim at the lane itself, so a prop that
- * lands on pavement moves to the nearest free shoulder instead of vanishing (silently dropping
- * props left the forecourt and both doorsteps bare).
+ * lands on pavement moves to the nearest buildable shoulder instead of vanishing; a prop that still
+ * has nowhere to go is recorded in PROP_MISSES rather than silently dropped.
  */
-function prop(tile: number, x: number, y: number, blocked = true): void {
-  const spots: Tile[] = [[x, y], [x, y + 1], [x, y - 1], [x + 1, y], [x - 1, y],
-    [x + 1, y + 1], [x - 1, y + 1], [x + 1, y - 1], [x - 1, y - 1]];
-  const spot = spots.find(([sx, sy]) =>
-    sx >= 1 && sy >= 1 && sx < map.grid[0] - 1 && sy < map.grid[1] - 1
-    && !isWalkway(sx, sy) && decorationAt(sx, sy) === -1 && !onBuilding(sx, sy));
-  if (!spot) return;
-  paint('decoration', tile, spot[0], spot[1], spot[0], spot[1], blocked);
+function prop(tile: number, x: number, y: number, blocked = true): boolean {
+  for (const [dx, dy] of shoulderSearch()) {
+    const sx = x + dx;
+    const sy = y + dy;
+    if (sx < 1 || sy < 1 || sx >= map.grid[0] - 1 || sy >= map.grid[1] - 1) continue;
+    const ground = groundAt(sx, sy);
+    if (WALKWAY_TILES.has(ground) || PROPS_FORBIDDEN.has(ground)) continue;
+    if (decorationAt(sx, sy) !== -1 || onBuilding(sx, sy)) continue;
+    paint('decoration', tile, sx, sy, sx, sy, blocked);
+    return true;
+  }
+  PROP_MISSES.push([x, y]);
+  return false;
+}
+
+/**
+ * Authored bench on wide pavement. `prop` never blocks a walkway, but a wide lane or a plaza has
+ * room for a bench on its outer row; without these the widest paved screens are bare concrete.
+ * These stay off door fronts, portals and the crossing (the tests check all three).
+ */
+function pavementBench(x: number, y: number): void {
+  paint('decoration', T.BENCH, x, y, x, y, true);
 }
 
 /** 2×2 tree: canopy on the roof layer, trunk and skirt on the blocked decoration layer. */
@@ -175,10 +226,15 @@ paint('ground', T.SIDEWALK, 12, 16, 20, 20);
 paint('ground', T.PLAZA, 21, 35, 24, 37); // bakery forecourt below liebe's door
 paint('ground', T.PLAZA, 31, 14, 41, 15); // 泉岳寺 court between the hall and the gate
 paint('ground', T.PLAZA, 33, 22, 40, 22); // gate's paved apron on the temple path
+// The gate's central passage is the sanmon's painted opening, mandated by sengakuji-gate.json.
+paint('ground', T.TEMPLE_PATH, 36, 16, 37, 21);
 // Low stone walls flank the gate, so the paved court behind it reads as a temple compound.
 paint('ground', T.STONE_WALL, 32, 16, 32, 21, true);
 paint('ground', T.STONE_WALL, 41, 16, 41, 21, true);
-paint('ground', T.PLAZA, 51, 44, 56, 45); // bicycle-parking apron by the deck stairs
+// Close the west corner of the court: without this stub the player walks around the wall and the
+// gate passage is scenery. The court is now entered only through the passage.
+paint('ground', T.STONE_WALL, 31, 14, 31, 15, true);
+paint('ground', T.PLAZA, 51, 41, 56, 45); // bicycle-parking apron, joined to the plaza at row 40
 
 // Neighbourhood street south of the home row, its cross street and the station forecourt.
 paint('ground', T.SIDEWALK, 16, 44, 19, 83);
@@ -273,11 +329,15 @@ const BEDS: ReadonlyArray<[number, number, number, number]> = [
   [1, 11, 2, 11], [1, 19, 2, 19], [1, 4, 1, 7], [71, 7, 73, 7], [4, 61, 12, 61],
   [1, 88, 2, 88], [58, 69, 69, 69], [1, 83, 3, 83], [31, 56, 34, 56], [1, 78, 2, 78],
   [15, 1, 17, 1], [71, 25, 73, 25],
+  // Wildflower borders around the south street and the east square, so their wide paving is
+  // framed by beds instead of meeting the lawn edge as bare concrete.
+  [20, 82, 29, 83], [14, 81, 15, 83], [56, 77, 58, 77], [59, 77, 73, 77],
+  [59, 85, 73, 86], [71, 78, 73, 84], [24, 74, 27, 75],
 ];
 for (const [x1, y1, x2, y2] of BEDS) paint('decoration', T.FLOWERS, x1, y1, x2, y2);
 
 // Trees: the original clusters, the garden copses, the park corners and the edge screens.
-for (const [x, y] of [[8, 10], [22, 12], [34, 4], [50, 4], [52, 14], [9, 31],
+for (const [x, y] of [[8, 10], [22, 12], [34, 2], [50, 4], [52, 14], [9, 30],
   [5, 40], [21, 56], [68, 30], [58, 6], [66, 12], [71, 28],
   [4, 4], [24, 3], [29, 7], [4, 30], [6, 33], [5, 48], [10, 54], [5, 64], [10, 68], [5, 75],
   [5, 89], [10, 91], [25, 47], [32, 47], [36, 51], [60, 16], [66, 20],
@@ -342,14 +402,14 @@ for (const [cx, cy, count, spread] of COPSES) copse(cx, cy, count, spread);
 
 // Lampposts follow the walkway shoulders: the temple path, home row, main street, plaza, station
 // forecourt and the park heart.
-for (const [x, y] of [[11, 21], [21, 21], [12, 22], [24, 22], [36, 22], [18, 26], [30, 26],
-  [13, 43], [22, 43], [31, 43], [37, 38], [15, 48], [15, 56], [15, 64], [15, 72], [15, 80],
-  [20, 46], [20, 77], [50, 30], [54, 30], [48, 40], [55, 40], [59, 33], [70, 33], [59, 37],
+for (const [x, y] of [[11, 21], [21, 21], [12, 22], [24, 22], [30, 21], [18, 26], [30, 26],
+  [13, 43], [22, 45], [31, 43], [35, 44], [15, 48], [15, 56], [15, 64], [15, 72], [15, 80],
+  [20, 46], [20, 77], [57, 30], [54, 30], [48, 40], [55, 40], [59, 33], [70, 33], [59, 37],
   [70, 37], [28, 66], [35, 66], [28, 73], [35, 73], [57, 39], [56, 72]] satisfies Tile[])
   prop(T.LAMPPOST, x, y);
 
 // Benches face the lanes and the park plaza, clear of the through route.
-for (const [x, y] of [[13, 40], [20, 50], [20, 58], [48, 32], [48, 36], [60, 34], [69, 34],
+for (const [x, y] of [[14, 44], [20, 50], [20, 58], [57, 32], [57, 36], [60, 34], [69, 34],
   [27, 68], [27, 71], [36, 68], [36, 71], [57, 31], [56, 64], [56, 86]] satisfies Tile[])
   prop(T.BENCH, x, y);
 
@@ -364,9 +424,52 @@ for (const [x, y] of [[7, 3], [3, 7], [26, 3], [30, 5], [3, 33], [7, 29], [8, 47
   [110, 74], [119, 59], [122, 55]] satisfies Tile[]) prop(T.FLOWERS, x, y);
 
 // Planters and beds frame doorsteps and the plaza edges.
-for (const [x, y] of [[12, 16], [12, 17], [20, 16], [20, 17], [26, 43], [29, 43], [47, 33],
+for (const [x, y] of [[12, 16], [12, 17], [20, 16], [20, 17], [26, 43], [31, 44], [57, 33],
   [56, 33], [61, 37], [68, 37], [25, 66], [38, 66], [26, 75], [37, 75]] satisfies Tile[])
   prop(T.FLOWERS, x, y);
+
+// Wide pavement gets authored benches on its outer rows, clear of every door, portal and spawn.
+pavementBench(25, 43);
+pavementBench(26, 43);
+pavementBench(30, 43);
+pavementBench(35, 43);
+pavementBench(48, 34);
+pavementBench(49, 31);
+pavementBench(51, 34);
+pavementBench(53, 31);
+pavementBench(54, 34);
+// The station deck is a big open terrace, so it gets the same seating along its edges. Row 46/47
+// beside x58 stays clear because those are the station sprite's transparent padding rows, and the
+// gap at x64 keeps the deck portal, its stairs and the station zone on one clear north-south walk.
+for (let y = 48; y <= 55; y++) pavementBench(58, y);
+for (let y = 46; y <= 55; y++) pavementBench(71, y);
+for (const y of [48, 49]) {
+  for (const x of [59, 60, 68, 69, 70]) pavementBench(x, y);
+}
+for (let x = 59; x <= 70; x++) {
+  if (x === 64) continue;
+  pavementBench(x, 54);
+}
+
+/**
+ * Scatter walkable meadow flowers over plain grass. The quality test counts undecorated grass as
+ * empty, and a 30% deterministic sprinkle (same `roll` as the copses) is the difference between a
+ * lawn and a meadow. Beds, paths and roofs keep their own tiles.
+ */
+function meadowFlowers(): void {
+  const grass: ReadonlySet<number> = new Set([T.GRASS_A, T.GRASS_B, T.GRASS_C]);
+  for (let y = 1; y < map.grid[1] - 1; y++) {
+    for (let x = 1; x < map.grid[0] - 1; x++) {
+      const index = y * map.grid[0] + x;
+      if (!grass.has(map.layers.ground[index] ?? -1)) continue;
+      if (map.layers.decoration[index] !== -1 || map.layers.roof[index] !== -1) continue;
+      if (roll(x, y) >= 30) continue;
+      map.layers.decoration[index] = T.FLOWERS;
+    }
+  }
+}
+
+meadowFlowers();
 
 for (const entity of map.entities) {
   if (entity.kind !== 'building' && entity.kind !== 'npc') continue;
@@ -378,5 +481,8 @@ for (const entity of map.entities) {
     }
   }
 }
+
+// The sanmon passage is walkable inside the gate footprint; its flanking posts stay blocked above.
+for (const [x, y] of PASSAGES) map.collision[y * map.grid[0] + x] = 0;
 
 export const takanawa: MapDefinition = map;
