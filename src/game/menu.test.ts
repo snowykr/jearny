@@ -32,7 +32,7 @@ function mount(snap = snapshot(), isInputBlocked?: () => boolean, player?: TownM
   const menu = mountStartMenu(root, {
     getSnapshot: () => snap,
     ...(isInputBlocked ? { isInputBlocked } : {}),
-    ...(player !== undefined ? { getPlayer: () => player } : {}),
+    getPlayer: () => player ?? null,
     onOpenChange: (open) => events.push(open),
   });
   cleanup = () => menu.dispose();
@@ -123,17 +123,7 @@ describe('start menu', () => {
     );
   });
 
-  it('shows the minimap placeholder in マップ when no runtime pose is wired', () => {
-    const { menu } = mount();
-    menu.open();
-    click(labels.map);
-
-    const text = dialog()?.textContent ?? '';
-    expect(text).toContain('ミニマップで今いる場所');
-    expect(text).toContain('ミニマップ');
-  });
-
-  it('shows the full town map in マップ when the runtime pose is available', () => {
+  it('shows the full town map in マップ', () => {
     // jsdom has no canvas backend; the map panel must still mount and lay itself out.
     const original = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = (() => null) as typeof original;
@@ -146,7 +136,7 @@ describe('start menu', () => {
       expect(map).not.toBeNull();
       expect(map?.querySelector('canvas')?.width).toBe(128 * 3);
       expect(dialog()?.textContent).toContain('泉岳寺');
-      expect(dialog()?.textContent).not.toContain(MENU_TEXT.mapPlaceholder);
+      expect(dialog()?.textContent).not.toContain('準備中');
     } finally {
       HTMLCanvasElement.prototype.getContext = original;
     }
@@ -202,7 +192,7 @@ describe('start menu', () => {
     document.body.innerHTML = '<div id="ui-root"></div><canvas id="game"></canvas>';
     const root = document.getElementById('ui-root');
     if (!root) throw new Error('missing ui root');
-    const menu = mountStartMenu(root, { getSnapshot: () => current });
+    const menu = mountStartMenu(root, { getSnapshot: () => current, getPlayer: () => null });
     cleanup = () => menu.dispose();
 
     menu.open();

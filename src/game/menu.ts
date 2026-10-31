@@ -11,7 +11,7 @@ import type { TownMap, TownMapPlayer } from './townmap';
 export interface StartMenuOptions {
   getSnapshot(): GameSnapshot;
   /** Runtime player pose for the map tab; omitted in DOM-only tests. */
-  getPlayer?(): TownMapPlayer | null;
+  getPlayer(): TownMapPlayer | null;
   /** True while another DOM surface (dialogue, settings, modal) owns input. */
   isInputBlocked?(): boolean;
   onOpenChange?(open: boolean): void;
@@ -33,7 +33,6 @@ export const MENU_TEXT = {
   quest: 'クエスト',
   map: 'マップ',
   close: 'とじる',
-  mapPlaceholder: 'ミニマップで今いる場所を確認できます。全画面マップは準備中です。',
 } as const;
 
 /** Item flavour text for the bag; unknown items fall back to the bare name. */
@@ -254,19 +253,19 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     return frag;
   };
 
-  const townMap: TownMap | null = opts.getPlayer
-    ? mountTownMap(doc, { getPlayer: opts.getPlayer, getSnapshot: opts.getSnapshot })
-    : null;
+  // Built on first use: most sessions never open マップ, and the canvas is not free.
+  let townMap: TownMap | null = null;
+  const getTownMap = (): TownMap => {
+    townMap ??= mountTownMap(doc, { getPlayer: opts.getPlayer, getSnapshot: opts.getSnapshot });
+    return townMap;
+  };
 
   const mapView = (): DocumentFragment => {
     const frag = doc.createDocumentFragment();
     frag.append(make('h3', 'jr-menu-heading', menuText.map));
-    if (townMap) {
-      townMap.refresh();
-      frag.append(townMap.el);
-    } else {
-      frag.append(make('p', 'jr-menu-placeholder', menuText.mapPlaceholder));
-    }
+    const map = getTownMap();
+    map.refresh();
+    frag.append(map.el);
     return frag;
   };
 

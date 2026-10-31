@@ -24,7 +24,7 @@ export const CATEGORY_TILE: Record<TileCategory, { sheet: 'tiles-outdoor' | 'til
   crossing: { sheet: 'tiles-outdoor', tile: T.CROSSING_H }, // stripe fill; the asphalt underneath stays `road`
   rail: { sheet: 'tiles-outdoor', tile: T.RAIL_H }, // mean: sleepers + ties, no single dominant fill
   gravel: { sheet: 'tiles-outdoor', tile: T.GRAVEL },
-  deck: { sheet: 'tiles-outdoor', tile: T.DECK },
+  deck: { sheet: 'tiles-outdoor', tile: T.DECK }, // mean: the deck fill matches the crossing stripes exactly
   plaza: { sheet: 'tiles-outdoor', tile: T.PLAZA }, // mean, so it stays distinct from the deck
   path: { sheet: 'tiles-outdoor', tile: T.TEMPLE_PATH }, // mean, so it stays distinct from gravel
   water: { sheet: 'tiles-outdoor', tile: T.WATER },
@@ -45,7 +45,7 @@ export const CATEGORY_COLOR: Record<TileCategory, string> = {
   crossing: '#e4d4bc',
   rail: '#857464',
   gravel: '#ac9c94',
-  deck: '#e4d4bc',
+  deck: '#daccb4',
   plaza: '#d8cab3',
   path: '#9b968a',
   water: '#24749c',

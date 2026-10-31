@@ -5,8 +5,8 @@ import { IT, T } from '../content/maps/tiles';
 import { VIEW_H, VIEW_W } from './camera';
 import { CATEGORY_COLOR, CATEGORY_TILE } from './map-colors';
 import {
-  ariaLabel, buildBaseImage, facingVector, glyphFits, indoorCategory, locationLabel, minimapWidth,
-  outdoorCategory, poiGlyph, questTargetPoi, viewportRect, worldToMinimap,
+  ariaLabel, buildBaseImage, facingVector, glyphSize, indoorCategory, locationLabel, minimapWidth,
+  outdoorCategory, poiGlyph, questTargetPoi, viewportRect, worldToMinimap, OUTDOOR_GROUND, INDOOR_FLOOR, INDOOR_WALL,
 } from './minimap';
 import { allPois, nearestPoi, poisForMap, TEMPLE_APPROACH_TILE, templeApproach } from './pois';
 import worldPlan from '../../content/world-plan.json';
@@ -32,7 +32,7 @@ describe('tile category mapping', () => {
     expect(outdoorCategory(T.GRASS_A, T.FLOWERS, -1)).toBe('grass');
   });
 
-  it('falls back to grass for unknown outdoor tiles and gives every category a sampled colour', () => {
+  it('falls back to grass and gives every category a source tile and a legible colour', () => {
     expect(outdoorCategory(-1)).toBe('grass');
     for (const [cat, color] of Object.entries(CATEGORY_COLOR)) {
       expect(color, cat).toMatch(/^#[0-9a-f]{6}$/);
@@ -44,6 +44,7 @@ describe('tile category mapping', () => {
     // The map must stay legible: road, grass, water and walls may not collapse into one colour.
     expect(new Set([CATEGORY_COLOR.grass, CATEGORY_COLOR.road, CATEGORY_COLOR.water, CATEGORY_COLOR.wall]).size).toBe(4);
     expect(CATEGORY_COLOR.crossing).not.toBe(CATEGORY_COLOR.road);
+    expect(CATEGORY_COLOR.crossing).not.toBe(CATEGORY_COLOR.deck);
     expect(CATEGORY_COLOR.deck).not.toBe(CATEGORY_COLOR.plaza);
     expect(CATEGORY_COLOR.path).not.toBe(CATEGORY_COLOR.gravel);
   });
@@ -69,7 +70,7 @@ describe('base image', () => {
     expect(px(44, 5)).toEqual([0x5c, 0x6c, 0x7c]); // Route 15 asphalt, sampled from T.ROAD
     expect(px(60, 43)).toEqual([0x6b, 0x92, 0xc6]); // station footprint interior
     expect(px(58, 41)).toEqual([0x6b, 0x92, 0xc6]); // station (12x5) is all fill: no outline fits
-    expect(px(58, 40)).toEqual([0xe4, 0xd4, 0xbc]); // deck row above the station stays uncovered
+    expect(px(58, 40)).toEqual([0xda, 0xcc, 0xb4]); // deck (mean, kept distinct from crossing)
     expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // small home footprint is fill only
   });
 
@@ -123,13 +124,16 @@ describe('POIs', () => {
     expect(nearestPoi(allPois(town), [35, 24])?.poi.label).toBe('泉岳寺');
   });
 
-  it('maps each place to its glyph and only draws one when the footprint fits', () => {
+  it('maps each place to its glyph and sizes it for the footprint', () => {
     expect(poiGlyph(BUILDING.home)).toBe('house');
     expect(poiGlyph(BUILDING.station)).toBe('station');
     expect(poiGlyph(BUILDING.matsushimaya)).toBe('shop');
     expect(poiGlyph('landmark:temple-approach')).toBe('temple');
-    expect(glyphFits(6, 6)).toBe(true);
-    expect(glyphFits(5, 12)).toBe(false);
+    // Phones get a 96 px minimap; glyphs must stay visible even when a footprint shrinks to ~4 px.
+    expect(glyphSize(6, 6)).toBe(6);
+    expect(glyphSize(3.75, 4.5)).toBe(6);
+    expect(glyphSize(18, 12)).toBe(10.8);
+    expect(glyphSize(3.75, 4.5, true)).toBe(8);
     expect(facingVector('up')).toEqual([0, -1]);
     expect(facingVector('down')).toEqual([0, 1]);
     expect(facingVector('left')).toEqual([-1, 0]);
@@ -208,5 +212,19 @@ describe('labels', () => {
     expect(label).toContain('高輪ゲートウェイ周辺');
     expect(label).toContain('自宅');
     expect(ariaLabel('home-interior', null)).toBe('ミニマップ：自宅 1F');
+  });
+});
+
+describe('palette coverage', () => {
+  it('gives every authored ground tile an explicit colour category', () => {
+    for (const map of Object.values(maps)) {
+      map.layers.ground.forEach((tile, index) => {
+        if (tile < 0) return;
+        const known = map.id === 'takanawa'
+          ? OUTDOOR_GROUND[tile] !== undefined
+          : INDOOR_FLOOR[tile] !== undefined || INDOOR_WALL.has(tile);
+        expect(known, `${map.id} ground[${index}] = ${tile} has no map colour`).toBe(true);
+      });
+    }
   });
 });

@@ -13,13 +13,9 @@ import type { TileCategory } from './map-colors';
 import { allPois, nearestPoi, poisForMap } from './pois';
 import type { Poi } from './pois';
 
-export { CATEGORY_COLOR } from './map-colors';
-export { nearestPoi, poisForMap } from './pois';
-export type { TileCategory } from './map-colors';
-
 // ---------------------------------------------------------------- tile categories
 
-const OUTDOOR_GROUND: Record<number, TileCategory> = {
+export const OUTDOOR_GROUND: Record<number, TileCategory> = {
   [T.GRASS_A]: 'grass', [T.GRASS_B]: 'grass', [T.GRASS_C]: 'grass', [T.SIDEWALK]: 'sidewalk', [T.ROAD]: 'road',
   [T.ROAD_EDGE_N]: 'road', [T.ROAD_EDGE_S]: 'road', [T.ROAD_EDGE_E]: 'road', [T.ROAD_EDGE_W]: 'road', [T.CURB]: 'sidewalk',
   [T.CROSSING_H]: 'crossing', [T.CROSSING_V]: 'crossing', [T.RAIL_H]: 'rail', [T.RAIL_V]: 'rail',
@@ -28,12 +24,12 @@ const OUTDOOR_GROUND: Record<number, TileCategory> = {
 };
 const TREE_TILES: ReadonlySet<number> = new Set([T.TREE_TL, T.TREE_TR, T.TREE_BL, T.TREE_BR]);
 
-const INDOOR_FLOOR: Record<number, TileCategory> = {
+export const INDOOR_FLOOR: Record<number, TileCategory> = {
   [IT.TATAMI]: 'floor-tatami', [IT.WOOD_FLOOR]: 'floor-wood', [IT.FLOOR_WOOD_DARK]: 'floor-wood',
   [IT.SHOP_FLOOR]: 'floor-shop', [IT.GENKAN]: 'floor-stone', [IT.DOOR_MAT]: 'floor-stone',
   [IT.DOMA_STONE]: 'floor-stone', [IT.GENKAN_STEP]: 'floor-stone', [IT.NOREN_DOOR]: 'floor-stone', [IT.RUG]: 'floor-tatami',
 };
-const INDOOR_WALL: ReadonlySet<number> = new Set([
+export const INDOOR_WALL: ReadonlySet<number> = new Set([
   IT.WALL, IT.WINDOW, IT.WALL_TOP, IT.WALL_BASE, IT.WALL_SHOJI, IT.WINDOW_CURTAIN, IT.SHOP_WALL, IT.SHOP_WINDOW,
 ]);
 
@@ -196,9 +192,10 @@ export function facingVector(facing: Dir): [number, number] {
   }
 }
 
-/** A footprint of `w`x`h` minimap px is big enough for a readable glyph. */
-export function glyphFits(w: number, h: number): boolean {
-  return Math.min(w, h) >= 6;
+/** Glyph size for a POI footprint in minimap px; never smaller than 6 px, so phones keep their icons. */
+export function glyphSize(w: number, h: number, landmark = false): number {
+  if (landmark) return 8;
+  return Math.max(6, Math.min(14, Math.min(w, h) * 0.9));
 }
 
 /** Draws the small building symbol centred on (cx, cy). Pure canvas calls, no state. */
@@ -269,7 +266,7 @@ const CSS = `
   z-index:10;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-family:"DotGothic16","Hiragino Kaku Gothic ProN","Noto Sans JP",ui-monospace,monospace;
   pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .jr-minimap *{box-sizing:border-box}
-.jr-minimap-toggle{pointer-events:auto;min-width:44px;height:28px;padding:0 8px;border:2px solid #0b0c14;
+.jr-minimap-toggle{pointer-events:auto;min-width:44px;min-height:44px;padding:0 8px;border:2px solid #0b0c14;
   background:#2b2d42;color:#ffd54a;font:700 12px/1 "DotGothic16",ui-monospace,monospace;cursor:pointer;image-rendering:pixelated;
   box-shadow:inset -2px -2px 0 #14151f,inset 2px 2px 0 #4a4e6d}
 .jr-minimap-toggle:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}
@@ -299,7 +296,7 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
   toggle.type = 'button';
   toggle.className = 'jr-minimap-toggle';
   toggle.textContent = 'MAP';
-  toggle.setAttribute('aria-label', 'ミニマップを表示・非表示');
+  toggle.setAttribute('aria-label', 'MAP ミニマップを表示・非表示');
   toggle.setAttribute('aria-expanded', 'true');
 
   const panel = doc.createElement('div');
@@ -316,7 +313,12 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
   wrap.append(toggle, panel);
   root.append(style, wrap);
 
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    // Keep the panel and its label usable when 2D is unavailable (jsdom, locked-down browsers).
+    label.textContent = locationLabel(opts.getPlayer()?.sceneId ?? 'takanawa');
+    return () => { wrap.remove(); style.remove(); };
+  }
   let open = true;
   let mapId: SceneId | null = null;
   let base: HTMLCanvasElement | null = null;
@@ -333,10 +335,13 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
   const loadMap = (id: SceneId) => {
     const map = maps[id];
     const img = buildBaseImage(map);
-    base = doc.createElement('canvas');
-    base.width = img.width;
-    base.height = img.height;
-    base.getContext('2d')!.putImageData(new ImageData(img.data as Uint8ClampedArray<ArrayBuffer>, img.width, img.height), 0, 0);
+    const canvasBase = doc.createElement('canvas');
+    canvasBase.width = img.width;
+    canvasBase.height = img.height;
+    const baseCtx = canvasBase.getContext('2d');
+    if (!baseCtx) return; // keep the previous usable map rather than an empty overlay
+    baseCtx.putImageData(new ImageData(img.data as Uint8ClampedArray<ArrayBuffer>, img.width, img.height), 0, 0);
+    base = canvasBase;
     pois = id === 'takanawa' ? allPois(map) : [];
     mapId = id;
     layout();
@@ -366,10 +371,11 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
 
   const draw = (t: number, p: MinimapPlayer, snap: GameSnapshot) => {
     const map = maps[p.sceneId];
+    if (!base) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, frame.w, frame.h);
-    ctx.drawImage(base!, 0, 0, frame.w, frame.h);
+    ctx.drawImage(base, 0, 0, frame.w, frame.h);
     const outdoor = p.sceneId === 'takanawa';
     const still = !!reducedMotion?.matches;
 
@@ -385,10 +391,17 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
 
       // POI markers + labels. The quest target's ring pulses (static ring under reduced motion).
       const target = questTargetPoi(snap);
+      const boxes: Array<{ x: number; y: number; w: number; h: number }> = [];
+      const overlaps = (box: { x: number; y: number; w: number; h: number }) =>
+        boxes.some((o) => box.x < o.x + o.w && box.x + box.w > o.x && box.y < o.y + o.h && box.y + box.h > o.y);
+      const distance = (poi: Poi) => Math.hypot(poi.center[0] - p.tile[0], poi.center[1] - p.tile[1]);
+      // Target first, then nearest: when the minimap is 96px wide the labels cannot all fit.
+      const ordered = [...pois].sort((a, b) =>
+        (a.id === target ? -1 : 0) - (b.id === target ? -1 : 0) || distance(a) - distance(b));
       ctx.font = '600 10px system-ui, "Hiragino Sans", "Noto Sans JP", sans-serif';
       ctx.textBaseline = 'middle';
       ctx.lineJoin = 'round';
-      for (const poi of pois) {
+      for (const poi of ordered) {
         const [mx, my] = worldToMinimap(poi.center, frame);
         if (poi.id === target) {
           const k = still ? 0.5 : (Math.sin(t / 260) + 1) / 2;
@@ -410,19 +423,21 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
         const gw = (poi.rect.w / frame.cols) * frame.w;
         const gh = (poi.rect.h / frame.rows) * frame.h;
         const landmark = poi.id.startsWith('landmark:');
-        if (landmark || glyphFits(gw, gh)) {
-          drawPoiGlyph(ctx, poiGlyph(poi.id), mx, my, landmark ? 8 : Math.min(gw, gh) * 0.9, poi.color);
-        }
+        drawPoiGlyph(ctx, poiGlyph(poi.id), mx, my, glyphSize(gw, gh, landmark), poi.color);
         const tw = ctx.measureText(poi.label).width;
         const right = mx + 8 + tw <= frame.w - 2;
         ctx.textAlign = right ? 'left' : 'right';
         const lx = right ? mx + 6 : mx - 6;
         const ly = Math.min(Math.max(my - 7, 7), frame.h - 7);
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = 'rgba(20,16,26,.92)';
-        ctx.strokeText(poi.label, lx, ly);
-        ctx.fillStyle = '#fff';
-        ctx.fillText(poi.label, lx, ly);
+        const box = { x: right ? lx : lx - tw, y: ly - 6, w: tw + 2, h: 12 };
+        if (!overlaps(box)) {
+          boxes.push(box);
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(20,16,26,.92)';
+          ctx.strokeText(poi.label, lx, ly);
+          ctx.fillStyle = '#fff';
+          ctx.fillText(poi.label, lx, ly);
+        }
       }
     } else {
       // Room thumbnail: mark the exit door.
@@ -435,9 +450,13 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
     }
 
     // Player dot + facing arrow: blinks between bright and dim (steady under reduced motion).
-    const [px, py] = worldToMinimap([p.tile[0] + 0.5, p.tile[1] + 0.5], frame);
+    const [rawX, rawY] = worldToMinimap([p.tile[0] + 0.5, p.tile[1] + 0.5], frame);
     const on = blinkOn(t);
     const radius = outdoor ? 3.5 : 4.5;
+    const clampX = (v: number) => Math.min(Math.max(v, radius + 1), frame.w - radius - 1);
+    const clampY = (v: number) => Math.min(Math.max(v, radius + 1), frame.h - radius - 1);
+    const px = clampX(rawX);
+    const py = clampY(rawY);
     const [dx, dy] = facingVector(p.facing ?? 'down');
     const tipX = px + dx * (radius + 5);
     const tipY = py + dy * (radius + 5);

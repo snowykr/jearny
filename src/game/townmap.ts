@@ -99,10 +99,23 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
     li.append(swatch, doc.createTextNode(poi.name));
     legend.append(li);
   }
+  // The two dynamic symbols are not POIs; without a row they are unexplained.
+  for (const [id, name, color] of [
+    ['you', 'いまいる場所', '#ff4d4d'],
+    ['quest', '次の目的地', '#ffd54a'],
+  ] as const) {
+    const li = doc.createElement('li');
+    const swatch = doc.createElement('span');
+    swatch.className = 'jr-townmap-swatch';
+    swatch.style.background = color;
+    li.dataset.symbol = id;
+    li.append(swatch, doc.createTextNode(name));
+    legend.append(li);
+  }
 
   const note = doc.createElement('p');
   note.className = 'jr-townmap-note';
-  note.textContent = '赤い矢印がいまいる場所。M → マップでいつでも開けます。';
+  note.textContent = '赤い点がいまいる場所（建物の中では入口）。白い矢印は向き。M → メニュー → マップでいつでも開けます。';
 
   el.append(style, frameEl, legend, note);
 
@@ -149,7 +162,7 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
       const gw = poi.rect.w * TOWN_SCALE;
       const gh = poi.rect.h * TOWN_SCALE;
       const landmark = poi.id.startsWith('landmark:');
-      drawPoiGlyph(ctx, poiGlyph(poi.id), mx, my, landmark ? 12 : Math.min(gw, gh) * 0.8, poi.color);
+      drawPoiGlyph(ctx, poiGlyph(poi.id), mx, my, landmark ? 12 : Math.max(10, Math.min(22, Math.min(gw, gh) * 0.8)), poi.color);
       const label = poi.label;
       const right = mx + 10 + ctx.measureText(label).width <= frame.w - 2;
       ctx.textAlign = right ? 'left' : 'right';
@@ -162,10 +175,11 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
       ctx.fillText(label, lx, ly);
     }
 
-    // Player marker: the arrow points where the character faces; inside, mark the entrance instead.
+    // Player marker: the arrow points where the character faces; inside, mark the entrance instead
+    // and name the room by scene (home is not a shop).
     let marker: [number, number] | null = null;
     let facing: Dir | null = null;
-    let insideLabel: string | null = null;
+    let inside: string | null = null;
     if (player?.sceneId === 'takanawa') {
       marker = worldToMinimap([player.tile[0] + 0.5, player.tile[1] + 0.5], frame);
       facing = player.facing ?? null;
@@ -173,7 +187,7 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
       const door = entranceFor(map, player.sceneId);
       if (door) {
         marker = worldToMinimap([door[0] + 0.5, door[1] + 0.5], frame);
-        insideLabel = '店内';
+        inside = player.sceneId === 'home-interior' ? '自宅の中' : '松島屋の中';
       }
     }
     if (marker) {
@@ -203,19 +217,19 @@ export function mountTownMap(doc: Document, opts: TownMapOptions): TownMap {
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#fff';
       ctx.stroke();
-      if (insideLabel) {
+      if (inside) {
         ctx.textAlign = 'left';
         ctx.lineWidth = 3;
         ctx.strokeStyle = '#20182a';
-        ctx.strokeText(insideLabel, px + 8, py - 10);
+        ctx.strokeText(inside, px + 8, py - 10);
         ctx.fillStyle = '#fff';
-        ctx.fillText(insideLabel, px + 8, py - 10);
+        ctx.fillText(inside, px + 8, py - 10);
       }
     }
 
     const aria = player?.sceneId === 'takanawa'
-      ? '高輪ゲートウェイ周辺の全体マップ。家、駅、松島屋、泉岳寺の参道がのっています。'
-      : '高輪ゲートウェイ周辺の全体マップ。いまは建物の中です。';
+      ? '高輪ゲートウェイ周辺の全体マップ。家、駅、松島屋、泉岳寺の参道がのっています。赤い点がいまいる場所、黄色い輪が次の目的地です。'
+      : `高輪ゲートウェイ周辺の全体マップ。${inside ?? '建物の中'}の入口にいます。`;
     if (aria !== lastAria) {
       lastAria = aria;
       canvas.setAttribute('aria-label', aria);
