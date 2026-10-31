@@ -215,6 +215,36 @@ describe('session: effects, settings and saves', () => {
     expect(log).toEqual(['save:start', 'save:end', 'clear']);
   });
 
+  it('never writes while a mismatched save is awaiting a restart', async () => {
+    const log: string[] = [];
+    const store = {
+      load: async () => ({ status: 'empty' }) as const,
+      save: async () => {
+        log.push('save');
+      },
+      clear: async () => {
+        log.push('clear');
+      },
+    };
+    const session = createSession({
+      content,
+      store,
+      initial: createInitialSnapshot('blocked', content.version),
+      saveBlocked: true,
+    });
+
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(log).toEqual([]);
+
+    await session.reset?.();
+    expect(log).toEqual(['clear']);
+
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.homeExit });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(log).toEqual(['clear', 'save']);
+  });
+
   it('hints once when the store cannot write', async () => {
     const failing = {
       load: async () => ({ status: 'empty' }) as const,

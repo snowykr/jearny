@@ -77,10 +77,7 @@ describe('view model', () => {
     const showing = snapshot({
       dialogue: { status: 'showing', nodeId: 'station.directions', speakerId: ENTITY.stationStaff },
     });
-    expect(dialogueKeyAction(showing, content, 0)).toEqual({
-      type: 'advance',
-      nodeId: 'station.directions',
-    });
+    expect(dialogueKeyAction(showing, content, 0)).toEqual({ type: 'advance' });
 
     const choosing = snapshot({
       dialogue: { status: 'choosing', nodeId: 'shop.welcome', speakerId: ENTITY.shopkeeper },

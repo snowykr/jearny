@@ -52,4 +52,8 @@ export const UI_STYLES = `
   clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .jq-root-large .jq-dialogue { font-size: 17px; }
 .jq-root-large .jq-hud { font-size: 14px; }
+
+/* index.html sets #ui-root > * { pointer-events: auto }; the HUD stays click-through. */
+#ui-root > .jq-hud, #ui-root > .jq-toast { pointer-events: none; }
+#ui-root > .jq-hud button { pointer-events: auto; }
 `;

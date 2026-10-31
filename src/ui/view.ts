@@ -94,9 +94,8 @@ export function typingDone(text: string, shown: number): boolean {
 
 /** What Enter/Space means at this moment. */
 export type DialogueKeyAction =
-  | { type: 'skip-typing' }
-  | { type: 'advance'; nodeId: string }
-  | { type: 'choose'; nodeId: string; choice: ChoiceView }
+  | { type: 'advance' }
+  | { type: 'choose'; choice: ChoiceView }
   | { type: 'none' };
 
 export function dialogueKeyAction(
@@ -107,7 +106,7 @@ export function dialogueKeyAction(
   const node = currentNode(snapshot, content);
   if (!node) return { type: 'none' };
   const choices = visibleChoices(snapshot, content);
-  if (choices.length === 0) return { type: 'advance', nodeId: node.id };
+  if (choices.length === 0) return { type: 'advance' };
   const choice = choices[Math.min(Math.max(selected, 0), choices.length - 1)];
-  return choice ? { type: 'choose', nodeId: node.id, choice } : { type: 'none' };
+  return choice ? { type: 'choose', choice } : { type: 'none' };
 }

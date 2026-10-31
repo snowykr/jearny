@@ -170,6 +170,7 @@ export function createSession(options: SessionOptions): GameSession {
       return enqueue(() => execute(command));
     },
     updateSettings(patch: SettingsPatch) {
+      if (closed) return;
       const settings = mergeSettings(snapshot.settings, patch);
       if (JSON.stringify(settings) === JSON.stringify(snapshot.settings)) return;
       snapshot = { ...snapshot, settings };
@@ -182,6 +183,7 @@ export function createSession(options: SessionOptions): GameSession {
       return () => listeners.delete(listener);
     },
     async reset() {
+      if (closed) return;
       // One serialization rule: reset is a queued mutation like any command.
       const task = queue.then(async () => {
         resetting = true;

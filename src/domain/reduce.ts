@@ -12,7 +12,7 @@ import type {
 import { ENTITY, ITEM, QUEST, ZONE } from '../contracts';
 import type { WorldContent } from '../content';
 
-export type Update = { snapshot: GameSnapshot } | { reason: RejectReason };
+type Update = { snapshot: GameSnapshot } | { reason: RejectReason };
 
 const flagVisited = (zoneId: string) => `visited:${zoneId}`;
 const flagConversation = (conversationId: string) => `conversationPassed:${conversationId}`;

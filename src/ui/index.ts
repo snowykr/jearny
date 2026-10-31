@@ -64,6 +64,8 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   const dialogue = element('div', 'jq-dialogue');
   dialogue.setAttribute('role', 'dialog');
   const speaker = element('div', 'jq-speaker');
+  speaker.id = 'jq-dialogue-speaker';
+  dialogue.setAttribute('aria-labelledby', speaker.id);
   const textEl = element('p', 'jq-text');
   const choicesEl = element('div', 'jq-choices');
   const cue = element('span', 'jq-cue', '▼');
@@ -143,6 +145,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   let announced = '';
   let modalOpen = false;
   let modalAction: (() => void) | null = null;
+  let modalDismissable = true;
   let toastTimer = 0;
 
   const renderText = (): void => {
@@ -163,7 +166,14 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       const button = element('button', 'jq-choice', label);
       button.type = 'button';
       button.disabled = choice.kind === 'buy' && choice.disabled;
-      button.setAttribute('aria-selected', String(index === selected));
+      button.setAttribute('aria-current', String(index === selected));
+      button.addEventListener('focus', () => {
+        // The keyboard cursor follows DOM focus so Enter activates what is focused.
+        selected = index;
+        for (const [childIndex, child] of [...choicesEl.children].entries()) {
+          child.setAttribute('aria-current', String(childIndex === selected));
+        }
+      });
       button.addEventListener('click', (event) => {
         event.stopPropagation();
         activate(choice);
@@ -172,7 +182,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     });
   };
 
-  const syncDialogue = (snapshot: GameSnapshot): void => {
+  const syncDialogue = (snapshot: GameSnapshot, effects: Effect[]): void => {
     const node = currentNode(snapshot, gameContent);
     if (!node) {
       dialogue.hidden = true;
@@ -182,7 +192,10 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       return;
     }
     dialogue.hidden = false;
-    if (nodeId !== node.id) {
+    const reentered = effects.some(
+      (effect) => effect.type === 'ShowDialogue' && effect.nodeId === node.id,
+    );
+    if (nodeId !== node.id || reentered) {
       nodeId = node.id;
       text = node.displayText;
       shown = reducedMotion ? text.length : 0;
@@ -215,24 +228,34 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     volume.value = String(snapshot.settings.volume);
     textSize.value = snapshot.settings.textSize;
     inputMode.value = snapshot.settings.inputMode;
-    syncDialogue(snapshot);
+    syncDialogue(snapshot, effects);
     for (const effect of effects) handleEffect(effect, snapshot);
   };
 
   const showToast = (message: string): void => {
-    toast.textContent = message;
     toast.hidden = false;
+    // Fill after the live region becomes visible, otherwise it is not announced.
+    queueMicrotask(() => {
+      toast.textContent = message;
+    });
     window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => {
       toast.hidden = true;
     }, TOAST_MS);
   };
 
-  const openModal = (title: string, body: string, action: string, onAction?: () => void): void => {
+  const openModal = (
+    title: string,
+    body: string,
+    action: string,
+    onAction?: () => void,
+    dismissable = true,
+  ): void => {
     modalTitle.textContent = title;
     modalBody.textContent = body;
     modalButton.textContent = action;
     modalAction = onAction ?? closeModal;
+    modalDismissable = dismissable;
     modal.hidden = false;
     modalOpen = true;
     modalButton.focus();
@@ -248,7 +271,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       if (effect.reason === 'content_version_mismatch' || effect.reason === 'save_corrupt') {
         openModal(labels.startOver, hintText(effect.reason, gameContent), labels.startOver, () => {
           void session.reset?.();
-        });
+        }, false);
       } else {
         showToast(hintText(effect.reason, gameContent));
       }
@@ -295,10 +318,10 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
         closeModal();
         run?.();
       } else if (event.key === 'Escape') {
-        // Dismissing never deletes a save; only the explicit action can.
         event.preventDefault();
         event.stopPropagation();
-        closeModal();
+        // A save-policy prompt is the only way to unblock saving; keep it open.
+        if (modalDismissable) closeModal();
       }
       return;
     }
@@ -312,7 +335,9 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     }
     if (!currentNode(snapshot, gameContent)) return;
     // The replay control owns its own activation; the dialogue must not eat it.
-    if (event.target instanceof Node && replay.contains(event.target)) return;
+    if (event.target instanceof Node && replay.contains(event.target)) {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') return;
+    }
 
     const navigation = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     if (!navigation.includes(event.key) && !['Enter', ' ', 'Spacebar', 'Escape'].includes(event.key))

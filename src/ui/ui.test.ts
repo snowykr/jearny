@@ -96,7 +96,7 @@ describe('dialogue overlay', () => {
     await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
     press('Enter'); // finish typing
     press('ArrowDown');
-    const selected = buttons(root).find((button) => button.getAttribute('aria-selected') === 'true');
+    const selected = buttons(root).find((button) => button.getAttribute('aria-current') === 'true');
     expect(selected?.textContent).toBe('もう一度お願いします。');
     press('Enter');
     await Promise.resolve();
@@ -219,8 +219,30 @@ describe('dialogue overlay', () => {
 
     press('Escape');
     await new Promise((resolve) => setTimeout(resolve, 0));
+    // The only way to unblock saving is the explicit restart, so it stays up.
+    expect(root.querySelector<HTMLElement>('.jq-modal')?.hidden).toBe(false);
     expect(session.snapshot.revision).toBe(1);
-    expect(root.querySelector<HTMLElement>('.jq-modal')?.hidden).toBe(true);
+  });
+
+  it('activates the focused choice instead of the arrow cursor', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await session.dispatch({ type: 'Choose', dialogueNodeId: 'guide.intro', choiceId: 'accept' });
+    await session.dispatch({ type: 'AdvanceDialogue', nodeId: 'guide.depart' });
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.homeExit });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.stationZone });
+    await session.dispatch({ type: 'AdvanceDialogue', nodeId: 'station.directions' });
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.shopDoor });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.shopkeeper });
+    await session.dispatch({ type: 'Choose', dialogueNodeId: 'shop.welcome', choiceId: 'order' });
+
+    buttons(root)[3]?.focus();
+    press('Enter'); // finish the typewriter
+    press('Enter'); // activate the focused "みっつで。"
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(session.snapshot.dialogue.nodeId).toBe('shop.wrong');
+    expect(session.snapshot.walletYen).toBe(1000);
   });
 
   it('toggles settings and applies the large text class', () => {
