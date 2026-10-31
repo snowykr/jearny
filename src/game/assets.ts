@@ -4,7 +4,7 @@ import type { Comp, KAPLAYCtx, LoadSpriteOpt, SpriteAnims } from 'kaplay';
 
 export const ASSETS = {
   buildings: { station: [192, 128], matsushimaya: [96, 80], home: [80, 96], liebe: [80, 80] },
-  tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 4 } },
+  tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 } },
   /** Walk sheets: 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up), 16×24 cells. */
   characters: ['char-player', 'char-guide', 'char-station_staff', 'char-shopkeeper'],
 } as const;

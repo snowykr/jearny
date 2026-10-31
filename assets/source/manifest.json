@@ -298,19 +298,19 @@
       "id": "tiles-interior",
       "kind": "tileset",
       "source": "assets/source/tiles-interior-atlas-v2.png",
-      "sha256": "da99f0ae864b3fc4e7a446ce2792499b03b12bfa8e88c970a539f73229faef9a",
+      "sha256": "0b6ae6ff5ec48df0ca4362832686e340cdd82477c22155238641d08f30e399f3",
       "sourceSize": [
         128,
-        64
+        96
       ],
       "runtimeSize": [
         128,
-        64
+        96
       ],
       "sliceX": 8,
-      "sliceY": 4,
+      "sliceY": 6,
       "sprite": "public/sprites/tiles-interior.png",
-      "spriteSha256": "151951c33083785657690515a8052b9130c9a1f8a71cc5f43f9a7aa0aea6d3d6",
+      "spriteSha256": "08f747dd8e4e85c9b10c123f4709de58df6439928f2382af382dd7772e5891b4",
       "colors": 24,
       "alpha": true,
       "status": "approved",

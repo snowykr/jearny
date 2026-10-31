@@ -4,10 +4,10 @@
   "source": "assets/source/tiles-interior-atlas-v2.png",
   "runtimeSize": [
     128,
-    64
+    96
   ],
   "sliceX": 8,
-  "sliceY": 4,
+  "sliceY": 6,
   "generator": "Image Gen 2",
   "mode": "generate",
   "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Use case: stylized-concept. Generate one production interior tileset, exact 8 columns by 4 rows, no gutters, equal square cells; canvas 1536x768 or another exact 2:1 aspect. Each cell represents 16x16 logical pixels. First row left to right: seamless straw tatami floor filling entire cell; seamless warm wood plank floor filling entire cell; seamless horizontally repeating cream wall with dark brown baseboard filling entire cell; blue window in cream wall; low wooden table; folded cream futon with blue pillow; gray stone genkan floor filling cell; red-brown doormat. Second row: seamless cream square shop floor filling cell; LEFT HALF of a continuous two-cell wide glass wagashi counter; RIGHT HALF of same counter, connecting without an internal end wall; wooden shelf with unlabelled pastel sweets boxes; cream noren doorway with open dark passage reaching bottom edge, no text or emblem; small cash register; wooden counter; green potted plant. Last two rows fully transparent reserved cells. Furniture tiles isolated on transparency, no floor under furniture. Floor tiles override 'no floor' prefix and must cover whole cell. Home sprite is style reference; shop and station sprites are style references; photograph is shop mood only, no copying pixels. Fictional interiors. Exact orthogonal grid with NO grid lines, labels, margins or spacing. Keep each object inside its own cell. Intentionally simple 16px-scale clusters.",
