@@ -157,6 +157,10 @@
       "alpha": true,
       "status": "approved",
       "anchors": {},
+      "collisionTiles": [
+        20,
+        6
+      ],
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors. Full exporter rejects 160x96 cells; runtime is a direct copy of the exact-size atlas. Manifest registration awaits code owner support for custom cell sizes. Exported as a single 320x96 sprite (kind building) because the exporter sizes tileset cells at 16x16; code slices the two 160x96 frames using meta.frames."
@@ -182,6 +186,10 @@
       "alpha": true,
       "status": "approved",
       "anchors": {},
+      "collisionTiles": [
+        1,
+        1
+      ],
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors."
@@ -207,6 +215,10 @@
       "alpha": true,
       "status": "approved",
       "anchors": {},
+      "collisionTiles": [
+        3,
+        3
+      ],
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors."
