@@ -6,7 +6,7 @@ import { maps } from '../content/maps';
 import { loadAssets } from './assets';
 import { VIEW_H, VIEW_W, sceneCamera } from './camera';
 import { createInputBus } from './input';
-import type { InputBus } from './input';
+import type { Dir, InputBus } from './input';
 import { createEffectDeduper } from './interaction';
 import { attachKeyboard } from './keyboard';
 import { playerDrawPixel, playerPixel } from './player';
@@ -35,8 +35,22 @@ export function startGame(
   // D-pad + A overlay on touch devices; hidden while the DOM UI owns input. Mounted inside
   // #ui-root so it lives on the same DOM surface as the DOM UI (it still paints above it).
   const uiRoot = document.getElementById('ui-root') ?? document.body;
+  let current: SceneRuntime | null = null;
+
+  // Player pose for the minimap and the menu's full map (#66): position + facing, no polling.
+  const getPlayerPose = (): { sceneId: SceneId; tile: [number, number]; facing: Dir } | null => {
+    if (!current) return null;
+    const ts = current.map.tileSize;
+    const [px, py] = playerPixel(current.player, ts);
+    return { sceneId: current.map.id, tile: [px / ts, py / ts], facing: current.player.facing };
+  };
+
   // Start menu (#65): read-only snapshot window; M and the on-screen trigger toggle it.
-  const menu = mountStartMenu(uiRoot, { getSnapshot: () => session.snapshot, isInputBlocked });
+  const menu = mountStartMenu(uiRoot, {
+    getSnapshot: () => session.snapshot,
+    getPlayer: getPlayerPose,
+    isInputBlocked,
+  });
   // One predicate for every input surface, so walking stops the moment the menu opens.
   const blocked = () => isInputBlocked() || menu.isOpen();
   const unmountTouch = mountTouchControls(uiRoot, input, { isInputBlocked: blocked });
@@ -51,19 +65,9 @@ export function startGame(
     background: [24, 24, 32],
   });
 
-  let current: SceneRuntime | null = null;
-
   // minimap wiring (#40): reads the player from the runtime via a getter, no DOM polling.
-  const getPlayerTile = (): [number, number] | null => {
-    if (!current) return null;
-    const [px, py] = playerPixel(current.player, current.map.tileSize);
-    return [px / current.map.tileSize, py / current.map.tileSize];
-  };
   const unmountMinimap = mountMinimap(uiRoot, {
-    getPlayer: () => {
-      const tile = getPlayerTile();
-      return current && tile ? { sceneId: current.map.id, tile } : null;
-    },
+    getPlayer: getPlayerPose,
     getSnapshot: () => session.snapshot,
   });
 
