@@ -2,6 +2,8 @@
 // An "image" is { width, height, data } where data is RGBA bytes (Uint8Array/Buffer), row-major.
 
 export const CELL = { tileset: [16, 16], character: [16, 24] };
+/** Character cell heights accepted: 24 px (legacy 48x96 sheets) and 20 px (chibi 48x80 sheets, #42). Width is always 16. */
+export const CHARACTER_CELL_HEIGHTS = [24, 20];
 export const DEFAULT_SLICES = { character: [3, 4] };
 export const MAX_COLORS = 24;
 export const ALPHA_THRESHOLD = 128;
@@ -187,7 +189,12 @@ export function runtimeSizeFor(meta) {
   const sliceX = meta.sliceX ?? defX;
   const sliceY = meta.sliceY ?? defY;
   if (!Number.isInteger(sliceX) || !Number.isInteger(sliceY)) throw new Error(`${meta.id}: ${kind} needs sliceX and sliceY`);
-  const [cw, ch] = CELL[kind];
+  let [cw, ch] = CELL[kind];
+  if (kind === 'character' && Array.isArray(meta.runtimeSize)) {
+    // An explicit runtimeSize may select the 20 px cell height; anything else still has to match 16x24 exactly.
+    const alt = CHARACTER_CELL_HEIGHTS.find((h) => meta.runtimeSize[1] === sliceY * h);
+    if (alt) ch = alt;
+  }
   const size = [sliceX * cw, sliceY * ch];
   if (meta.runtimeSize && (meta.runtimeSize[0] !== size[0] || meta.runtimeSize[1] !== size[1])) {
     throw new Error(`${meta.id}: runtimeSize ${meta.runtimeSize} != ${sliceX}x${sliceY} cells of ${cw}x${ch} = ${size}`);

@@ -16,6 +16,7 @@ export interface AssetMeta {
 }
 
 export const CELL: Record<string, [number, number]>;
+export const CHARACTER_CELL_HEIGHTS: number[];
 export const MAX_COLORS: number;
 export const ALPHA_THRESHOLD: number;
 export const ASPECT_TOLERANCE: number;
