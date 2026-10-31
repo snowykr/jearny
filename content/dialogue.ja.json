@@ -1,8 +1,8 @@
 {
   "version": 1,
   "lines": [
-    {"id":"home.welcome", "speaker":"guide", "displayText":"おはようございます。今日は高輪ゲートウェイ駅まで行ってみましょう。", "spokenText":"おはようございます。今日は、高輪ゲートウェイ駅まで行ってみましょう。"},
-    {"id":"station.directions", "speaker":"station_staff", "displayText":"松島屋さんですか。北改札を出て、西へまっすぐ。突き当たりを右です。", "spokenText":"松島屋さんですか。北改札を出て、西へまっすぐ。突き当たりを右です。"},
+    {"id":"home.welcome", "speaker":"guide", "displayText":"おはようございます。今日は高輪ゲートウェイ駅まで行ってみましょう。", "spokenText":"おはようございます。きょうは、たかなわゲートウェイえきまで行ってみましょう。"},
+    {"id":"station.directions", "speaker":"station_staff", "displayText":"松島屋さんですか。北改札を出て、西へまっすぐ。突き当たりを右です。", "spokenText":"マツシマヤさんですか。きたかいさつをでて、にしへまっすぐ。つきあたりをみぎです。"},
     {"id":"shop.welcome", "speaker":"shopkeeper", "displayText":"いらっしゃいませ。何になさいますか。", "spokenText":"いらっしゃいませ。何になさいますか。"},
     {"id":"shop.quantity", "speaker":"shopkeeper", "displayText":"おいくつご用意しましょうか。", "spokenText":"おいくつ、ご用意しましょうか。"},
     {"id":"shop.confirm", "speaker":"shopkeeper", "displayText":"二つですね。ありがとうございます。", "spokenText":"二つですね。ありがとうございます。"},
