@@ -18,11 +18,21 @@
   "anchors": {
     "door": [
       54,
-      74
+      66
     ],
     "foot": [
       40,
-      79
+      66
+    ]
+  },
+  "painted": {
+    "x": [
+      5,
+      74
+    ],
+    "y": [
+      12,
+      66
     ]
   },
   "collisionTiles": [
@@ -43,20 +53,6 @@
   ],
   "export": {
     "source": "assets/source/liebe-v2.png",
-    "sourceCrop": [
-      71,
-      192,
-      1184,
-      1046
-    ],
-    "scaledSize": [
-      80,
-      61
-    ],
-    "offset": [
-      0,
-      19
-    ],
     "paletteRGB": [
       [
         24,
@@ -174,7 +170,6 @@
         194
       ]
     ],
-    "runtimeSha256": "64d7d1f044619cef9d0e2eae3a43ec7168a3a8af072b2fa1c765bb28aa5b7966",
     "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
     "paletteSources": [
       "assets/source/station-v1.png",

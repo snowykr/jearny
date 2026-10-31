@@ -18,11 +18,21 @@
   "anchors": {
     "door": [
       70,
-      78
+      71
     ],
     "foot": [
       48,
-      79
+      71
+    ]
+  },
+  "painted": {
+    "x": [
+      5,
+      90
+    ],
+    "y": [
+      8,
+      71
     ]
   },
   "collisionTiles": [
@@ -43,20 +53,6 @@
   ],
   "export": {
     "source": "assets/source/matsushimaya-v2.png",
-    "sourceCrop": [
-      66,
-      109,
-      1308,
-      1034
-    ],
-    "scaledSize": [
-      96,
-      71
-    ],
-    "offset": [
-      0,
-      9
-    ],
     "paletteRGB": [
       [
         24,
@@ -174,7 +170,6 @@
         194
       ]
     ],
-    "runtimeSha256": "ec251b671f8505a7b42bac00d6171c3bff655507b9ecf25f06dd9261790f51b5",
     "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
     "paletteSources": [
       "assets/source/station-v1.png",

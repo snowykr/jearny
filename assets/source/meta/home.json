@@ -18,11 +18,21 @@
   "anchors": {
     "door": [
       40,
-      94
+      89
     ],
     "foot": [
       40,
-      95
+      89
+    ]
+  },
+  "painted": {
+    "x": [
+      3,
+      76
+    ],
+    "y": [
+      9,
+      89
     ]
   },
   "collisionTiles": [
@@ -43,20 +53,6 @@
   ],
   "export": {
     "source": "assets/source/home-v2.png",
-    "sourceCrop": [
-      48,
-      128,
-      1097,
-      1289
-    ],
-    "scaledSize": [
-      80,
-      89
-    ],
-    "offset": [
-      0,
-      7
-    ],
     "paletteRGB": [
       [
         24,
@@ -174,7 +170,6 @@
         194
       ]
     ],
-    "runtimeSha256": "499bbf32711fdaddda5044f8a3157eb2e8aef7fcd07beb12dc4971536a344654",
     "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
     "paletteSources": [
       "assets/source/station-v1.png",
