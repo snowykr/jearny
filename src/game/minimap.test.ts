@@ -76,6 +76,21 @@ describe('base image', () => {
     expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // small home footprint is fill only
   });
 
+  it('outlines the footprint once a POI is 7+ tiles on its short side', () => {
+    // No map POI is that wide today, so pin the branch with a widened station.
+    const wide: typeof town = {
+      ...town,
+      entities: town.entities.map((e) =>
+        e.id === BUILDING.station ? { ...e, size: [7, 7] as [number, number] } : e),
+    };
+    const img = buildBaseImage(wide);
+    const poi = poisForMap(wide).find((p) => p.id === BUILDING.station);
+    expect(poi?.rect).toMatchObject({ w: 7, h: 7 });
+    const px = (x: number, y: number) => [...img.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 3)];
+    expect(px(poi!.rect.x, poi!.rect.y)).toEqual([0x3a, 0x2a, 0x22]);
+    expect(px(poi!.rect.x + 1, poi!.rect.y + 1)).toEqual([0x6b, 0x92, 0xc6]);
+  });
+
   it('renders interiors as room thumbnails', () => {
     const home = maps['home-interior'];
     const img = buildBaseImage(home);

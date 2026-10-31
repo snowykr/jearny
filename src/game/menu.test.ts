@@ -65,7 +65,7 @@ describe('start menu', () => {
     expect(trigger()?.hidden).toBe(false);
   });
 
-  it('opens on M with the four tabs and the bag focused', () => {
+  it('opens on M with the four tabs and the map focused', () => {
     const { menu } = mount();
     const event = press('m');
 
@@ -77,9 +77,12 @@ describe('start menu', () => {
     expect(dialog()?.getAttribute('aria-modal')).toBe('true');
     const title = document.getElementById(dialog()?.getAttribute('aria-labelledby') ?? '');
     expect(title?.textContent).toBe(labels.title);
-    expect(buttons()[0]?.getAttribute('role')).toBe('tab');
-    expect(buttons()[0]?.getAttribute('aria-selected')).toBe('true');
-    expect(document.activeElement).toBe(buttons()[0]);
+    const mapTab = buttons().find((button) => button.textContent === labels.map);
+    expect(mapTab?.getAttribute('role')).toBe('tab');
+    // M is the map shortcut: it must not drop the player on バッグ.
+    expect(mapTab?.getAttribute('aria-selected')).toBe('true');
+    expect(document.activeElement).toBe(mapTab);
+    expect(dialog()?.querySelector('.jr-menu-panel')?.textContent).toContain(labels.map);
   });
 
   it('opens from the touch trigger and closes on M', () => {
@@ -89,6 +92,34 @@ describe('start menu', () => {
 
     press('m');
     expect(menu.isOpen()).toBe(false);
+  });
+
+  it('gives the scrollable panel the same focus ring as the tabs', () => {
+    const { menu } = mount();
+    const panel = () => document.querySelector<HTMLElement>('.jr-menu-panel');
+    expect(panel()).not.toBeNull();
+    menu.open();
+    expect(document.activeElement).toBe(buttons().find((b) => b.textContent === TAB_COPY[0]));
+    // jsdom does not resolve :focus-visible, so pin the rule that draws the ring
+    // instead of the computed outline.
+    const css = document.querySelector('style[data-jr-menu]')?.textContent ?? '';
+    expect(css).toContain('.jr-menu-panel:focus-visible');
+  });
+
+  it('falls back to the canvas when the opener is hidden by the yield path', async () => {
+    let blocked = false;
+    const { menu } = mount(undefined, () => blocked);
+    trigger()?.focus();
+    trigger()?.click();
+    expect(menu.isOpen()).toBe(true);
+
+    // Another surface takes ownership: the menu closes and the trigger hides.
+    blocked = true;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(menu.isOpen()).toBe(false);
+    expect(trigger()?.hidden).toBe(true);
+    // Focus must not land on the now-invisible trigger.
+    expect(document.activeElement).toBe(document.getElementById('game'));
   });
 
   it('shows the wallet, items with descriptions and quest progress in バッグ', () => {

@@ -313,16 +313,16 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     trigger.hidden = openState || isBlocked();
   };
 
-  const open = (): void => {
+  const open = (initial: TabId = 'bag'): void => {
     if (openState || isBlocked()) return;
     previousFocus = doc.activeElement instanceof HTMLElement ? doc.activeElement : null;
     openState = true;
-    active = 'bag';
+    active = initial;
     dialog.hidden = false;
     trigger.hidden = true;
     trigger.setAttribute('aria-expanded', 'true');
     render();
-    tabs.bag.focus({ preventScroll: true });
+    tabs[initial].focus({ preventScroll: true });
     opts.onOpenChange?.(true);
   };
 
@@ -360,11 +360,13 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     if (!event.ctrlKey && !event.metaKey && !event.altKey && event.key.toLowerCase() === 'm') {
       // The menu owns M; the minimap toggle keeps its on-screen button. Swallow
       // repeats too, so holding M cannot toggle the minimap behind the menu.
+      // M is the map shortcut (#66), so it opens on マップ instead of バッグ.
       event.preventDefault();
       event.stopImmediatePropagation();
       if (event.repeat) return;
       if (!openState && isBlocked()) return;
-      toggle();
+      if (openState) close();
+      else open('map');
       return;
     }
 
