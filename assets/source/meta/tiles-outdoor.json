@@ -1,7 +1,7 @@
 {
   "id": "tiles-outdoor",
   "kind": "tileset",
-  "source": "assets/source/tiles-outdoor-v2.png",
+  "source": "assets/source/tiles-outdoor-atlas-v2.png",
   "runtimeSize": [
     128,
     96
@@ -17,7 +17,7 @@
     "assets/source/matsushimaya-v1.png"
   ],
   "status": "approved",
-  "notes": "Agent visual review at 1x and 4x. Fixed T indices 0..31; 32..47 transparent. Tree quadrants 17,18,19,20 reconstruct one 32x32 tree. Collision remains map-owned. Source v1 generated, v2 edited to remove tree seams and improve ground. Crop boxes remove generated gutters and ground borders. Palette sampled from generated source regions to retain green, red, blue, cream, brown and slate; visually matched against building references. Manifest and loader integration belongs to #1.",
+  "notes": "Agent visual review at 1x and 4x. Fixed T indices 0..31; 32..47 transparent. Tree quadrants 17,18,19,20 reconstruct one 32x32 tree. Collision remains map-owned. Source v1 generated, v2 edited to remove tree seams and improve ground. Crop boxes remove generated gutters and ground borders. Palette sampled from generated source regions to retain green, red, blue, cream, brown and slate; visually matched against building references. Manifest and loader integration belongs to #1. Export source is the assembled 128x96 atlas (built from rawSource via export.cropBoxesByRuntimeIndex); tools/art/export.mjs re-quantizes it 1:1.",
   "history": [
     {
       "source": "assets/source/tiles-outdoor-v1.png",
@@ -323,5 +323,6 @@
     ],
     "paletteMethod": "Per-region median cut, concatenate 24 entries; nearest palette mapping without dithering.",
     "curb": "Fit within 16x16 without stretching; bottom align."
-  }
+  },
+  "rawSource": "assets/source/tiles-outdoor-v2.png"
 }
