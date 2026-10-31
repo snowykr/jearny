@@ -53,9 +53,10 @@ describe('base image', () => {
     for (let i = 3; i < img.data.length; i += 4) expect(img.data[i]).toBe(255);
     const px = (x: number, y: number) => [...img.data.slice((y * 128 + x) * 4, (y * 128 + x) * 4 + 3)];
     expect(px(44, 5)).toEqual([0x4b, 0x4e, 0x59]); // Route 15 asphalt
-    expect(px(60, 45)).toEqual([0x6b, 0x92, 0xc6]); // station footprint interior
-    expect(px(58, 40)).toEqual([0x3a, 0x2a, 0x22]); // station outline
-    expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // small home footprint is fill only
+    expect(px(60, 43)).toEqual([0x6b, 0x92, 0xc6]); // station footprint interior
+    expect(px(58, 41)).toEqual([0x3a, 0x2a, 0x22]); // footprint border: station (12x5) is outlined
+    expect(px(58, 40)).toEqual([0x8d, 0xa6, 0xbd]); // deck row above the station stays uncovered
+    expect(px(16, 36)).toEqual([0xd0, 0x67, 0x5a]); // home footprint interior stays fill
   });
 
   it('renders interiors as room thumbnails', () => {
@@ -73,7 +74,7 @@ describe('POIs', () => {
     const byId = Object.fromEntries(pois.map((p) => [p.id, p]));
     expect(pois).toHaveLength(3);
     expect(byId[BUILDING.home]).toMatchObject({ label: '家', name: '自宅', center: [17.5, 37] });
-    expect(byId[BUILDING.station]).toMatchObject({ label: '駅', center: [64, 44] });
+    expect(byId[BUILDING.station]).toMatchObject({ label: '駅', center: [64, 43.5] });
     expect(byId[BUILDING.matsushimaya]).toMatchObject({ label: '松島屋', center: [16, 13.5] });
   });
 

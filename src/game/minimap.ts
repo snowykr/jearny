@@ -207,8 +207,8 @@ export function buildBaseImage(map: MapDefinition): { data: Uint8ClampedArray; w
       const { x, y, w, h } = poi.rect;
       for (let yy = y; yy < y + h; yy++) {
         for (let xx = x; xx < x + w; xx++) {
-          // Small buildings are all fill: an outline would swallow most of a 5-6 tile footprint.
-          const edge = Math.min(w, h) >= 7 && (xx === x || yy === y || xx === x + w - 1 || yy === y + h - 1);
+          // Tiny POIs stay fill: an outline would swallow a 3-tile footprint. Buildings (>=4 rows) get one.
+          const edge = Math.min(w, h) >= 4 && (xx === x || yy === y || xx === x + w - 1 || yy === y + h - 1);
           put(xx, yy, edge ? '#3a2a22' : poi.color);
         }
       }
