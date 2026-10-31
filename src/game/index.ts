@@ -2,7 +2,7 @@
 // PLACEHOLDER: gray-box map + grid-walking square + camera follow.
 import kaplay from 'kaplay';
 import type { GameSession, MapDefinition } from '../contracts';
-import { placeholderMap } from '../content/maps/placeholder';
+import { maps } from '../content/maps';
 
 export const VIEW_W = 240;
 export const VIEW_H = 160;
@@ -48,5 +48,5 @@ export function startGame(canvas: HTMLCanvasElement, session: GameSession): void
     k.onUpdate(() => k.setCamPos(player.pos.add(ts / 2, ts / 2)));
   });
 
-  k.go('map', placeholderMap);
+  k.go('map', maps[session.snapshot.sceneId]);
 }
