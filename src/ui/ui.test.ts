@@ -62,7 +62,66 @@ describe('dialogue overlay', () => {
     // The demo shop is real; the offer is not. The note ships on every screen.
     expect(root.textContent).toContain('実在の店舗');
     expect(root.textContent).toContain('unaffiliated');
+    // Status only: the bag lives in the menu now, so the HUD must not duplicate it.
+    expect(root.querySelector('.jq-bag')).toBeNull();
+    expect(root.querySelector('.jq-wallet')?.textContent).toContain('¥1000');
+    expect(root.querySelector('.jq-hud-title')).toBeNull();
+    // The chip keeps the notice itself, not just a collapsed button.
+    expect(root.querySelector('.jq-disclaimer-short')?.textContent).toContain('架空');
     expect(dialogueBox(root)?.hidden).toBe(true);
+  });
+
+  it('keeps the full legal note behind the note button', () => {
+    const { root, ui } = mount();
+    const note = root.querySelector<HTMLElement>('.jq-disclaimer');
+    const short = root.querySelector<HTMLElement>('.jq-disclaimer-short');
+    const toggle = root.querySelector<HTMLButtonElement>('.jq-hud-note');
+
+    expect(short?.hidden).toBe(false);
+    expect(note?.getAttribute('role')).toBe('note');
+    expect(note?.hidden).toBe(true);
+    expect(toggle?.textContent).toBe('ご注意');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('false');
+    expect(note?.id).toBeTruthy();
+    // aria-controls must name the note it expands, not a stale id.
+    expect(toggle?.getAttribute('aria-controls')).toBe(note?.id);
+
+    toggle?.click();
+    expect(note?.hidden).toBe(false);
+    expect(toggle?.getAttribute('aria-expanded')).toBe('true');
+    expect(short?.hidden).toBe(false);
+    // The note button must not double as the settings button.
+    expect(root.querySelector<HTMLElement>('.jq-settings')?.hidden).toBe(true);
+    // The legal copy is unchanged; only its placement is.
+    expect(note?.textContent).toContain('実在の店舗ですが本作とは無関係です');
+    expect(note?.textContent).toContain('unaffiliated');
+    // A note is not an input-owning surface: walking continues with it open.
+    expect(ui.ownsInput()).toBe(false);
+
+    toggle?.click();
+    expect(note?.hidden).toBe(true);
+    expect(toggle?.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('does not eat Enter or Space on a focused HUD button while a dialogue is open', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(dialogueBox(root)?.hidden).toBe(false);
+    const settings = root.querySelector<HTMLButtonElement>('.jq-hud-settings');
+    const noteButton = root.querySelector<HTMLButtonElement>('.jq-hud-note');
+    for (const button of [settings, noteButton]) {
+      button?.focus();
+      for (const key of ['Enter', ' ']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        button?.dispatchEvent(event);
+        // Native activation must still run: the notice cannot be pointer-only.
+        expect(event.defaultPrevented).toBe(false);
+      }
+    }
+    // Anywhere else, the dialogue still owns the key.
+    const arrow = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true });
+    dialogueBox(root)?.dispatchEvent(arrow);
+    expect(arrow.defaultPrevented).toBe(true);
   });
 
   it('opens on Interact, shows the speaker and choices, and submits Choose', async () => {
@@ -272,7 +331,7 @@ describe('dialogue overlay', () => {
 
   it('toggles settings and applies the large text class', () => {
     const { root, session } = mount();
-    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    root.querySelector<HTMLButtonElement>('.jq-hud-settings')?.click();
     const settings = root.querySelector<HTMLElement>('.jq-settings');
     expect(settings?.hidden).toBe(false);
     const textSize = settings?.querySelector<HTMLSelectElement>('select');
@@ -286,7 +345,7 @@ describe('dialogue overlay', () => {
 
   it('keeps game keys inside the settings panel', () => {
     const { root } = mount();
-    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    root.querySelector<HTMLButtonElement>('.jq-hud-settings')?.click();
     const settings = root.querySelector<HTMLElement>('.jq-settings');
     expect(settings?.hidden).toBe(false);
     (document.activeElement as HTMLElement | null)?.blur();
@@ -342,9 +401,9 @@ describe('dialogue overlay', () => {
     const { root, session, ui } = mount();
     expect(ui.ownsInput()).toBe(false);
 
-    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    root.querySelector<HTMLButtonElement>('.jq-hud-settings')?.click();
     expect(ui.ownsInput()).toBe(true);
-    root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();
+    root.querySelector<HTMLButtonElement>('.jq-hud-settings')?.click();
     expect(ui.ownsInput()).toBe(false);
 
     await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });

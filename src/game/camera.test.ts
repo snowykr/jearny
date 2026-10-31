@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { BUILDING } from '../contracts';
 import { maps } from '../content/maps';
 import { VIEW_H, VIEW_W, buildingRects, cameraCenter, sceneCamera, visibleTiles } from './camera';
 import { playerDrawPixel } from './player';
@@ -72,9 +73,22 @@ describe('camera', () => {
       expect(top(sceneCamera(tk, tl(tk.spawns['home-door']!)))).toBeLessThanOrEqual(home.y0);
     });
 
-    it('keeps interiors that fit the view centred', () => {
-      const small = { ...maps['home-interior'], grid: [14, 9] as [number, number] };
-      expect(sceneCamera(small, [16, 16])).toEqual([112, 72]);
+    it('marks the collision rect when a building has no sprite yet', () => {
+      const missing = {
+        ...maps.takanawa,
+        entities: [{ id: BUILDING.home, kind: 'building' as const, tile: [3, 4] as [number, number], size: [2, 3] as [number, number], footRow: 9, assetId: 'not-exported' }],
+      };
+      expect(buildingRects(missing)).toEqual([{ x0: 48, y0: 64, x1: 80, y1: 112 }]);
+    });
+
+    it('never scrolls indoors: every room camera is the room centre (#78)', () => {
+      for (const id of ['home-interior', 'home-2f', 'shop-interior'] as const) {
+        const map = maps[id];
+        const [cols, rows] = map.grid;
+        const centre: [number, number] = [(cols * 16) / 2, (rows * 16) / 2];
+        expect(sceneCamera(map, [0, 0])).toEqual(centre);
+        expect(sceneCamera(map, [cols * 16 - 16, rows * 16 - 16])).toEqual(centre);
+      }
     });
   });
 

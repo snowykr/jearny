@@ -14,7 +14,9 @@ import {
   type AssetMeta,
   type RgbaImage,
 } from '../../tools/art/lib.mjs';
-import { ASSETS, DEFAULT_CELL, cellSizeOfSheet, characterCell, hasAsset, loadAssets, placeholderComps, spriteOrPlaceholder } from './assets';
+import {
+  ASSETS, DEFAULT_CELL, cellSizeOfSheet, characterCell, hasAsset, loadAssets, placeholderComps, spriteOrPlaceholder, spriteUrl,
+} from './assets';
 
 /** Deterministic pseudo-random RGBA image (LCG) so tests need no fixtures. */
 function noise(w: number, h: number, seed = 1, alphaLevels = [0, 60, 127, 128, 200, 255]): RgbaImage {
@@ -132,6 +134,13 @@ function fakeKaplay(): KAPLAYCtx {
 }
 
 describe('asset loader', () => {
+  it('builds sprite URLs from the deployment base so a sub-path site still finds the files', () => {
+    expect(spriteUrl('home', '/')).toBe('/sprites/home.png');
+    expect(spriteUrl('home', '/jearny/')).toBe('/jearny/sprites/home.png');
+    expect(spriteUrl('home', '/jearny')).toBe('/jearny/sprites/home.png'); // base without a trailing slash
+    expect(spriteUrl('char-player', './')).toBe('./sprites/char-player.png');
+  });
+
   it('loadAssets never throws when every sprite is missing; hasAsset is false', async () => {
     // Node has no Image, so every load fails — exactly the "files deleted" path.
     const k = fakeKaplay();

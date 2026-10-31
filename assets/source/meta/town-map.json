@@ -1,0 +1,63 @@
+{
+  "id": "town-map",
+  "kind": "building",
+  "source": "assets/source/town-map-atlas-v1.png",
+  "rawSource": [
+    "assets/source/town-map-raw-v1.png",
+    "assets/source/town-map-raw-v2.png"
+  ],
+  "layoutReference": "assets/source/town-map-layout-ref.png",
+  "runtime": "public/sprites/town-map.png",
+  "runtimeSize": [
+    384,
+    288
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "tileScale": 3,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\noriginal design, not resembling any Nintendo / Game Freak / Pokémon asset.\nUse case: style-transfer. Edit target: first image layout-ref-4x.png. Other images are supporting style reference sprites only. Make one full-screen 4:3 town-map illustration that is an EXACT spatial reskin of the target, full bleed, opaque grass background (the full map exception overrides transparent/no floor in prefix). Output 1536x1152, intended nearest-neighbor reduction to 384x288. Draw on a chunky 384x288 logical pixel grid. Absolutely keep every target region boundary, position, size and all empty grass. No reframing, zooming, centering, labels, text, icons, legend, compass, border decoration, new buildings, extra roads, rivers or ponds. Layout coordinates below are logical pixels on 384x288 canvas; multiply by 4 for output. North is up.\nRoad: ONLY vertical slate road x126..140 spanning full height, one cream zebra crossing only y81..89. Rail corridor x222..245 spanning full height, two north-south tracks at x228..233 and x237..242; fence x222..224. Hedge boundary only at outer canvas edges except road and rail exits. Preserve large grass zones east of rail x246..380 and south of all landmarks y171..284; don't fill with invented town.\nPaths: west horizontal temple path x30..122 y66..80, shop spur x42..56 y48..74; cream lane x93..110 y66..122; lower home lane x42..107 y114..131; crossing connection x102..125 y78..92 and x141..164 y78..110. Plaza x141..170 y90..122 with tiny bench at147,99 and lamp at156,93. Station deck rectangle x171..218 y117..170, fenced perimeter; cream interior x174..215 y120..167. Upper stairs at x165..170 y114..119, lower stairs at x189..197 y156..161.\nThree buildings ONLY, fixed bounding boxes: Matsushimaya x39..56 y33..47, tiny brown tiled roof, vermilion and cream awning; home x45..59 y102..119, warm cream house with terracotta roof and teal door; station x174..209 y120..143, broad modern white folded roof and teal glass facade. Miniature silhouettes must fit each rectangle, no enlargement. Small 6x6 tree clumps at (24,30),(66,36),(27,93),(75,102),(117,51),(147,57),(159,129),(87,144),(24,144),(204,90), flowers x30..77 y81..83. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Simple sparse grass flecks allowed but nothing changing topology. The target's exact positions and region edges are more important than adding detail.\n\nOriginal Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\noriginal design, not resembling any Nintendo / Game Freak / Pokémon asset.\nUse case: style-transfer, corrective edit of image 1 (previous town map). Image 2 is authoritative layout with EXACT footprints; images 3-5 style refs. Keep the current road, rails, grass, paths, station deck in the same positions. Correct ONLY scale and pixel style of small objects to fit image 2, and reduce microtexture. Keep full 4:3 canvas, opaque grass background, no transparency for this full-screen map. Output 1536x1152 with blocks on 384x288 logical grid. No words or symbols.\nIMPORTANT: current buildings/trees are too large. Shrink ALL THREE buildings and ALL trees to exact footprints from image 2. Coordinates in logical 384x288 pixels: shop rectangle x39..56 y33..47 (18w 15h), home x45..59 y102..119 (15w 18h), station x174..209 y120..143 (36w 24h). Do not move their top-left anchors. Fill old overlarge extents with underlying matching grass or cream path. Each tree is a 6x6 miniature rounded canopy, ONLY at (24,30),(66,36),(27,93),(75,102),(117,51),(147,57),(159,129),(87,144),(24,144),(204,90). Flower row should be tiny at x30..77 y81..83, not scattered over a larger area. Lamppost/bench should be tiny. Place the vending box as a 3x3 vermilion square x210..212 y150..152. Deck remains x171..218 y117..170, fence only one logical pixel wide within it; preserve stair geometry from target. Upper stair x165..170 y114..119; lower stair x189..197 y156..161, clear cream deck all around.\nKeep every road and rail unchanged. Keep exact cream lane / temple-path silhouettes in image 2, including lower home lane x42..107 y114..131 and vertical lane x93..110 y66..122. Remove the extra-long cream dangling line under the shop. Trees should never overlap paths.\nStyle correction: broad solid-color pixel clusters with 3 shades per material, no gradients, less noise, simpler smaller silhouettes. Grass flat soft green with VERY sparse tiny flecks. Preserve teal blue station windows, bright vermilion shop awning and terracotta home roof at final 1x size. Restrained 24-32 color palette; give landmark accent colors clear separate swatches. Match palette, outline weight, pixel density and three-quarter top-down angle of attached sprites exactly. Keep eastern and southern grass empty. No new landmarks.\n",
+  "references": [
+    "/tmp/jearny-art67/out/p4/layout-ref-4x.png",
+    "/tmp/p4-ref-station.png",
+    "/tmp/p4-ref-matsushimaya.png",
+    "/tmp/p4-ref-home.png",
+    "/tmp/p4-ref-tiles-outdoor.png",
+    "/tmp/jearny-art67/out/p4/raw-v1.png",
+    "/tmp/p4-ref-tiles-interior.png",
+    "/tmp/p4-ref-char-player.png"
+  ],
+  "pois": {
+    "home": [
+      55,
+      121
+    ],
+    "station": [
+      193,
+      145
+    ],
+    "plaza": [
+      163,
+      109
+    ],
+    "route15_crossing": [
+      133,
+      85
+    ],
+    "sengakuji_approach": [
+      103,
+      73
+    ],
+    "matsushimaya": [
+      49,
+      49
+    ]
+  },
+  "status": "draft",
+  "notes": "Pixel (x,y) = tile*3+1 from content/world-plan.json anchors (world-plan home [18,40], station [64,48], plaza [54,36], route15_crossing [44,28], sengakuji_approach [34,24], matsushimaya [16,16]). Layout reference painted from the authored takanawa map arrays. Two built-in Image Gen 2 edits. V1 preserved road/rail geometry but enlarged landmarks. V2 simplified them; final deterministic crop/nearest-neighbor assembly uses only generated pixels and authored tile masks to restore exact building, tree, flower, path, furniture and stair footprints. No art drawn in code. Palette quantization is accent-weighted, 29 final RGB colors, fully opaque, 384x288. Reviewed at 1x and nearest-neighbor 6x. Layout reference comes from actual imported takanawa map arrays (Vitest export in temporary repository copy); no water exists in authored map. Overlay is 50% blend. Preview has 24px mid-grey margins. Working clone unedited; no commits or pushes. Export scripts and source arrays at /tmp/jearny-art67/work/p4.",
+  "collisionTiles": [
+    24,
+    18
+  ]
+}

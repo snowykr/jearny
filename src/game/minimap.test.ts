@@ -143,7 +143,8 @@ describe('coordinate transform', () => {
 describe('labels', () => {
   it('names each location', () => {
     expect(locationLabel('takanawa')).toBe('高輪ゲートウェイ周辺');
-    expect(locationLabel('home-interior')).toBe('自宅');
+    expect(locationLabel('home-interior')).toBe('自宅 1F');
+    expect(locationLabel('home-2f')).toBe('自宅 2F');
     expect(locationLabel('shop-interior')).toBe('松島屋（店内）');
   });
 
@@ -152,6 +153,6 @@ describe('labels', () => {
     const label = ariaLabel('takanawa', near);
     expect(label).toContain('高輪ゲートウェイ周辺');
     expect(label).toContain('自宅');
-    expect(ariaLabel('home-interior', null)).toBe('ミニマップ：自宅');
+    expect(ariaLabel('home-interior', null)).toBe('ミニマップ：自宅 1F');
   });
 });

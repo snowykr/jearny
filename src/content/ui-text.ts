@@ -10,12 +10,15 @@ export interface ObjectiveText {
 }
 
 export interface UiText {
-  title: string;
   /**
-   * Legal note for the demo: the shop exists, the offer does not. Shown on every
-   * screen so a recorded walkthrough cannot ship without it.
+   * Legal note for the demo: the shop exists, the offer does not. The chip carries
+   * `disclaimerShort` on every screen, so a recorded walkthrough cannot ship
+   * without a notice; the full text is one button away on the same chip.
    */
   disclaimer: ObjectiveText;
+  /** One-line form of `disclaimer` that stays visible while walking. Japanese only:
+   * the chip has no room for two languages and the full note keeps the English. */
+  disclaimerShort: string;
   /** Visual for the demo: a coupon that explicitly cannot be redeemed at the real shop. */
   coupon: {
     title: string;
@@ -40,6 +43,7 @@ export interface UiText {
     bag: string;
     empty: string;
     settings: string;
+    note: string;
     mute: string;
     volume: string;
     textSize: string;
@@ -56,11 +60,12 @@ export interface UiText {
 }
 
 export const UI_TEXT: UiText = {
-  title: '旅クエスト',
   disclaimer: {
     ja: '松島屋は実在の店舗ですが本作とは無関係です。作中の価格・割引は架空で、利用できません。',
     en: 'Matsushimaya is a real shop, unaffiliated with this demo. Prices and offers shown are fictional.',
   },
+  // Short enough for one chip line: names both facts (unaffiliated, fictional offer).
+  disclaimerShort: '※松島屋は本作と無関係・価格は架空です',
   coupon: {
     title: 'デモクーポン（見本）',
     shop: '松島屋',
@@ -99,6 +104,7 @@ export const UI_TEXT: UiText = {
     bag: '持ち物',
     empty: 'なし',
     settings: '設定',
+    note: 'ご注意',
     mute: '音',
     volume: '音量',
     textSize: '文字',

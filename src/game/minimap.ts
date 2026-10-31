@@ -126,7 +126,8 @@ export function questTargetPoi(snapshot: Pick<GameSnapshot, 'quests' | 'flags'>)
 
 const LOCATION_LABEL: Record<SceneId, string> = {
   takanawa: '高輪ゲートウェイ周辺',
-  'home-interior': '自宅',
+  'home-interior': '自宅 1F',
+  'home-2f': '自宅 2F',
   'shop-interior': '松島屋（店内）',
 };
 

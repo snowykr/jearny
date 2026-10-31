@@ -45,7 +45,7 @@ main.ts ─ openSession()      (B: src/session)  ──► GameSession contract
 3. **Domain tests**: the quest cannot complete before its prerequisites, money never goes negative, a repeated command changes state once, and an illegal transition returns a named reason with no partial effects.
 4. **Session** in `src/session/`: replace the stub with a local session that has a command queue, revision checks, and effect deduplication.
 5. **Storage** in `src/storage/`: IndexedDB snapshots (current and previous) with schema validation that rejects corrupt data.
-6. **UI** in `src/ui/`: a Japanese dialogue overlay with choices (keyboard and touch), a HUD showing wallet, inventory and quest, and settings (mute, text size).
+6. **UI** in `src/ui/`: a Japanese dialogue overlay with choices (keyboard and touch), a compact HUD chip (money, current objective, the one-line demo notice and settings; the full notice and inventory live in the start menu), and settings (mute, text size).
 7. **Audio** in `src/audio/`: play `public/audio/` clips from the voice manifest, keep only one NPC clip active, and stop it on advance or scene change. When the API key arrives, render the 6 lines with `tools/voice/render.mjs`.
 
 ## Milestones (sync points)

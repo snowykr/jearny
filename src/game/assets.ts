@@ -54,9 +54,18 @@ function fetchImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
+/**
+ * Runtime URL for a sprite. Built from Vite's BASE_URL so a sub-path deployment
+ * (GitHub Pages project site, `/jearny/`) loads the same files as `dev` at `/`.
+ */
+export function spriteUrl(id: string, base: string = import.meta.env.BASE_URL): string {
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  return `${prefix}sprites/${id}.png`;
+}
+
 async function loadOne(k: KAPLAYCtx, id: string, opt?: LoadSpriteOpt, onImage?: (img: HTMLImageElement) => void): Promise<void> {
   try {
-    const img = await fetchImage(`/sprites/${id}.png`);
+    const img = await fetchImage(spriteUrl(id));
     await k.loadSprite(id, img, opt);
     onImage?.(img);
     loaded.add(id);
@@ -66,7 +75,7 @@ async function loadOne(k: KAPLAYCtx, id: string, opt?: LoadSpriteOpt, onImage?: 
   }
 }
 
-/** Load every sprite in ASSETS from /sprites/<id>.png. Missing files must not throw. */
+/** Load every sprite in ASSETS from <BASE_URL>sprites/<id>.png. Missing files must not throw. */
 export async function loadAssets(k: KAPLAYCtx): Promise<void> {
   const jobs: Promise<void>[] = [];
   for (const id of Object.keys(ASSETS.buildings)) jobs.push(loadOne(k, id));

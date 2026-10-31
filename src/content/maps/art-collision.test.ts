@@ -2,19 +2,29 @@
 // collisionTiles must be the rows its exported sprite actually paints, and each map
 // entity must sit exactly on those rows. Reading the PNG here means a re-export that
 // shifts or resizes the art fails in CI even when the metadata was not touched.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import { describe, expect, it } from 'vitest';
-import { BUILDING } from '../../contracts';
-import type { EntityAnchor } from '../../contracts';
-import homeMeta from '../../../assets/source/meta/home.json';
-import matsushimayaMeta from '../../../assets/source/meta/matsushimaya.json';
-import stationMeta from '../../../assets/source/meta/station.json';
 import { maps } from './index';
 
 const root = fileURLToPath(new URL('../../../', import.meta.url));
+const metaDir = join(root, 'assets', 'source', 'meta');
+
+interface ArtMeta {
+  id: string;
+  kind: string;
+  runtimeSize: [number, number];
+  collisionTiles?: [number, number];
+}
+
+// `kind: building` also covers single-sprite art (coupon icon/stamp) that has no
+// collision rect. Only metas that declare one are building collision.
+const metas = readdirSync(metaDir)
+  .filter((name) => name.endsWith('.json'))
+  .map((name) => JSON.parse(readFileSync(join(metaDir, name), 'utf8')) as ArtMeta)
+  .filter((meta) => meta.kind === 'building' && Array.isArray(meta.collisionTiles));
 
 /** Opaque bounds of a sprite: what the player actually sees, in pixels. */
 function opaqueBounds(id: string) {
@@ -35,44 +45,52 @@ function opaqueBounds(id: string) {
   return { width: png.width, height: png.height, minX, maxX, minY, maxY };
 }
 
-const registry = [
-  { id: 'station', meta: stationMeta, entityId: BUILDING.station },
-  { id: 'home', meta: homeMeta, entityId: BUILDING.home },
-  { id: 'matsushimaya', meta: matsushimayaMeta, entityId: BUILDING.matsushimaya },
-] as const;
-
-const byEntity = (id: string): EntityAnchor => {
-  const entity = maps.takanawa.entities.find((candidate) => candidate.id === id);
-  if (!entity) throw new Error(`Missing map entity ${id}`);
-  return entity;
-};
+const placed = maps.takanawa.entities.filter((entity) => entity.kind === 'building');
 
 describe('building collision follows the exported art', () => {
-  for (const { id, meta, entityId } of registry) {
-    it(`${id}: collisionTiles are exactly the painted rows`, () => {
-      const bounds = opaqueBounds(id);
+  it('finds at least one building in the registry and on the map', () => {
+    expect(metas.length).toBeGreaterThan(0);
+    expect(placed.length).toBeGreaterThan(0);
+  });
+
+  for (const meta of metas) {
+    it(`${meta.id}: collisionTiles are exactly the painted rows`, () => {
+      const bounds = opaqueBounds(meta.id);
       expect(bounds.maxY).toBeGreaterThanOrEqual(0);
       expect(meta.runtimeSize).toEqual([bounds.width, bounds.height]);
       const rows = Math.floor(bounds.maxY / 16) - Math.floor(bounds.minY / 16) + 1;
       const cols = Math.ceil((bounds.maxX - bounds.minX + 1) / 16);
       expect(meta.collisionTiles).toEqual([cols, rows]);
     });
+  }
 
-    it(`${id}: the map entity sits on the painted rows without moving the sprite`, () => {
-      const bounds = opaqueBounds(id);
-      const entity = byEntity(entityId);
+  for (const entity of placed) {
+    const meta = metas.find((candidate) => candidate.id === entity.assetId);
+    it(`${entity.id}: matches a registry entry and sits on its painted rows`, () => {
+      expect(meta?.collisionTiles).toBeDefined();
+      if (!meta?.collisionTiles) return;
+      const bounds = opaqueBounds(meta.id);
+      const [cols, rows] = meta.collisionTiles;
+      expect(entity.size).toEqual([cols, rows]);
+      // Same width as the sprite, so the painted columns and blocked tiles share an edge.
+      expect(meta.runtimeSize[0]).toBe(cols * 16);
       const heightTiles = bounds.height / 16;
       const footRow = entity.footRow;
       expect(footRow).toBeDefined();
       if (footRow === undefined) return;
       const spriteTop = footRow - heightTiles;
-      const expectedTop = spriteTop + Math.floor(bounds.minY / 16);
-      expect(entity.tile[1]).toBe(expectedTop);
-      expect(entity.size).toEqual(meta.collisionTiles);
-      // Same-width footprint: every painted column stays inside the blocked tiles.
-      const [cols] = meta.collisionTiles as [number, number];
+      expect(entity.tile[1]).toBe(spriteTop + Math.floor(bounds.minY / 16));
       const left = entity.tile[0] * 16;
       expect(left + bounds.maxX).toBeLessThan(left + cols * 16);
+      // The footprint also covers the painted bottom row.
+      const bottom = (entity.tile[1] + rows) * 16;
+      expect(spriteTop * 16 + bounds.maxY).toBeLessThan(bottom);
     });
   }
+
+  it('has a registry entry for every building placed on the map', () => {
+    for (const entity of placed) {
+      expect(metas.some((meta) => meta.id === entity.assetId), `missing meta for ${entity.id}`).toBe(true);
+    }
+  });
 });

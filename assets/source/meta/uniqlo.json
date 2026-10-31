@@ -1,0 +1,49 @@
+{
+  "id": "uniqlo",
+  "kind": "building",
+  "source": "assets/source/uniqlo-atlas-v1.png",
+  "runtime": "public/sprites/uniqlo.png",
+  "runtimeSize": [
+    160,
+    112
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. pixel-art game sprite of the real storefront; not resembling any Nintendo / Game Freak / Pokémon asset. Override no-text/logo clause: actual UNIQLO branding required. One isolated UNIQLO store, white cream modern facade, wide glass windows with simple mannequin silhouettes and folded clothes shelves, centered glass entrance. Above windows TWO LARGE RED SQUARE brand signs side by side: left white ユニクロ in two rows, right white UNI / QLO in two rows. Signs must read after reduction to 160x112. Roof visible above, facade faces straight down, no visible side wall. Low flat warm-gray roof. Pixel grid of 160x112 logical pixels enlarged to at least 1024px. Fill canvas with building, 2px logical transparent margin. References are style only."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "raws": [
+    "assets/source/uniqlo-raw-v1.png"
+  ],
+  "anchors": {
+    "door": [
+      80,
+      108
+    ],
+    "foot": [
+      80,
+      110
+    ]
+  },
+  "collisionTiles": [
+    10,
+    5
+  ],
+  "brand": {
+    "name": "UNIQLO",
+    "real": true,
+    "affiliated": false
+  },
+  "status": "draft",
+  "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+}
