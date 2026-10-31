@@ -26,6 +26,12 @@ export const SPAWN = {
   plaza: 'plaza',
 } as const;
 
+export const BUILDING = {
+  station: 'building:station',
+  home: 'building:home',
+  matsushimaya: 'building:matsushimaya',
+} as const;
+
 export const SHOP = { matsushimaya: 'shop:matsushimaya' } as const;
 export const ITEM = { mochi: 'mochi' } as const;
 export const QUEST = { firstTrip: 'first-neighborhood-trip' } as const;
