@@ -139,16 +139,16 @@ describe('scene runtime', () => {
 
   it('entering the station zone dispatches Interact(zone) once per entry', async () => {
     const f = fakeSession();
-    const { rt, bus } = setup('takanawa', 'station-deck', f); // zone covers x 61..67, y 48..49; the station building blocks y<=47
+    const { rt, bus } = setup('takanawa', 'station-deck', f); // zone covers x 61..67, y 48..49; the station footprint blocks y<=45
     rt.player.tile = [64, 50];
     rt.player.facing = 'up';
     bus.press('up');
     tick(rt, 0.3); // y 49 enters the zone; the in-flight dispatch pauses walking
     await flush();
-    tick(rt, 0.5); // y 48 is still inside the zone (no re-fire); 47 is the building
+    tick(rt, 0.5); // y 48 is still inside the zone (no re-fire); 46 is the last row before the building
     expect(f.sent).toEqual([{ type: 'Interact', entityId: ENTITY.stationZone }]);
     bus.release('up');
-    expect(rt.player.tile[1]).toBe(48);
+    expect(rt.player.tile[1]).toBe(46);
   });
 
   it('ignores input while a DOM surface owns it, and resumes when it closes', () => {

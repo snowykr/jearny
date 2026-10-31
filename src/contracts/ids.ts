@@ -30,6 +30,7 @@ export const BUILDING = {
   station: 'building:station',
   home: 'building:home',
   matsushimaya: 'building:matsushimaya',
+  liebe: 'building:liebe', // bakery sprite already in ASSETS.buildings, unused until #84
 } as const;
 
 export const SHOP = { matsushimaya: 'shop:matsushimaya' } as const;

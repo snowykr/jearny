@@ -6,6 +6,7 @@ import { maps } from './index';
 import { T } from './tiles';
 import homeMeta from '../../../assets/source/meta/home.json';
 import matsushimayaMeta from '../../../assets/source/meta/matsushimaya.json';
+import stationMeta from '../../../assets/source/meta/station.json';
 
 const cell = ([x, y]: Tile) => y * map.grid[0] + x;
 
@@ -75,7 +76,7 @@ describe('authored Takanawa map', () => {
 
 
   it('puts each storefront portal under the door in the approved art', () => {
-    // The renderer draws a building sprite centred on its footprint and bottom-aligned, so the
+    // The renderer draws a building sprite centred on its footprint and bottom-aligned to its foot row, so the
     // door's world x is footprintLeft + (footprintWidth - spriteWidth) / 2 + anchors.door[0].
     const cases = [
       { building: BUILDING.home, meta: homeMeta, portal: PORTAL.homeDoor, spawn: SPAWN.homeDoor },
@@ -113,6 +114,40 @@ describe('authored Takanawa map', () => {
         const index = cell([entity.tile[0] + x, entity.tile[1] + y]);
         expect(map.collision[index]).toBe(entity.kind === 'zone' ? 0 : 1);
       }
+    }
+  });
+
+  // The art registry owns building collision. `previousSpriteY` is the sprite's top-left y that the
+  // old footprint bottom produced, so a mismatch means the art moved on screen.
+  const buildings = [
+    { id: BUILDING.station, meta: stationMeta, previousSpriteY: 640 },
+    { id: BUILDING.home, meta: homeMeta, previousSpriteY: 544 },
+    { id: BUILDING.matsushimaya, meta: matsushimayaMeta, previousSpriteY: 176 },
+  ] as const;
+
+  it('takes each building footprint from its art registry collision tiles', () => {
+    for (const b of buildings) {
+      const entity = map.entities.find((e) => e.id === b.id);
+      expect(entity?.size).toEqual(b.meta.collisionTiles);
+    }
+  });
+
+  it('keeps every building sprite where it was drawn by anchoring it to its foot row', () => {
+    for (const b of buildings) {
+      const entity = map.entities.find((e) => e.id === b.id);
+      expect(entity?.footRow).toBeDefined();
+      expect((entity!.footRow ?? 0) * map.tileSize - (b.meta.runtimeSize[1] as number))
+        .toBe(b.previousSpriteY);
+    }
+  });
+
+  it('blocks exactly the rows the station art paints and frees the transparent deck', () => {
+    // station.png paints rows 41..45 (opaque y 31..91 of a 128px sprite with footRow 48);
+    // rows 40 and 46..47 are transparent padding and must stay walkable.
+    // art-collision.test.ts reads the sprite alpha and pins collisionTiles to the painted rows.
+    for (let y = 40; y <= 47; y++) {
+      const expected = y >= 41 && y <= 45 ? 1 : 0;
+      for (let x = 58; x < 70; x++) expect([y, x, map.collision[cell([x, y])]]).toEqual([y, x, expected]);
     }
   });
 });

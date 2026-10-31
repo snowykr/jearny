@@ -8,11 +8,23 @@ import { createSession } from '../session';
 import { createMemoryStore } from '../storage';
 import { mountUi } from './index';
 
+const audio = vi.hoisted(() => ({
+  applyAudioSettings: vi.fn(),
+  canReplay: vi.fn((_lineId: string) => false),
+  preloadAudio: vi.fn(async () => {}),
+  replayAudio: vi.fn(),
+  stopAudio: vi.fn(),
+}));
+
+vi.mock('../audio', () => audio);
+
 let cleanup: (() => void) | null = null;
 
 afterEach(() => {
   cleanup?.();
   cleanup = null;
+  vi.clearAllMocks();
+  audio.canReplay.mockReturnValue(false);
   document.body.innerHTML = '';
   document.head.querySelectorAll('style[data-jq-ui]').forEach((node) => node.remove());
 });
@@ -50,6 +62,9 @@ describe('dialogue overlay', () => {
     // The demo shop is real; the offer is not. The note ships on every screen.
     expect(root.textContent).toContain('実在の店舗');
     expect(root.textContent).toContain('unaffiliated');
+    // Status only: the bag lives in the menu now, so the HUD must not duplicate it.
+    expect(root.querySelector('.jq-bag')).toBeNull();
+    expect(root.querySelector('.jq-hud-head .jq-wallet')?.textContent).toContain('¥1000');
     expect(dialogueBox(root)?.hidden).toBe(true);
   });
 
@@ -198,7 +213,8 @@ describe('dialogue overlay', () => {
     expect(session.snapshot.dialogue.nodeId).toBe('shop.wrong');
   });
 
-  it('shows the replay button only for nodes with a published line', async () => {
+  it('shows the replay button only for a line the manifest publishes', async () => {
+    audio.canReplay.mockImplementation((lineId: string) => lineId === 'home.welcome');
     const { root, session } = mount();
     await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
     const replay = root.querySelector<HTMLButtonElement>('.jq-replay');
@@ -209,6 +225,7 @@ describe('dialogue overlay', () => {
   });
 
   it('replays without advancing or closing the dialogue', async () => {
+    audio.canReplay.mockReturnValue(true);
     const { root, session } = mount();
     await session.dispatch({ type: 'UsePortal', portalId: PORTAL.homeExit });
     await session.dispatch({ type: 'Interact', entityId: ENTITY.stationStaff });
@@ -355,6 +372,31 @@ describe('dialogue overlay', () => {
     cleanup = null;
     expect(root.children.length).toBe(0);
     expect(document.head.querySelector('style[data-jq-ui]')).toBeNull();
+  });
+});
+
+describe('ui: voice replay control', () => {
+  it('hides replay when the manifest has no clip for the line', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const replay = root.querySelector<HTMLButtonElement>('.jq-replay');
+    expect(replay?.hidden).toBe(true);
+  });
+
+  it('replays the visible line when a clip exists', async () => {
+    audio.canReplay.mockReturnValue(true);
+    const { root, session } = mount();
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const replay = root.querySelector<HTMLButtonElement>('.jq-replay');
+    expect(replay?.hidden).toBe(false);
+    replay?.click();
+    expect(audio.replayAudio).toHaveBeenCalledWith('home.welcome');
   });
 });
 
