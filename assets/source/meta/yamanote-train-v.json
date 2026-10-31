@@ -30,5 +30,9 @@
     ]
   },
   "status": "draft",
-  "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
+  "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded.",
+  "collisionTiles": [
+    2,
+    8
+  ]
 }
