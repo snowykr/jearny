@@ -247,11 +247,6 @@ const CSS = `
   text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 `;
 
-const isTextTarget = (t: EventTarget | null): boolean => {
-  const el = t as HTMLElement | null;
-  return !!el && !!el.tagName && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable);
-};
-
 /** Mounts the minimap into `root`. Returns an unmount function. */
 export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => void {
   const doc = root.ownerDocument;
@@ -267,8 +262,8 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
   const toggle = doc.createElement('button');
   toggle.type = 'button';
   toggle.className = 'jr-minimap-toggle';
-  toggle.textContent = '🗺 M';
-  toggle.setAttribute('aria-label', 'ミニマップ（Mキー）');
+  toggle.textContent = '🗺';
+  toggle.setAttribute('aria-label', 'ミニマップ');
   toggle.setAttribute('aria-expanded', 'true');
 
   const panel = doc.createElement('div');
@@ -435,17 +430,13 @@ export function mountMinimap(root: HTMLElement, opts: MinimapOptions): () => voi
     toggle.setAttribute('aria-expanded', String(open));
     lastKey = '';
   };
+  // Click-only: the start menu (#65) owns M, so the minimap must not advertise a key it
+  // no longer receives. The full-screen map (#66) will re-bind M through the menu.
   toggle.addEventListener('click', () => setOpen(!open));
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key.toLowerCase() !== 'm' || e.repeat || e.ctrlKey || e.metaKey || e.altKey || isTextTarget(e.target)) return;
-    setOpen(!open);
-  };
-  win.addEventListener('keydown', onKey);
   raf = win.requestAnimationFrame(tick);
 
   return () => {
     win.cancelAnimationFrame(raf);
-    win.removeEventListener('keydown', onKey);
     wrap.remove();
     style.remove();
   };
