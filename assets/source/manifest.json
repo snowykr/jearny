@@ -34,7 +34,7 @@
       },
       "collisionTiles": [
         7,
-        2
+        8
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -72,7 +72,7 @@
       },
       "collisionTiles": [
         6,
-        2
+        7
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -139,7 +139,7 @@
       },
       "collisionTiles": [
         4,
-        2
+        3
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -177,7 +177,7 @@
       },
       "collisionTiles": [
         5,
-        3
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -405,6 +405,120 @@
       "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors."
     },
     {
+      "id": "daiso",
+      "kind": "building",
+      "source": "assets/source/daiso-atlas-v1.png",
+      "sha256": "07b2a46f38a66be550030fdb42539ddf2cd3470b8683aa3a79bbb770e4fe6629",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/daiso.png",
+      "spriteSha256": "229be8d5286cbfaf558e85c6bdf54d7f9bde8bee486ba31153f396361d9b997a",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          79
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
+      "id": "familymart",
+      "kind": "building",
+      "source": "assets/source/familymart-atlas-v1.png",
+      "sha256": "f77b4d2dc359f725b6c19ab363ff2a5949b82fc487d8d02507eb8077c1cec558",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/familymart.png",
+      "spriteSha256": "52969a5d6053ad586da4e0f2e180a71a579b9986d90bb693c7e7af3fe75c1602",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          78
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
+      "id": "gu",
+      "kind": "building",
+      "source": "assets/source/gu-atlas-v1.png",
+      "sha256": "03370d60b5d6a1db9a2680bd42b538d344ad648a9dad1bb3ba167d023c572a49",
+      "sourceSize": [
+        128,
+        96
+      ],
+      "runtimeSize": [
+        128,
+        96
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/gu.png",
+      "spriteSha256": "a7df1c585dfa56101712ab62c1e15e35cc25e22d98328a4ee2386005e63a5f20",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          64,
+          92
+        ],
+        "foot": [
+          64,
+          94
+        ]
+      },
+      "collisionTiles": [
+        8,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
       "id": "home",
       "kind": "building",
       "source": "assets/source/home-v2.png",
@@ -474,7 +588,7 @@
       },
       "collisionTiles": [
         5,
-        2
+        5
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -512,7 +626,7 @@
       },
       "collisionTiles": [
         5,
-        2
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -550,7 +664,7 @@
       },
       "collisionTiles": [
         3,
-        2
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "edit",
@@ -588,11 +702,49 @@
       },
       "collisionTiles": [
         7,
-        3
+        4
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Image Gen 2 raw assets/source/konbini-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 112x80, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "lawson",
+      "kind": "building",
+      "source": "assets/source/lawson-atlas-v1.png",
+      "sha256": "01492989fa113fea143651bd31a48994161264ddba4c1d2c1cc70abea626f17e",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/lawson.png",
+      "spriteSha256": "1748e937ad655f81126dfe2ff8748055f998801969a67c8a1860f0d2363f7a31",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          78
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x. The generated sprite showed the \"S\" of LAWSON as a G/6-like glyph; those 4x6 pixels were redrawn in Pillow with a plain S in the sign white/blue. Everything else is generated."
     },
     {
       "id": "liebe",
@@ -633,6 +785,44 @@
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
+      "id": "matsumoto-kiyoshi",
+      "kind": "building",
+      "source": "assets/source/matsumoto-kiyoshi-atlas-v1.png",
+      "sha256": "92bddb43e69f4cb4bd72fa96dc194db345dba5fb513eee49d20605e347230dca",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/matsumoto-kiyoshi.png",
+      "spriteSha256": "8859347670a2c1bf2fdd6508e895cf25f764458c46f7f5d810713845eb371dba",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          76,
+          76
+        ],
+        "foot": [
+          56,
+          79
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
       "id": "matsushimaya",
       "kind": "building",
       "source": "assets/source/matsushimaya-v2.png",
@@ -671,6 +861,44 @@
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
+      "id": "mcdonalds",
+      "kind": "building",
+      "source": "assets/source/mcdonalds-atlas-v1.png",
+      "sha256": "baf527eb640eac9883b8e9817a5955f039e2a6996d4bc8063a992166cedee4a1",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/mcdonalds.png",
+      "spriteSha256": "9ff4f361f09eabc01b31095be125359a5ea4434bb5e6c39f736bc0ffc7da539f",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          78
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
       "id": "office-tower",
       "kind": "building",
       "source": "assets/source/office-tower-atlas-v1.png",
@@ -701,8 +929,8 @@
         ]
       },
       "collisionTiles": [
-        6,
-        3
+        7,
+        12
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -764,8 +992,8 @@
         ]
       },
       "collisionTiles": [
-        6,
-        3
+        8,
+        6
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
@@ -802,12 +1030,88 @@
         ]
       },
       "collisionTiles": [
-        9,
-        4
+        10,
+        8
       ],
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Image Gen 2 raw assets/source/sengakuji-hall-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 160x128, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "seven-eleven",
+      "kind": "building",
+      "source": "assets/source/seven-eleven-atlas-v1.png",
+      "sha256": "82a76874392d4c0bb75971ccb205f23b45ffb5c10a580e4eee48a47cfe81a171",
+      "sourceSize": [
+        112,
+        80
+      ],
+      "runtimeSize": [
+        112,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/seven-eleven.png",
+      "spriteSha256": "2dd4d5482b368aad7d1c93b7e9ad0a768160d5be0a25266ecb97ca620f20c054",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          56,
+          76
+        ],
+        "foot": [
+          56,
+          78
+        ]
+      },
+      "collisionTiles": [
+        7,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x. The \"ELEVEn\" lettering under the generated 7 numeral was redrawn with a 3x5 pixel font in Pillow (Image Gen 2 edit left it broken at 1x); the building and the 7 are generated."
+    },
+    {
+      "id": "starbucks",
+      "kind": "building",
+      "source": "assets/source/starbucks-atlas-v1.png",
+      "sha256": "33da96247e0133c9dfaae11850dec632d526f28b340c8910423fd6e7a85fa673",
+      "sourceSize": [
+        96,
+        80
+      ],
+      "runtimeSize": [
+        96,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/starbucks.png",
+      "spriteSha256": "9aa67f725ca746479c30120a40d3355aec271e742cc6d4edc036ac80ca913938",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          47,
+          69
+        ],
+        "foot": [
+          48,
+          78
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
     },
     {
       "id": "station",
@@ -1067,6 +1371,82 @@
       "generator": "Image Gen 2",
       "mode": "edit",
       "notes": "Atlas = p1 row0 (icons 0-7, top) + p2 row1 (icons 8-15, bottom), each icon 14 px max inside a 16x16 cell, hard alpha, nearest-neighbour fit. Index: 0 bag; 1 coin purse (gamaguchi); 2 mochi box; 3 quest scroll; 4 town map; 5 settings gear; 6 transit IC card; 7 tea cup (yunomi); 8 new mark !; 9 close x; 10 cursor >; 11 check; 12 home POI; 13 station POI; 14 shop POI; 15 temple POI (sanmon). Sliced as 8 columns x 2 rows, index = row*8+col. The station POI is the white folded origami roof of Takanawa Gateway Station; the temple POI is a Buddhist sanmon (tiled roof gate), not a torii."
+    },
+    {
+      "id": "uniqlo",
+      "kind": "building",
+      "source": "assets/source/uniqlo-atlas-v1.png",
+      "sha256": "1411c6d55650e318cf6a8aba31104c6b6e1a71540c8605468595c02e89b5ca7f",
+      "sourceSize": [
+        160,
+        112
+      ],
+      "runtimeSize": [
+        160,
+        112
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/uniqlo.png",
+      "spriteSha256": "3abc87df0992f370072636d16c39ce114fb11969ed398ecccde912d54d89f54d",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          80,
+          108
+        ],
+        "foot": [
+          80,
+          110
+        ]
+      },
+      "collisionTiles": [
+        10,
+        4
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
+      "id": "yoshinoya",
+      "kind": "building",
+      "source": "assets/source/yoshinoya-atlas-v1.png",
+      "sha256": "e5a90f4bcdc70a0c68fc924ec2fdbf993475d259a13e9c8c9a21f21c9390de29",
+      "sourceSize": [
+        96,
+        80
+      ],
+      "runtimeSize": [
+        96,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/yoshinoya.png",
+      "spriteSha256": "ee3e72e077641eefc8eb80a07fb7e6d8710b9d032e10a2251792b6d6c9b20d96",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          68,
+          76
+        ],
+        "foot": [
+          48,
+          79
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
     }
   ]
 }
