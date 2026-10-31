@@ -11,6 +11,8 @@ export const ENTITY = {
 export const PORTAL = {
   homeExit: 'portal:home-exit', // home-interior -> takanawa@home-door
   homeDoor: 'portal:home-door', // takanawa -> home-interior@entry
+  homeStairsUp: 'portal:home-stairs-up', // home-interior -> home-2f@stairs
+  homeStairsDown: 'portal:home-stairs-down', // home-2f -> home-interior@stairs
   shopDoor: 'portal:shop-door', // takanawa -> shop-interior@entry
   shopExit: 'portal:shop-exit', // shop-interior -> takanawa@shop-door
   deckUp: 'portal:deck-up', // takanawa plaza -> takanawa@station-deck
@@ -20,6 +22,7 @@ export const PORTAL = {
 export const SPAWN = {
   start: 'start', // home-interior, new game
   entry: 'entry', // interiors, after entering a door
+  stairs: 'stairs', // next to the stairs on either floor
   homeDoor: 'home-door',
   shopDoor: 'shop-door',
   stationDeck: 'station-deck',

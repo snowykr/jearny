@@ -26,7 +26,7 @@ export interface SaveStore {
   clear(): Promise<void>;
 }
 
-const SCENES: readonly SceneId[] = ['takanawa', 'home-interior', 'shop-interior'];
+const SCENES: readonly SceneId[] = ['takanawa', 'home-interior', 'home-2f', 'shop-interior'];
 const QUEST_STATUSES: readonly QuestStatus[] = ['not_started', 'active', 'ready_to_return', 'completed'];
 const DIALOGUE_STATUSES: readonly DialogueStatus[] = ['closed', 'showing', 'choosing', 'waiting_for_speech'];
 const TEXT_SIZES = ['normal', 'large'] as const;

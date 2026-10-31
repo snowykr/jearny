@@ -113,7 +113,7 @@ describe('map registry validation', () => {
     entity.id = 'unknown';
     const errors = validateMaps(broken);
     for (const layer of ['ground', 'decoration', 'roof', 'collision'])
-      expect(errors).toContainEqual(expect.stringContaining(`${layer} length must be 192`));
+      expect(errors).toContainEqual(expect.stringContaining(`${layer} length must be 117`));
     for (const layer of ['ground', 'decoration', 'roof'])
       expect(errors).toContainEqual(expect.stringContaining(`${layer}[0] tile index`));
     expect(errors).toContainEqual(expect.stringContaining('collision[0] must be 0 or 1'));

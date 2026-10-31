@@ -85,6 +85,16 @@ describe('camera', () => {
       const small = { ...maps['home-interior'], grid: [14, 9] as [number, number] };
       expect(sceneCamera(small, [16, 16])).toEqual([112, 72]);
     });
+
+    it('never scrolls indoors: every room camera is the room centre (#78)', () => {
+      for (const id of ['home-interior', 'home-2f', 'shop-interior'] as const) {
+        const map = maps[id];
+        const [cols, rows] = map.grid;
+        const centre: [number, number] = [(cols * 16) / 2, (rows * 16) / 2];
+        expect(sceneCamera(map, [0, 0])).toEqual(centre);
+        expect(sceneCamera(map, [cols * 16 - 16, rows * 16 - 16])).toEqual(centre);
+      }
+    });
   });
 
   it('playerDrawPixel rounds the tween so camera and sprite agree', () => {

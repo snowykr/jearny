@@ -34,7 +34,7 @@ describe('collision helpers', () => {
     expect(isBlocked(home, [-1, 0])).toBe(true);
     expect(isBlocked(home, [0, 0])).toBe(true);
     expect(isBlocked(home, [8, 6])).toBe(false);
-    expect(isBlocked(home, [5, 4])).toBe(true); // guide
+    expect(isBlocked(home, [4, 4])).toBe(true); // guide
     expect(isBlocked(takanawa, [62, 48])).toBe(false); // zone only (row 48 is below the station building)
     expect(isBlocked(takanawa, [66, 50])).toBe(true); // station staff
   });
@@ -57,14 +57,14 @@ describe('collision helpers', () => {
   });
 
   it('finds portals by tile', () => {
-    expect(portalAt(home, [8, 11])?.id).toBe(PORTAL.homeExit);
-    expect(portalAt(home, [8, 10])).toBeNull();
+    expect(portalAt(home, [6, 8])?.id).toBe(PORTAL.homeExit);
+    expect(portalAt(home, [6, 7])).toBeNull();
   });
 });
 
 describe('arrivalCommand (portals and zones)', () => {
   it('uses a portal when stepping onto its tile', () => {
-    const r = arrivalCommand(home, [8, 11], null);
+    const r = arrivalCommand(home, [6, 8], null);
     expect(r.command).toEqual({ type: 'UsePortal', portalId: PORTAL.homeExit });
     expect(r.portal?.toSpawn).toBe(SPAWN.homeDoor);
   });

@@ -1,6 +1,6 @@
 // Shared contract (docs/ARCHITECTURE.md §5). Change only via a PR to main.
 
-export type SceneId = 'takanawa' | 'home-interior' | 'shop-interior';
+export type SceneId = 'takanawa' | 'home-interior' | 'home-2f' | 'shop-interior';
 export type QuestStatus = 'not_started' | 'active' | 'ready_to_return' | 'completed';
 export type DialogueStatus = 'closed' | 'showing' | 'choosing' | 'waiting_for_speech';
 

@@ -35,5 +35,6 @@ export type TilesetId = keyof typeof TILESETS;
 export const TILESET_FOR_SCENE: Record<SceneId, TilesetId> = {
   takanawa: 'tiles-outdoor',
   'home-interior': 'tiles-interior',
+  'home-2f': 'tiles-interior',
   'shop-interior': 'tiles-interior',
 };
