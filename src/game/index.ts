@@ -9,7 +9,7 @@ import { createInputBus } from './input';
 import type { InputBus } from './input';
 import { createEffectDeduper } from './interaction';
 import { attachKeyboard } from './keyboard';
-import { playerDrawPixel } from './player';
+import { playerDrawPixel, playerPixel } from './player';
 import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
