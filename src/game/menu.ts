@@ -97,6 +97,9 @@ const CSS = `
 .jr-menu-objective{margin:2px 0;font-weight:700}
 .jr-menu-objective-en{margin:0;color:#9ea3bc;font-size:12px}
 .jr-menu-placeholder{margin:8px 0;padding:12px;background:#10131e;border:2px solid #2b2d42;color:#d7d9ee}
+.jr-menu-large .jr-menu-panel{font-size:17px;line-height:1.8}
+.jr-menu-large .jr-menu-tab,.jr-menu-large .jr-menu-close{font-size:16px}
+.jr-menu-large .jr-menu-item-desc,.jr-menu-large .jr-menu-objective-en{font-size:15px}
 `;
 
 /** Mounts the start menu and its touch trigger into `root`. */
@@ -257,6 +260,7 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   let active: TabId = 'bag';
   const render = (): void => {
     const snapshot = opts.getSnapshot();
+    dialog.classList.toggle('jr-menu-large', snapshot.settings.textSize === 'large');
     for (const id of TAB_IDS) tabs[id].setAttribute('aria-selected', String(id === active));
     panel.setAttribute('aria-labelledby', tabs[active].id);
     panel.replaceChildren(active === 'bag' ? bagView(snapshot) : active === 'quest' ? questView(snapshot) : mapView());
@@ -288,6 +292,9 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
   };
 
   const syncTrigger = (): void => {
+    // If another surface takes ownership while the menu is open (dialogue, settings,
+    // completion modal), yield instead of letting two dialogs fight over keys/z-order.
+    if (openState && isBlocked()) close();
     trigger.hidden = openState || isBlocked();
   };
 
@@ -363,16 +370,17 @@ export function mountStartMenu(root: HTMLElement, opts: StartMenuOptions): Start
     }
 
     if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      // Swallow arrows even when focus is on とじる or the panel: keyboard.ts maps them
+      // to the walk bus, and a held arrow must never start walking under the menu.
+      event.preventDefault();
+      event.stopImmediatePropagation();
       const current = focusedTab();
-      if (current) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const step = event.key === 'ArrowRight' ? 1 : -1;
-        const next = TAB_IDS[(TAB_IDS.indexOf(current) + step + TAB_IDS.length) % TAB_IDS.length];
-        if (next) {
-          setActive(next);
-          tabs[next].focus();
-        }
+      if (!current) return;
+      const step = event.key === 'ArrowRight' ? 1 : -1;
+      const next = TAB_IDS[(TAB_IDS.indexOf(current) + step + TAB_IDS.length) % TAB_IDS.length];
+      if (next) {
+        setActive(next);
+        tabs[next].focus();
       }
       return;
     }

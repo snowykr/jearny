@@ -7,6 +7,8 @@ import { createInitialSnapshot } from '../domain';
 import { ITEM_DESCRIPTIONS, MENU_TEXT, mountStartMenu } from './menu';
 
 const labels = MENU_TEXT;
+// Literal copy, so a changed constant cannot make the assertions pass by construction.
+const TAB_COPY = ['バッグ', 'クエスト', 'マップ', 'とじる'] as const;
 
 let cleanup: (() => void) | null = null;
 
@@ -66,12 +68,7 @@ describe('start menu', () => {
     expect(event.defaultPrevented).toBe(true);
     expect(menu.isOpen()).toBe(true);
     expect(dialog()?.hidden).toBe(false);
-    expect(buttons().map((button) => button.textContent)).toEqual([
-      labels.bag,
-      labels.quest,
-      labels.map,
-      labels.close,
-    ]);
+    expect(buttons().map((button) => button.textContent)).toEqual([...TAB_COPY]);
     expect(dialog()?.getAttribute('role')).toBe('dialog');
     expect(dialog()?.getAttribute('aria-modal')).toBe('true');
     const title = document.getElementById(dialog()?.getAttribute('aria-labelledby') ?? '');
@@ -231,6 +228,42 @@ describe('start menu', () => {
     window.removeEventListener('keydown', bubble);
 
     expect(bubble).not.toHaveBeenCalled();
+  });
+
+  it('swallows arrows while open even when focus is not on a tab', () => {
+    const { menu } = mount();
+    menu.open();
+    const close = dialog()?.querySelector<HTMLElement>('[data-testid="start-menu-close"]');
+    close?.focus();
+
+    const event = press('ArrowRight');
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(menu.isOpen()).toBe(true);
+  });
+
+  it('leaves game keys alone while closed', () => {
+    mount();
+    const event = press('ArrowLeft');
+    expect(event.defaultPrevented).toBe(false);
+  });
+
+  it('applies the large-text setting from the snapshot', () => {
+    const { menu } = mount(snapshot({ settings: { ...snapshot().settings, textSize: 'large' } }));
+    menu.open();
+    expect(dialog()?.classList.contains('jr-menu-large')).toBe(true);
+  });
+
+  it('closes when another surface takes ownership', async () => {
+    let blocked = false;
+    const { menu } = mount(undefined, () => blocked);
+    menu.open();
+    expect(menu.isOpen()).toBe(true);
+
+    blocked = true;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(menu.isOpen()).toBe(false);
   });
 });
 
