@@ -76,3 +76,15 @@ export function playerPixel(p: PlayerState, ts: number): [number, number] {
   const t = p.to ? p.progress : 0;
   return [(p.tile[0] + dx * t) * ts, (p.tile[1] + dy * t) * ts];
 }
+
+/** Integer top-left pixel of the player's tile, shared by the camera and the sprite so they never disagree by a pixel. */
+export function playerDrawPixel(p: PlayerState, ts: number): [number, number] {
+  const [x, y] = playerPixel(p, ts);
+  return [Math.round(x), Math.round(y)];
+}
+
+/** Sheet column for the 4-frame walk cycle stepA, idle, stepB, idle: one half-cycle per tile, feet alternate by parity. */
+export function walkColumn(p: Pick<PlayerState, 'to' | 'progress' | 'parity'>): 0 | 1 | 2 {
+  if (!p.to || p.progress >= 0.5) return 0;
+  return p.parity === 0 ? 1 : 2;
+}

@@ -4,12 +4,12 @@ import kaplay from 'kaplay';
 import type { Effect, GameSession, SceneId } from '../contracts';
 import { maps } from '../content/maps';
 import { loadAssets } from './assets';
-import { VIEW_H, VIEW_W, cameraCenter } from './camera';
+import { VIEW_H, VIEW_W, sceneCamera } from './camera';
 import { createInputBus } from './input';
 import type { InputBus } from './input';
 import { createEffectDeduper } from './interaction';
 import { attachKeyboard } from './keyboard';
-import { playerPixel } from './player';
+import { playerDrawPixel } from './player';
 import { drawScene } from './render';
 import { createSceneRuntime } from './scene';
 import type { CommandResult, SceneRuntime } from './scene';
@@ -101,10 +101,7 @@ export function startGame(
     const map = maps[sceneId];
     const rt = createSceneRuntime({ map, spawnId, session, bus: input, onResult: onResult(sceneToken) });
     current = rt;
-    const cam = (): [number, number] => {
-      const [px, py] = playerPixel(rt.player, map.tileSize);
-      return cameraCenter([px + map.tileSize / 2, py + map.tileSize / 2], [map.grid[0] * map.tileSize, map.grid[1] * map.tileSize]);
-    };
+    const cam = (): [number, number] => sceneCamera(map, playerDrawPixel(rt.player, map.tileSize));
     k.onUpdate(() => {
       rt.update(Math.min(k.dt(), 0.05));
       const [cx, cy] = cam();
