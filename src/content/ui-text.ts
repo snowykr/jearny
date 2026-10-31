@@ -16,6 +16,13 @@ export interface UiText {
    * screen so a recorded walkthrough cannot ship without it.
    */
   disclaimer: ObjectiveText;
+  /** Visual for the demo: a coupon that explicitly cannot be redeemed at the real shop. */
+  coupon: {
+    title: string;
+    shop: string;
+    note: string;
+    noteEn: string;
+  };
   speakers: Record<string, string>;
   items: Record<string, string>;
   objectives: Record<QuestStatus, ObjectiveText>;
@@ -53,6 +60,12 @@ export const UI_TEXT: UiText = {
   disclaimer: {
     ja: '松島屋は実在の店舗ですが本作とは無関係です。作中の価格・割引は架空で、利用できません。',
     en: 'Matsushimaya is a real shop, unaffiliated with this demo. Prices and offers shown are fictional.',
+  },
+  coupon: {
+    title: 'デモクーポン（見本）',
+    shop: '松島屋',
+    note: 'デモ用です。実店舗では利用できません。本作とは無関係です。',
+    noteEn: 'Demo only — cannot be redeemed at the real shop. Unaffiliated.',
   },
   speakers: {
     [ENTITY.guide]: 'ガイド',
