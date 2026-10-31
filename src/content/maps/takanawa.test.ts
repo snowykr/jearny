@@ -42,6 +42,31 @@ describe('authored Takanawa map', () => {
     expect(map.spawns[SPAWN.homeDoor]).toEqual(home);
   });
 
+  it('varies the meadow with both grass variants and keeps every spawn connected', () => {
+    const count = (tile: number) => map.layers.ground.filter((t) => t === tile).length;
+    expect(count(T.GRASS_B)).toBeGreaterThan(0);
+    expect(count(T.GRASS_C)).toBeGreaterThan(0);
+    // GRASS_A is the base shade, no longer the whole town.
+    expect(count(T.GRASS_A)).toBeLessThan(map.grid[0] * map.grid[1] / 2);
+    const seen = reachable(home, true);
+    for (const spawn of Object.values(map.spawns)) expect(seen.has(cell(spawn))).toBe(true);
+    // The new south neighbourhood is part of that walk, not a sealed block.
+    for (const tile of [[30, 69], [17, 60], [20, 86]] satisfies Tile[])
+      expect(seen.has(cell(tile))).toBe(true);
+  });
+
+  it('leaves no walkable pocket outside the sealed railway side', () => {
+    // Every walkable cell west of the rail tracks is reachable from home; the east bank stays sealed.
+    const seen = reachable(home, true);
+    const strays: Tile[] = [];
+    for (let y = 0; y < map.grid[1]; y++) {
+      for (let x = 0; x <= 81; x++) {
+        if (map.collision[cell([x, y])] === 0 && !seen.has(cell([x, y]))) strays.push([x, y]);
+      }
+    }
+    expect(strays).toEqual([]);
+  });
+
   it('requires the deck portals to reach the station', () => {
     const seen = reachable(home, false);
     expect(seen.has(cell([64, 50]))).toBe(false);
@@ -95,6 +120,17 @@ describe('authored Takanawa map', () => {
       // Arriving from the interior drops the player on the tile in front of the door.
       expect(map.spawns[c.spawn]).toEqual([expected[0], expected[1] + 1]);
     }
+  });
+
+  it('never paints a flower bed over a walkway', () => {
+    const walkway = new Set<number>([T.SIDEWALK, T.TEMPLE_PATH, T.PLAZA, T.GRAVEL, T.CROSSING_H, T.CROSSING_V]);
+    const bad: Tile[] = [];
+    map.layers.decoration.forEach((tile, index) => {
+      if (tile !== T.FLOWERS) return;
+      const ground = map.layers.ground[index] ?? -1;
+      if (walkway.has(ground)) bad.push([index % map.grid[0], Math.floor(index / map.grid[0])]);
+    });
+    expect(bad).toEqual([]);
   });
 
   it('keeps every portal and its destination walkable', () => {

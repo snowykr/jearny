@@ -41,9 +41,10 @@ const INDOOR_WALL: ReadonlySet<number> = new Set([
   IT.WALL, IT.WINDOW, IT.WALL_TOP, IT.WALL_BASE, IT.WALL_SHOJI, IT.WINDOW_CURTAIN, IT.SHOP_WALL, IT.SHOP_WINDOW,
 ]);
 
-/** Category of an outdoor cell. Trees (roof/decoration layers) read over the ground. */
+/** Category of an outdoor cell. Trees and fences (roof/decoration layers) read over the ground. */
 export function outdoorCategory(ground: number, decoration = -1, roof = -1): TileCategory {
   if (TREE_TILES.has(roof) || TREE_TILES.has(decoration)) return 'tree';
+  if (decoration === T.FENCE) return 'hedge';
   return OUTDOOR_GROUND[ground] ?? 'grass';
 }
 
