@@ -6,8 +6,8 @@ export const ASSETS = {
   buildings: {
     station: [192, 128], matsushimaya: [96, 80], home: [80, 96], liebe: [80, 80],
     // Neighbourhood pack (#83/#94). Sizes are `runtimeSize` from assets/source/meta/<id>.json.
-    'house-2': [80, 96], 'house-3': [80, 80], 'apartment-small': [96, 112], 'apartment-mid': [128, 128],
-    cafe: [80, 80], konbini: [112, 80], koban: [48, 64], 'office-tower': [128, 192],
+    'house-2': [80, 96], 'house-3': [80, 80], 'apartment-small': [96, 112],
+    cafe: [80, 80], konbini: [112, 80], koban: [48, 64],
     'sengakuji-gate': [128, 112], 'sengakuji-hall': [160, 128], 'bicycle-parking': [64, 48],
   },
   tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 } },

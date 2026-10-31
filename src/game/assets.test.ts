@@ -182,13 +182,12 @@ describe('asset loader', () => {
     }
   });
 
-  it('declares every neighbourhood pack building at its registry runtime size', () => {
-    // The renderer falls back to a magenta placeholder for a sprite missing from ASSETS, so a pack
-    // building placed on the map must be listed here with exactly the size its meta exports.
+  it('declares every preloaded building at its registry runtime size', () => {
+    // The renderer falls back to a magenta placeholder for a sprite missing from ASSETS. Deriving
+    // the list from ASSETS itself catches a new entry without a meta and a stale meta size; a
+    // hand-typed list let apartment-mid and office-tower ship with nothing placing them.
     const metaDir = fileURLToPath(new URL('../../assets/source/meta/', import.meta.url));
-    const pack = ['house-2', 'house-3', 'apartment-small', 'apartment-mid', 'cafe', 'konbini', 'koban',
-      'office-tower', 'sengakuji-gate', 'sengakuji-hall', 'bicycle-parking'];
-    for (const id of pack) {
+    for (const id of Object.keys(ASSETS.buildings)) {
       const meta = JSON.parse(readFileSync(join(metaDir, `${id}.json`), 'utf8')) as { runtimeSize: [number, number] };
       expect(ASSETS.buildings[id as keyof typeof ASSETS.buildings], id).toEqual(meta.runtimeSize);
     }

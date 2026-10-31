@@ -45,7 +45,10 @@ export function poisForMap(map: MapDefinition): Poi[] {
  */
 export const TEMPLE_APPROACH_TILE: [number, number] = [34, 24];
 
-/** The 泉岳寺 approach marker; the temple itself is off-map. Null for other scenes. */
+/**
+ * The 泉岳寺 approach marker. The hall and gate stand on the map now, but this marker labels the
+ * street approach on the temple path. Null for other scenes.
+ */
 export function templeApproach(map: MapDefinition): Poi | null {
   if (map.id !== 'takanawa') return null;
   const [x, y] = TEMPLE_APPROACH_TILE;
