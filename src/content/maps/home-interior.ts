@@ -17,8 +17,7 @@ const ROWS = 9;
 //   y7   genkan step with the shoe rack; entry spawn
 //   y8   front wall with the door mat at x6
 //
-// One floor type (wood); the rug is an accent under the kotatsu. Stairs use the
-// existing step tile until the dedicated stair tile from #79 lands.
+// One floor type (wood); the rug is an accent under the kotatsu.
 export const homeInterior: MapDefinition = makeRoom({
   id: 'home-interior',
   grid: [COLS, ROWS],
@@ -89,5 +88,5 @@ place(4, 7, IT.SHOE_RACK);
 place(8, 7, IT.UMBRELLA_STAND);
 
 // Stairs up (top-right corner). Ground step tile; the portal is opened by makeRoom.
-ground[idx(COLS, 10, 2)] = IT.FLOOR_WOOD_DARK; // recessed stairwell until #79's tile is wired
+ground[idx(COLS, 10, 2)] = IT.STAIRS_UP;
 

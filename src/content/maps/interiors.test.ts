@@ -1,3 +1,7 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 import { describe, expect, it } from 'vitest';
 import { ENTITY, PORTAL, SPAWN } from '../../contracts';
 import type { MapDefinition, Tile } from '../../contracts';
@@ -8,7 +12,7 @@ import { home2f } from './home-2f';
 import { homeInterior } from './home-interior';
 import { maps } from './index';
 import { shopInterior } from './shop-interior';
-import { IT } from './tiles';
+import { IT, TILESETS, TILESET_SHEETS } from './tiles';
 
 function reachableTiles(map: MapDefinition, start: Tile): Tile[] {
   const queue: Tile[] = [start];
@@ -189,7 +193,7 @@ describe('home floors', () => {
 
   it('is furnished as a home: kitchen, dining, kotatsu, rug, genkan and wall hangings', () => {
     expect(homeInterior.layers.ground).toEqual(expect.arrayContaining([
-      IT.WOOD_FLOOR, IT.RUG, IT.DOMA_STONE, IT.FLOOR_WOOD_DARK, IT.DOOR_MAT, IT.WALL, IT.WALL_BASE,
+      IT.WOOD_FLOOR, IT.RUG, IT.DOMA_STONE, IT.STAIRS_UP, IT.DOOR_MAT, IT.WALL, IT.WALL_BASE,
     ]));
     expect(homeInterior.layers.decoration).toEqual(expect.arrayContaining([
       IT.KITCHEN_COUNTER, IT.SINK, IT.STOVE, IT.FRIDGE, IT.KOTATSU_L, IT.KOTATSU_R, IT.ZABUTON, IT.TV_STAND,
@@ -197,19 +201,34 @@ describe('home floors', () => {
       IT.PICTURE_FRAME, IT.WALL_SHOJI,
     ]));
     expect(at(homeInterior.layers.ground, homeInterior, [6, 7])).toBe(IT.DOMA_STONE);
-    expect(at(homeInterior.layers.ground, homeInterior, [10, 2])).toBe(IT.FLOOR_WOOD_DARK);
+    expect(at(homeInterior.layers.ground, homeInterior, [10, 2])).toBe(IT.STAIRS_UP);
     const kotatsu = homeInterior.layers.decoration.findIndex((tile) => tile === IT.KOTATSU_L);
     expect(homeInterior.layers.decoration[kotatsu + 1]).toBe(IT.KOTATSU_R);
   });
 
   it('furnishes 2F as a bedroom with a tatami floor and no outdoor door', () => {
     expect(home2f.portals).toHaveLength(1);
-    expect(home2f.layers.ground).toEqual(expect.arrayContaining([IT.TATAMI, IT.RUG, IT.FLOOR_WOOD_DARK, IT.WALL, IT.WALL_BASE]));
-    expect(at(home2f.layers.ground, home2f, [8, 1])).toBe(IT.FLOOR_WOOD_DARK);
+    expect(home2f.layers.ground).toEqual(expect.arrayContaining([IT.TATAMI, IT.RUG, IT.STAIRS_DOWN, IT.WALL, IT.WALL_BASE]));
+    expect(at(home2f.layers.ground, home2f, [8, 1])).toBe(IT.STAIRS_DOWN);
     expect(home2f.layers.decoration).toEqual(expect.arrayContaining([
       IT.FUTON, IT.BOOKSHELF, IT.LOW_TABLE, IT.CUSHION_CHAIR, IT.ZABUTON, IT.FLOOR_LAMP, IT.TV_STAND, IT.PLANT,
       IT.WINDOW_CURTAIN, IT.WALL_CLOCK, IT.PICTURE_FRAME,
     ]));
+  });
+});
+
+describe('second interior sheet', () => {
+  it('puts the stair indices on the second sheet and sizes the export to its cells', () => {
+    const sheets = TILESET_SHEETS['tiles-interior'];
+    const covers = (index: number) => sheets.some((sheet) => index >= sheet.base && index < sheet.base + sheet.count);
+    expect(covers(IT.STAIRS_UP)).toBe(true);
+    expect(covers(IT.STAIRS_DOWN)).toBe(true);
+    expect(sheets.find((sheet) => sheet.id === 'tiles-interior-2')).toEqual({ id: 'tiles-interior-2', base: 48, count: 16 });
+    expect(TILESETS['tiles-interior-2']).toEqual({ cols: 8, rows: 2 });
+    const root = fileURLToPath(new URL('../../../', import.meta.url));
+    const png = PNG.sync.read(readFileSync(join(root, 'public', 'sprites', 'tiles-interior-2.png')));
+    const { cols, rows } = TILESETS['tiles-interior-2'];
+    expect([png.width, png.height]).toEqual([cols * 16, rows * 16]);
   });
 });
 

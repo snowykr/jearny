@@ -3,7 +3,7 @@
 // Every sprite has a flat-colour fallback for when the art has not landed (hasAsset false).
 import type { Color, KAPLAYCtx } from 'kaplay';
 import type { EntityAnchor } from '../contracts';
-import { TILESET_FOR_SCENE } from '../content/maps/tiles';
+import { TILESET_FOR_SCENE, TILESET_SHEETS } from '../content/maps/tiles';
 import { ASSETS, DEFAULT_CELL, SHEET_COLS, characterCell, hasAsset } from './assets';
 import { buildingFootRow, visibleTiles } from './camera';
 import type { Dir } from './input';
@@ -32,6 +32,8 @@ const INDOOR: Record<number, RGB> = {
   0: [200, 190, 120], 1: [170, 130, 90], 2: [225, 215, 200], 3: [150, 200, 230], 4: [120, 80, 50],
   5: [230, 150, 160], 6: [150, 140, 130], 7: [100, 70, 60], 8: [200, 180, 150], 9: [220, 170, 90],
   10: [220, 170, 90], 11: [150, 100, 60], 12: [60, 80, 150], 13: [90, 90, 100], 14: [130, 90, 60], 15: [60, 140, 70],
+  // Second interior sheet: lit steps up, dark stairwell down (tiles-interior-2).
+  48: [178, 170, 158], 49: [92, 84, 78],
 };
 
 const colorCache = new Map<string, Color>();
@@ -65,7 +67,9 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
   const [cols] = map.grid;
   const tileset = TILESET_FOR_SCENE[map.id];
   const palette = tileset === 'tiles-outdoor' ? OUTDOOR : INDOOR;
-  const useSheet = hasAsset(tileset);
+  // Only sheets that actually loaded can be drawn; a missing one falls back to flat colour.
+  const sheets = TILESET_SHEETS[tileset].filter((sheet) => hasAsset(sheet.id));
+  const sheetFor = (i: number) => sheets.find((sheet) => i >= sheet.base && i < sheet.base + sheet.count);
   const { x0, y0, x1, y1 } = visibleTiles(cam, map.grid, ts);
 
   const tileAt = (layer: number[], kind: 'ground' | 'decoration' | 'roof') => {
@@ -73,8 +77,9 @@ export function drawScene(k: KAPLAYCtx, rt: SceneRuntime, cam: [number, number])
       for (let x = x0; x < x1; x++) {
         const i = layer[y * cols + x];
         if (i === undefined || i < 0) continue;
-        if (useSheet) {
-          k.drawSprite({ sprite: tileset, frame: i, pos: k.vec2(x * ts, y * ts) });
+        const sheet = sheetFor(i);
+        if (sheet) {
+          k.drawSprite({ sprite: sheet.id, frame: i - sheet.base, pos: k.vec2(x * ts, y * ts) });
         } else {
           const rgb = palette[i] ?? hashRgb(`${tileset}:${i}`);
           const inset = kind === 'decoration' ? 2 : 0;

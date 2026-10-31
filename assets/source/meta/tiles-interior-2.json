@@ -43,6 +43,6 @@
     "BEDROOM_WINDOW": 14,
     "SUITCASE": 15
   },
-  "status": "review",
+  "status": "approved",
   "notes": "Two themed Image Gen 2 sheets, each edited once. Square crops and nearest-neighbour reduction, hard alpha, exact existing interior palette. Rug edges composite generated one-pixel binding strips over existing RUG index 29 to retain its texture. Mock corners combine the corresponding horizontal and vertical strips. No game code changes."
 }

@@ -2,7 +2,7 @@ import { assert, describe, expect, it } from 'vitest';
 import { BUILDING, ENTITY, SPAWN } from '../../contracts';
 import type { Tile } from '../../contracts';
 import { maps } from './index';
-import { IT, T, TILESETS } from './tiles';
+import { IT, T, tileCount } from './tiles';
 import { validateMaps } from './validate';
 
 const copyMaps = () => structuredClone(maps);
@@ -122,11 +122,16 @@ describe('map registry validation', () => {
     expect(validateMaps(broken)).toContainEqual(expect.stringContaining('crossing cell 129 must be walkable'));
   });
 
+  it('accepts stair indices from the second interior sheet', () => {
+    expect(tileCount('tiles-interior')).toBe(64);
+    expect(validateMaps(maps)).toEqual([]);
+  });
+
   it('reports invalid layer lengths, collision values, IDs, indices and spawn bounds', () => {
     const broken = copyMaps();
     const map = broken['home-interior'];
     for (const layer of Object.values(map.layers)) layer.pop();
-    map.layers.ground[0] = TILESETS['tiles-interior'].cols * TILESETS['tiles-interior'].rows;
+    map.layers.ground[0] = tileCount('tiles-interior');
     map.layers.decoration[0] = -2;
     map.layers.roof[0] = IT.WALL + 0.5;
     map.collision.pop();

@@ -1,7 +1,7 @@
 import { BUILDING, ENTITY, SPAWN } from '../../contracts';
 import type { MapDefinition, SceneId, Tile } from '../../contracts';
 import { isBlocked } from '../../game/interaction';
-import { T, TILESET_FOR_SCENE, TILESETS } from './tiles';
+import { T, TILESET_FOR_SCENE, tileCount } from './tiles';
 
 type MapRegistry = Partial<Record<SceneId, MapDefinition>>;
 
@@ -26,11 +26,11 @@ export function validateMaps(registry: MapRegistry): string[] {
     const report = (message: string) => errors.push(`${map.id}: ${message}`);
     const [cols, rows] = map.grid;
     const count = cols * rows;
-    const sheet = TILESETS[TILESET_FOR_SCENE[map.id]];
+    const limit = tileCount(TILESET_FOR_SCENE[map.id]);
     for (const [name, layer] of Object.entries(map.layers)) {
       if (layer.length !== count) report(`${name} length must be ${count}`);
       layer.forEach((tile, index) => {
-        if (!Number.isInteger(tile) || tile < -1 || tile >= sheet.cols * sheet.rows)
+        if (!Number.isInteger(tile) || tile < -1 || tile >= limit)
           report(`${name}[${index}] tile index ${tile} is outside tileset`);
       });
     }
