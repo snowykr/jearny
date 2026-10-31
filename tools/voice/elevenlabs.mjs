@@ -10,7 +10,7 @@ export function synthesisInput(line, voiceId, modelId = 'eleven_multilingual_v2'
   return {
     voiceId,
     outputFormat: 'mp3_44100_128',
-    body: { text: line.spokenText, model_id: modelId, apply_language_text_normalization: true },
+    body: { text: line.spokenText, model_id: modelId },
   };
 }
 

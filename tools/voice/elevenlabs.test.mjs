@@ -24,12 +24,12 @@ test('cache changes when Japanese text or voice changes', () => {
 test('no request without a key', async () => {
   await assert.rejects(createSpeech(input, '', () => { throw new Error('network must not run'); }), /unset/);
 });
-test('uses documented endpoint and omits unsupported language_code', async () => {
+test('uses the documented endpoint and the exact supported request body', async () => {
   const result = await createSpeech(input, 'mock-key', async (url, options) => {
     assert.match(url, /\/v1\/text-to-speech\/testVoice\?output_format=mp3_44100_128$/);
     assert.equal(options.headers['xi-api-key'], 'mock-key');
-    assert.equal(JSON.parse(options.body).model_id, 'eleven_multilingual_v2');
-    assert.equal('language_code' in JSON.parse(options.body), false);
+    // eleven_multilingual_v2 rejects language_code and language normalization (`invalid_parameters`).
+    assert.deepEqual(JSON.parse(options.body), { text: line.spokenText, model_id: 'eleven_multilingual_v2' });
     return new Response(Buffer.concat([Buffer.from('ID3'), Buffer.alloc(200)]), { headers: { 'content-type': 'audio/mpeg' } });
   });
   assert.equal(result.length, 203);
