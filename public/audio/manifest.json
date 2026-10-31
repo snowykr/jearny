@@ -6,42 +6,42 @@
       "hash": "ee180c19d9b25b800f20b21d107a8f71d6b87cbb1d1fd7f2ce52305704dd8226",
       "voiceId": "dp4HJlekKt0HZFHL2jQg",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     },
     "station.directions": {
       "path": "/audio/c816e06082e8e2c78987d5b76d6d5b440a64350c4dba04890071d67bef1ebd4c.mp3",
       "hash": "c816e06082e8e2c78987d5b76d6d5b440a64350c4dba04890071d67bef1ebd4c",
       "voiceId": "Q3V5SJSktn49inIBeIuC",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     },
     "shop.welcome": {
       "path": "/audio/c1c1ca7d87d156906bcf2e16cf70706a6c1f1448f14bae57b22c7ed052b2a1ba.mp3",
       "hash": "c1c1ca7d87d156906bcf2e16cf70706a6c1f1448f14bae57b22c7ed052b2a1ba",
       "voiceId": "MhnQB6oLKSlS0AIJzxtO",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     },
     "shop.quantity": {
       "path": "/audio/330a6c5c285a74b93047b6313d2b9ff7f68807b6a6548e6673a3f0466f58ef85.mp3",
       "hash": "330a6c5c285a74b93047b6313d2b9ff7f68807b6a6548e6673a3f0466f58ef85",
       "voiceId": "MhnQB6oLKSlS0AIJzxtO",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     },
     "shop.confirm": {
       "path": "/audio/225f4686b6d9bac7f469f8830b49f0f6cbc05128c7df3b5c6bd9204ddc4f9354.mp3",
       "hash": "225f4686b6d9bac7f469f8830b49f0f6cbc05128c7df3b5c6bd9204ddc4f9354",
       "voiceId": "MhnQB6oLKSlS0AIJzxtO",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     },
     "guide.clarify": {
       "path": "/audio/ee6e8c1c149795962f7b85c1f46e42e67586cb08ab507fdb2942ea034fed75d6.mp3",
       "hash": "ee6e8c1c149795962f7b85c1f46e42e67586cb08ab507fdb2942ea034fed75d6",
       "voiceId": "dp4HJlekKt0HZFHL2jQg",
       "modelId": "eleven_multilingual_v2",
-      "status": "generated_pending_listening_review"
+      "status": "approved"
     }
   }
 }
