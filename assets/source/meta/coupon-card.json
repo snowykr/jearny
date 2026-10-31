@@ -76,5 +76,9 @@
       "active",
       "used"
     ]
-  }
+  },
+  "collisionTiles": [
+    20,
+    6
+  ]
 }
