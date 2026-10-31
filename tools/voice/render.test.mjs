@@ -23,13 +23,13 @@ async function fixture() {
 function runMode(root, mode, env = {}) {
   return spawnSync(process.execPath, ['--import', join(root, 'no-network.mjs'), join(root, 'tools/voice/render.mjs'), mode], {
     encoding: 'utf8',
-    env: { ...process.env, ELEVENLABS_API_KEY: '', ELEVENLABS_VOICE_ID: 'testVoice', ELEVENLABS_MODEL_ID: 'eleven_multilingual_v2', ...env },
+    env: { ELEVENLABS_API_KEY: '', ELEVENLABS_VOICE_ID: 'testVoice', ELEVENLABS_MODEL_ID: 'eleven_multilingual_v2', ...env },
   });
 }
 
 function run(root) {
   return spawnSync(process.execPath, ['--import', join(root, 'no-network.mjs'), join(root, 'tools/voice/render.mjs'), 'render', 'shop.welcome'], {
-    encoding: 'utf8', env: { ...process.env, ELEVENLABS_API_KEY: 'mock-key', ELEVENLABS_VOICE_ID: 'testVoice', ELEVENLABS_MODEL_ID: 'eleven_multilingual_v2' },
+    encoding: 'utf8', env: { ELEVENLABS_API_KEY: 'mock-key', ELEVENLABS_VOICE_ID: 'testVoice', ELEVENLABS_MODEL_ID: 'eleven_multilingual_v2' },
   });
 }
 
