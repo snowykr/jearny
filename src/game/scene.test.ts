@@ -3,8 +3,8 @@ import { ENTITY, PORTAL } from '../contracts';
 import type { CommandPayload, GameSession, GameSnapshot, Outcome } from '../contracts';
 import { maps } from '../content/maps';
 import { createInputBus } from './input';
-import { STEP_SECONDS } from './player';
-import { createSceneRuntime, spawnFacing, spawnTile } from './scene';
+import { STEP_SECONDS, walkColumn } from './player';
+import { NPC_TURN_SECONDS, createSceneRuntime, spawnFacing, spawnTile } from './scene';
 import type { CommandResult } from './scene';
 
 /** Local fixture: the scene runtime only reads `dialogue.status`, so it must not depend on Track B's domain. */
@@ -174,5 +174,71 @@ describe('scene runtime', () => {
     // a disposed runtime ignores late input
     bus.press('interact');
     expect(f.sent).toHaveLength(0);
+  });
+
+  describe('NPC facing', () => {
+    const talk = async (f: ReturnType<typeof fakeSession>) => {
+      const s = setup('home-interior', 'start', f);
+      s.rt.player.tile = [5, 5];
+      s.rt.player.facing = 'up'; // guide at [5,4]
+      s.bus.press('interact');
+      await flush();
+      return s;
+    };
+
+    it('the NPC turns to face the player on interact and the player state is untouched', async () => {
+      const { rt } = await talk(fakeSession());
+      expect(rt.npcFacing(ENTITY.guide)).toBe('down');
+      expect(rt.player.tile).toEqual([5, 5]);
+      expect(rt.npcFacing(ENTITY.stationStaff)).toBeNull();
+    });
+
+    it('turns toward the player from any side', async () => {
+      const f = fakeSession();
+      const { rt, bus } = setup('home-interior', 'start', f);
+      rt.player.tile = [6, 4]; // guide at [5,4] is to the player's left
+      rt.player.facing = 'left';
+      bus.press('interact');
+      await flush();
+      expect(rt.npcFacing(ENTITY.guide)).toBe('right');
+    });
+
+    it('turns back after 2 s when no dialogue opened', async () => {
+      const { rt } = await talk(fakeSession());
+      tick(rt, NPC_TURN_SECONDS - 0.2);
+      expect(rt.npcFacing(ENTITY.guide)).toBe('down');
+      tick(rt, 0.5);
+      expect(rt.npcFacing(ENTITY.guide)).toBeNull();
+    });
+
+    it('keeps facing while the dialogue is open, even past 2 s, and turns back when it closes', async () => {
+      const f = fakeSession();
+      const { rt } = await talk(f);
+      f.setDialogue('showing');
+      tick(rt, NPC_TURN_SECONDS + 1);
+      expect(rt.npcFacing(ENTITY.guide)).toBe('down');
+      f.setDialogue('closed');
+      tick(rt, 0.05);
+      expect(rt.npcFacing(ENTITY.guide)).toBeNull();
+    });
+
+    it('does not turn for non-NPC interactions', async () => {
+      const f = fakeSession();
+      const { rt, bus } = setup('takanawa', 'station-deck', f);
+      rt.player.tile = [64, 50];
+      rt.player.facing = 'up';
+      bus.press('up');
+      tick(rt, 0.3);
+      await flush();
+      expect(rt.npcFacing(ENTITY.stationZone)).toBeNull();
+    });
+  });
+
+  describe('walk cycle', () => {
+    it('plays stepA, idle, stepB, idle over two tiles and idles when stopped', () => {
+      const at = (parity: 0 | 1, progress: number) => walkColumn({ to: [1, 1], progress, parity });
+      expect([at(0, 0.1), at(0, 0.7), at(1, 0.1), at(1, 0.7)]).toEqual([1, 0, 2, 0]);
+      expect(walkColumn({ to: null, progress: 0, parity: 1 })).toBe(0);
+    });
   });
 });
