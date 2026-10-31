@@ -45,6 +45,19 @@ cd ../jearny-logic && npm install && npm run dev -- --port 5174
 
 Leave the original `jearny/` checkout on `main` and use it to review and merge PRs.
 
+## Deploy
+
+Every push to `main` builds and publishes the game to GitHub Pages via
+`.github/workflows/deploy.yml` (`npm run check`, `npm run build`, then `deploy-pages`).
+The site is static; `vite.config.ts` uses `base: './'` so the same artifact works from the
+project sub-path and from any other static host. Enable Pages once in the repository
+settings (Source: GitHub Actions) — after that a green Deploy run publishes the URL.
+
+```bash
+npm run build
+npm run preview     # serves dist/ locally, same relative URLs as Pages
+```
+
 ## ElevenLabs (Track B)
 
 Copy `.env.example` to `.env.local` (gitignored) and fill in `ELEVENLABS_API_KEY` there. Never use a `VITE_` prefix.
