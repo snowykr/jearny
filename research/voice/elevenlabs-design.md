@@ -65,12 +65,17 @@ Verification has two stages. First, mocked responses prove cache hits issue no s
 
 Optional speech recognition has its own microphone consent, transcription service, timeout, and typed-input fallback. ElevenLabs Scribe is a separate STT model family. It does not replace the TTS path described here. [Model families](https://elevenlabs.io/docs/overview/models)
 
-## Selected voice (2026-10-31)
+## Selected NPC voices (2026-10-31)
 
-Auditioned from the shared-voice library (`GET /v1/shared-voices?language=ja`) against the static pipeline, which only accepts `eleven_multilingual_v2`.
+Chosen from the shared-voice library (`GET /v1/shared-voices?language=ja&gender=female`) against the static pipeline, which only accepts `eleven_multilingual_v2`. All three are native Japanese, verified on that model, and were added to the workspace with `POST /v1/voices/add/{public_owner_id}/{voice_id}` before synthesis. The account's pre-made voices are not Japanese-native, so none of them were used.
 
-- **Single voice for the six-line demo:** `dp4HJlekKt0HZFHL2jQg` — "Ayaka - Cute, Bright & Clear". Female, adult, `kanto` accent, professional, verified on `eleven_multilingual_v2` and `eleven_v4`, free users allowed. Clear consonants and a friendly register, which the language-learning lines need. [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/80a10100c4924c2eb0a45329cb42691b/voices/dp4HJlekKt0HZFHL2jQg/J757N21bsMnHGXYh9Wme.mp3)
-- Shopkeeper alternative (anime-idol register): `orJJwOpc1v9dJbhXKsPq` — "KawaIIchan - Cute & Friendly". [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/a45484b4345e4cfd89e8eb5b018daecb/voices/orJJwOpc1v9dJbhXKsPq/iXoGRNk2U8ecnXaFVfhW.mp3)
-- Station-staff alternative (male, calm): `gHOZgBRO2XoES8fxMGSa` — "Koki - Calm Japanese Male Narrator". [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/01a069aa5f0744a7b080332cabcfecfb/voices/gHOZgBRO2XoES8fxMGSa/8cc4380b-afa5-4edb-8658-75ca29e1ac33.mp3)
+| Speaker | Variable | Voice | Why |
+| --- | --- | --- | --- |
+| `guide` | `ELEVENLABS_VOICE_ID_GUIDE` | `dp4HJlekKt0HZFHL2jQg` — Ayaka, Cute, Bright & Clear (adult, kanto) | Friendly tutorial register for the first-trip explanation. Also the `ELEVENLABS_VOICE_ID` fallback. [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/80a10100c4924c2eb0a45329cb42691b/voices/dp4HJlekKt0HZFHL2jQg/J757N21bsMnHGXYh9Wme.mp3) |
+| `station_staff` | `ELEVENLABS_VOICE_ID_STATION_STAFF` | `Q3V5SJSktn49inIBeIuC` — Akane, Tokyo Standard Japanese (middle-aged, kanto) | Native Tokyo standard and a composed delivery, which suits station directions. [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/095c0e409f3546fe91c081e76d34cd6c/voices/Q3V5SJSktn49inIBeIuC/3HieIZ2YAXaKTt7JMR1K.mp3) |
+| `shopkeeper` | `ELEVENLABS_VOICE_ID_SHOPKEEPER` | `MhnQB6oLKSlS0AIJzxtO` — Konomi, Soft & Friendly (young) | Warm shop-clerk register for the 松島屋 lines. [Preview](https://storage.googleapis.com/eleven-public-prod/database/workspace/3473b3123b9c4dfa9950c6caf69ea332/voices/MhnQB6oLKSlS0AIJzxtO/NWMt4jYexNqhx7PkVeT3.mp3) |
 
-`tools/voice/render.mjs` reads a single `ELEVENLABS_VOICE_ID`; per-NPC IDs (`ELEVENLABS_VOICE_ID_<SPEAKER>`) are the next step if the six lines keep three speakers. Library voices must be added to the workspace before synthesis: confirm with `GET /v2/voices` after the key exists, otherwise the request fails with `invalid_voice` and saves nothing.
+Rejected: `orJJwOpc1v9dJbhXKsPq` KawaIIchan (anime-idol register, too strong for a shop clerk) and `gHOZgBRO2XoES8fxMGSa` Koki (male narrator; the station sprite and the three-speaker demo read better with Akane).
+
+The three library voices were **not** in the workspace at first: `GET /v1/voices/{id}` returned `voice_not_found` for every library ID, including Ayaka. Pull `public_owner_id` from `/v1/shared-voices` and add each voice before rendering, or synthesis fails and saves nothing.
+

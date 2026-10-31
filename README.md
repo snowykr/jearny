@@ -49,7 +49,7 @@ Leave the original `jearny/` checkout on `main` and use it to review and merge P
 
 Copy `.env.example` to `.env.local` (gitignored) and fill in `ELEVENLABS_API_KEY` there. Never use a `VITE_` prefix.
 
-`ELEVENLABS_VOICE_ID` is the single demo voice (currently Ayaka, `dp4HJlekKt0HZFHL2jQg`; see `research/voice/elevenlabs-design.md`). For one voice per NPC, set `ELEVENLABS_VOICE_ID_GUIDE`, `ELEVENLABS_VOICE_ID_STATION_STAFF` or `ELEVENLABS_VOICE_ID_SHOPKEEPER`; unset speakers fall back to the single voice.
+`ELEVENLABS_VOICE_ID` is the fallback (Ayaka, `dp4HJlekKt0HZFHL2jQg`). The demo sets one voice per NPC: guide = Ayaka `dp4HJlekKt0HZFHL2jQg`, station staff = Akane `Q3V5SJSktn49inIBeIuC`, shopkeeper = Konomi `MhnQB6oLKSlS0AIJzxtO`. Set `ELEVENLABS_VOICE_ID_GUIDE`, `ELEVENLABS_VOICE_ID_STATION_STAFF` and `ELEVENLABS_VOICE_ID_SHOPKEEPER`; unset speakers fall back to the single voice. The library voices must be added to the workspace once; see `research/voice/elevenlabs-design.md`.
 
 ```bash
 node tools/voice/render.mjs plan                                      # validate all 6 lines: voice, cache key, cached/pending (no key, no network)
