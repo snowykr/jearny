@@ -9,14 +9,14 @@ const map: MapDefinition = makeRoom({
   floor: T.GRASS_A,
   wall: T.HEDGE,
   spawns: {
-    [SPAWN.homeDoor]: [18, 41],
-    [SPAWN.shopDoor]: [16, 17],
+    [SPAWN.homeDoor]: [17, 41],
+    [SPAWN.shopDoor]: [17, 17],
     [SPAWN.plaza]: [54, 37],
     [SPAWN.stationDeck]: [64, 50],
   },
   portals: [
-    { id: PORTAL.homeDoor, tile: [18, 40], toScene: 'home-interior', toSpawn: SPAWN.entry },
-    { id: PORTAL.shopDoor, tile: [16, 16], toScene: 'shop-interior', toSpawn: SPAWN.entry },
+    { id: PORTAL.homeDoor, tile: [17, 40], toScene: 'home-interior', toSpawn: SPAWN.entry },
+    { id: PORTAL.shopDoor, tile: [17, 16], toScene: 'shop-interior', toSpawn: SPAWN.entry },
     { id: PORTAL.deckUp, tile: [56, 38], toScene: 'takanawa', toSpawn: SPAWN.stationDeck },
     { id: PORTAL.deckDown, tile: [64, 52], toScene: 'takanawa', toSpawn: SPAWN.plaza },
   ],

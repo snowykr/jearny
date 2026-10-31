@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { PORTAL, SPAWN } from '../../contracts';
+import { BUILDING, PORTAL, SPAWN } from '../../contracts';
 import type { Tile } from '../../contracts';
 import { takanawa as map } from './takanawa';
 import { maps } from './index';
 import { T } from './tiles';
+import homeMeta from '../../../assets/source/meta/home.json';
+import matsushimayaMeta from '../../../assets/source/meta/matsushimaya.json';
 
 const cell = ([x, y]: Tile) => y * map.grid[0] + x;
 
@@ -28,13 +30,13 @@ function reachable(start: Tile, useDeck: boolean): Set<number> {
   return seen;
 }
 
-const home: Tile = [18, 41];
+const home: Tile = map.spawns[SPAWN.homeDoor] ?? [17, 41];
 
 describe('authored Takanawa map', () => {
   it('connects all four spawns and the planned neighborhood anchors', () => {
     const seen = reachable(home, true);
     for (const tile of [...Object.values(map.spawns), ...[
-      [18, 40], [64, 48], [54, 36], [44, 28], [34, 24], [16, 16],
+      [17, 40], [64, 48], [54, 36], [44, 28], [34, 24], [17, 16],
     ] satisfies Tile[]]) expect(seen.has(cell(tile))).toBe(true);
     expect(map.spawns[SPAWN.homeDoor]).toEqual(home);
   });
@@ -69,6 +71,29 @@ describe('authored Takanawa map', () => {
     });
     const seen = reachable(home, true);
     expect(seen.has(cell([82, 48]))).toBe(false);
+  });
+
+
+  it('puts each storefront portal under the door in the approved art', () => {
+    // The renderer draws a building sprite centred on its footprint and bottom-aligned, so the
+    // door's world x is footprintLeft + (footprintWidth - spriteWidth) / 2 + anchors.door[0].
+    const cases = [
+      { building: BUILDING.home, meta: homeMeta, portal: PORTAL.homeDoor, spawn: SPAWN.homeDoor },
+      { building: BUILDING.matsushimaya, meta: matsushimayaMeta, portal: PORTAL.shopDoor, spawn: SPAWN.shopDoor },
+    ] as const;
+    for (const c of cases) {
+      const entity = map.entities.find((e) => e.id === c.building);
+      expect(entity).toBeDefined();
+      const [w, h] = entity!.size ?? [1, 1];
+      const spriteW = c.meta.runtimeSize[0] as number;
+      const doorX = c.meta.anchors.door[0] as number;
+      const worldX = entity!.tile[0] * map.tileSize + (w * map.tileSize - spriteW) / 2 + doorX;
+      const expected: Tile = [Math.floor(worldX / map.tileSize), entity!.tile[1] + h];
+      const portal = map.portals.find((p) => p.id === c.portal);
+      expect(portal?.tile).toEqual(expected);
+      // Arriving from the interior drops the player on the tile in front of the door.
+      expect(map.spawns[c.spawn]).toEqual([expected[0], expected[1] + 1]);
+    }
   });
 
   it('keeps every portal and its destination walkable', () => {
