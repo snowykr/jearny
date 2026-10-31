@@ -4,6 +4,7 @@ A FireRed-style top-down pixel adventure for practising Japanese around Takanawa
 
 - Spec: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - **Who does what:** [docs/WORKSPLIT.md](docs/WORKSPLIT.md)
+- **Notion access for the agent:** [docs/NOTION-MCP.md](docs/NOTION-MCP.md) (`./scripts/setup-notion-mcp.sh`)
 - Research: `research/` (map GeoJSON, shop references, ElevenLabs design)
 - Content: `content/world-plan.json`, `content/dialogue.ja.json`
 - Draft source art: `assets/source/`
