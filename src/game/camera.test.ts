@@ -81,9 +81,14 @@ describe('camera', () => {
       expect(buildingRects(missing)).toEqual([{ x0: 48, y0: 64, x1: 80, y1: 112 }]);
     });
 
-    it('keeps interiors that fit the view centred', () => {
-      const small = { ...maps['home-interior'], grid: [14, 9] as [number, number] };
-      expect(sceneCamera(small, [16, 16])).toEqual([112, 72]);
+    it('never scrolls indoors: every room camera is the room centre (#78)', () => {
+      for (const id of ['home-interior', 'home-2f', 'shop-interior'] as const) {
+        const map = maps[id];
+        const [cols, rows] = map.grid;
+        const centre: [number, number] = [(cols * 16) / 2, (rows * 16) / 2];
+        expect(sceneCamera(map, [0, 0])).toEqual(centre);
+        expect(sceneCamera(map, [cols * 16 - 16, rows * 16 - 16])).toEqual(centre);
+      }
     });
   });
 

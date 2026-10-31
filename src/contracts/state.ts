@@ -1,6 +1,7 @@
 // Shared contract (docs/ARCHITECTURE.md §5). Change only via a PR to main.
 
-export type SceneId = 'takanawa' | 'home-interior' | 'shop-interior';
+export const SCENE_IDS = ['takanawa', 'home-interior', 'home-2f', 'shop-interior'] as const;
+export type SceneId = (typeof SCENE_IDS)[number];
 export type QuestStatus = 'not_started' | 'active' | 'ready_to_return' | 'completed';
 export type DialogueStatus = 'closed' | 'showing' | 'choosing' | 'waiting_for_speech';
 

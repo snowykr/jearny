@@ -113,24 +113,36 @@
     {
       "id": "home-interior",
       "grid": [
-        16,
-        12
+        13,
+        9
       ],
       "spawn": [
-        8,
-        9
+        5,
+        5
       ],
       "exitTo": "home"
     },
     {
-      "id": "shop-interior",
+      "id": "home-2f",
       "grid": [
-        16,
-        12
+        11,
+        8
       ],
       "spawn": [
         8,
+        2
+      ],
+      "via": "home-interior"
+    },
+    {
+      "id": "shop-interior",
+      "grid": [
+        13,
         9
+      ],
+      "spawn": [
+        6,
+        7
       ],
       "exitTo": "matsushimaya",
       "fictionalInterior": true

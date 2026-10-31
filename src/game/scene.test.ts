@@ -57,18 +57,18 @@ describe('scene runtime', () => {
     const { rt } = setup('takanawa', 'home-door');
     expect(rt.player.tile).toEqual(spawnTile(maps.takanawa, 'home-door'));
     expect(rt.player.facing).toBe('down');
-    expect(spawnFacing(maps['home-interior'], [8, 10])).toBe('up');
+    expect(spawnFacing(maps['home-interior'], [6, 7])).toBe('up');
   });
 
   it('walks one tile per step while a direction is held, and stops on release', () => {
-    const { rt, bus } = setup('home-interior', 'start'); // [8,6]
+    const { rt, bus } = setup('home-interior', 'start'); // [5,5]
     bus.press('right');
     tick(rt, 0.5); // turn delay (~0.08s) then ~2 steps
     bus.release('right');
     tick(rt, 0.3);
     expect(rt.player.to).toBeNull();
-    expect(rt.player.tile[0]).toBeGreaterThanOrEqual(10);
-    expect(rt.player.tile[1]).toBe(6);
+    expect(rt.player.tile[0]).toBeGreaterThanOrEqual(7);
+    expect(rt.player.tile[1]).toBe(5);
   });
 
   it('a tap only turns without moving', () => {
@@ -77,21 +77,21 @@ describe('scene runtime', () => {
     bus.release('left');
     tick(rt, 0.3);
     expect(rt.player.facing).toBe('left');
-    expect(rt.player.tile).toEqual([8, 6]);
+    expect(rt.player.tile).toEqual([5, 5]);
   });
 
   it('does not walk into walls or NPCs', () => {
     const { rt, bus } = setup('home-interior', 'start');
     bus.press('up');
     tick(rt, 3);
-    expect(rt.player.tile).toEqual([8, 1]); // stopped by the wall row
+    expect(rt.player.tile).toEqual([5, 2]); // stopped by the wall row
     bus.release('up');
-    // guide stands at [5,4]: walk into it from the right along y=4
-    rt.player.tile = [7, 4];
+    // guide stands at [4,4]: walk into it from the right along y=4
+    rt.player.tile = [6, 4];
     rt.player.facing = 'left';
     bus.press('left');
     tick(rt, 2);
-    expect(rt.player.tile).toEqual([6, 4]);
+    expect(rt.player.tile).toEqual([5, 4]);
   });
 
   it('ignores movement and interact while the dialogue is open', () => {
@@ -100,14 +100,14 @@ describe('scene runtime', () => {
     bus.press('right');
     bus.press('interact');
     tick(rt, 0.6);
-    expect(rt.player.tile).toEqual([8, 6]);
+    expect(rt.player.tile).toEqual([5, 5]);
     expect(f.sent).toHaveLength(0);
   });
 
   it('interact dispatches Interact for the faced NPC', async () => {
     const f = fakeSession();
     const { rt, bus } = setup('home-interior', 'start', f);
-    rt.player.tile = [5, 5];
+    rt.player.tile = [4, 5];
     rt.player.facing = 'up';
     bus.press('interact');
     await flush();
@@ -115,7 +115,7 @@ describe('scene runtime', () => {
   });
 
   it('stepping onto a portal dispatches UsePortal once', async () => {
-    const { rt, bus, results } = setup('home-interior', 'entry'); // [8,9], portal at [8,11]
+    const { rt, bus, results } = setup('home-interior', 'entry'); // [6,7], portal at [6,8]
     bus.press('down');
     tick(rt, 0.8);
     await flush();
@@ -126,13 +126,13 @@ describe('scene runtime', () => {
   it('a rejected outcome bumps and does not move the player', async () => {
     const f = fakeSession({ reject: true });
     const { rt, bus } = setup('home-interior', 'start', f);
-    rt.player.tile = [5, 5];
+    rt.player.tile = [4, 5];
     rt.player.facing = 'up';
     bus.press('interact');
     await flush();
     rt.update(0.02);
     expect(rt.bumpOffset()).not.toEqual([0, 0]);
-    expect(rt.player.tile).toEqual([5, 5]);
+    expect(rt.player.tile).toEqual([4, 5]);
     tick(rt, 0.5);
     expect(rt.bumpOffset()).toEqual([0, 0]);
   });
@@ -173,6 +173,7 @@ describe('scene runtime', () => {
     bus.release('down');
 
     blocked = false;
+    rt.player.facing = 'down'; // skip the turn delay so one step fits in the tick
     bus.press('down');
     tick(rt, 0.2); // one 150 ms step, then release before the next
     bus.release('down');
@@ -208,8 +209,8 @@ describe('scene runtime', () => {
   describe('NPC facing', () => {
     const talk = async (f: ReturnType<typeof fakeSession>) => {
       const s = setup('home-interior', 'start', f);
-      s.rt.player.tile = [5, 5];
-      s.rt.player.facing = 'up'; // guide at [5,4]
+      s.rt.player.tile = [4, 5];
+      s.rt.player.facing = 'up'; // guide at [4,4]
       s.bus.press('interact');
       await flush();
       return s;
@@ -218,14 +219,14 @@ describe('scene runtime', () => {
     it('the NPC turns to face the player on interact and the player state is untouched', async () => {
       const { rt } = await talk(fakeSession());
       expect(rt.npcFacing(ENTITY.guide)).toBe('down');
-      expect(rt.player.tile).toEqual([5, 5]);
+      expect(rt.player.tile).toEqual([4, 5]);
       expect(rt.npcFacing(ENTITY.stationStaff)).toBeNull();
     });
 
     it('turns toward the player from any side', async () => {
       const f = fakeSession();
       const { rt, bus } = setup('home-interior', 'start', f);
-      rt.player.tile = [6, 4]; // guide at [5,4] is to the player's left
+      rt.player.tile = [5, 4]; // guide at [4,4] is to the player's left
       rt.player.facing = 'left';
       bus.press('interact');
       await flush();
