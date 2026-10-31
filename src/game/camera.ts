@@ -47,7 +47,13 @@ export function buildingRects(map: MapDefinition): Rect[] {
   for (const e of map.entities) {
     if (e.kind !== 'building') continue;
     const [w, h] = e.size ?? [1, 1];
-    const [sw, sh] = (e.assetId && dims[e.assetId]) || [w * ts, h * ts];
+    const sprite = e.assetId ? dims[e.assetId] : undefined;
+    if (!sprite) {
+      // No art yet: the placeholder marks the collision rect, exactly like drawBuilding.
+      rects.push({ x0: e.tile[0] * ts, y0: e.tile[1] * ts, x1: (e.tile[0] + w) * ts, y1: (e.tile[1] + h) * ts });
+      continue;
+    }
+    const [sw, sh] = sprite;
     const cx = e.tile[0] * ts + (w * ts) / 2;
     const bottom = buildingFootRow(e) * ts;
     rects.push({ x0: cx - sw / 2, y0: bottom - sh, x1: cx + sw / 2, y1: bottom });

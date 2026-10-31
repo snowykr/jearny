@@ -139,6 +139,29 @@
       "notes": "Original chibi redesign for #42. Rows down,left,right,up; columns idle,stepA,stepB. Requires #41 renderer and exporter support for 16x20 cells."
     },
     {
+      "id": "coupon-card",
+      "kind": "building",
+      "source": "assets/source/coupon-card-atlas-v1.png",
+      "sha256": "24f78540a35c7c67a8b2b63b66f9a425d8a7166e0436793fac11cac4e9e7b82d",
+      "sourceSize": [
+        320,
+        96
+      ],
+      "runtimeSize": [
+        320,
+        96
+      ],
+      "sprite": "public/sprites/coupon-card.png",
+      "spriteSha256": "274a93c68fdcb8b573efcb4512aaf9c7233ee4a1367eac92726a3c426a3a5513",
+      "colors": 23,
+      "alpha": true,
+      "status": "approved",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Original fictional sample artwork. No text, branding or scannable code. Runtime must render the non-redeemable notice. Nearest-neighbor normalization, binary alpha, at most 23 opaque colors. Full exporter rejects 160x96 cells; runtime is a direct copy of the exact-size atlas. Manifest registration awaits code owner support for custom cell sizes. Exported as a single 320x96 sprite (kind building) because the exporter sizes tileset cells at 16x16; code slices the two 160x96 frames using meta.frames."
+    },
+    {
       "id": "coupon-icon",
       "kind": "building",
       "source": "assets/source/coupon-icon-atlas-v1.png",

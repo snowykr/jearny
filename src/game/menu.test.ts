@@ -4,9 +4,9 @@ import type { GameSnapshot } from '../contracts';
 import { ITEM, QUEST } from '../contracts';
 import { content } from '../content';
 import { createInitialSnapshot } from '../domain';
-import { ITEM_DESCRIPTIONS, MENU_TEXT, mountStartMenu } from './menu';
+import { ITEM_DESCRIPTIONS, mountStartMenu } from './menu';
 
-const labels = MENU_TEXT;
+const labels = { title: 'メニュー', quest: 'クエスト', map: 'マップ', close: 'とじる' } as const;
 // Literal copy, so a changed constant cannot make the assertions pass by construction.
 const TAB_COPY = ['バッグ', 'クエスト', 'マップ', 'とじる'] as const;
 
@@ -127,7 +127,7 @@ describe('start menu', () => {
     click(labels.map);
 
     const text = dialog()?.textContent ?? '';
-    expect(text).toContain(MENU_TEXT.mapPlaceholder);
+    expect(text).toContain('ミニマップで今いる場所');
     expect(text).toContain('ミニマップ');
   });
 

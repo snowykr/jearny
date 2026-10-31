@@ -41,7 +41,7 @@ Missing or unapproved assets render as an obvious magenta placeholder in-game. T
 ## Building collision comes from the art
 
 A building's `collisionTiles` in its meta file is the single source of its collision: the rows the
-sprite actually paints (alpha > 0), measured in 16px ground tiles. `tools/art/check-collision.mjs`
+sprite actually paints (alpha > 0), measured in 16px ground tiles. `src/content/maps/art-collision.test.ts`
 pins the declared box to the exported pixels, so a re-export that shifts or resizes the art fails
 before it ships.
 
