@@ -14,13 +14,15 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:voice": "node --test tools/voice/*.test.mjs",
-    "check": "npm run typecheck && npm test && npm run test:voice"
+    "check": "npm run typecheck && npm test && npm run test:voice",
+    "art:export": "node tools/art/export.mjs"
   },
   "dependencies": {
     "kaplay": "^3001.0.19"
   },
   "devDependencies": {
     "jsdom": "^30.1.3",
+    "pngjs": "^7.0.0",
     "typescript": "~5.9.0",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
