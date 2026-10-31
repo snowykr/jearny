@@ -45,7 +45,7 @@ for (let x = 1; x <= 9; x++) collision[idx(COLS, x, 1)] = 1;
 fill(1, 7, 9, 7, IT.WALL_BASE);
 
 // Stairs down: open the wall-face cell and mark it with the step tile.
-ground[idx(COLS, 8, 1)] = IT.GENKAN_STEP;
+ground[idx(COLS, 8, 1)] = IT.FLOOR_WOOD_DARK; // recessed stairwell until #79's tile is wired
 collision[idx(COLS, 8, 1)] = 0;
 
 // Wall hangings.

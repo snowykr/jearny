@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SCENE_IDS } from '../contracts';
 import { createInitialSnapshot } from '../domain';
 import { createMemoryStore, decodeSnapshot, readSlot } from './index';
 
@@ -28,6 +29,12 @@ describe('storage: snapshot validation', () => {
     const snapshot = valid() as unknown as Record<string, unknown>;
     corrupt(snapshot);
     expect(decodeSnapshot(snapshot)).toBeNull();
+  });
+
+  it.each(SCENE_IDS)('accepts a save in scene %s', (sceneId) => {
+    const snapshot = valid();
+    snapshot.sceneId = sceneId;
+    expect(decodeSnapshot(snapshot)?.sceneId).toBe(sceneId);
   });
 
   it('rejects non-objects and arrays', () => {

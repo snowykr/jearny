@@ -61,13 +61,13 @@ describe('scene runtime', () => {
   });
 
   it('walks one tile per step while a direction is held, and stops on release', () => {
-    const { rt, bus } = setup('home-interior', 'start'); // [6,5]
+    const { rt, bus } = setup('home-interior', 'start'); // [5,5]
     bus.press('right');
     tick(rt, 0.5); // turn delay (~0.08s) then ~2 steps
     bus.release('right');
     tick(rt, 0.3);
     expect(rt.player.to).toBeNull();
-    expect(rt.player.tile[0]).toBeGreaterThanOrEqual(8);
+    expect(rt.player.tile[0]).toBeGreaterThanOrEqual(7);
     expect(rt.player.tile[1]).toBe(5);
   });
 
@@ -77,14 +77,14 @@ describe('scene runtime', () => {
     bus.release('left');
     tick(rt, 0.3);
     expect(rt.player.facing).toBe('left');
-    expect(rt.player.tile).toEqual([6, 5]);
+    expect(rt.player.tile).toEqual([5, 5]);
   });
 
   it('does not walk into walls or NPCs', () => {
     const { rt, bus } = setup('home-interior', 'start');
     bus.press('up');
     tick(rt, 3);
-    expect(rt.player.tile).toEqual([6, 2]); // stopped by the wall row
+    expect(rt.player.tile).toEqual([5, 2]); // stopped by the wall row
     bus.release('up');
     // guide stands at [4,4]: walk into it from the right along y=4
     rt.player.tile = [6, 4];
@@ -100,7 +100,7 @@ describe('scene runtime', () => {
     bus.press('right');
     bus.press('interact');
     tick(rt, 0.6);
-    expect(rt.player.tile).toEqual([6, 5]);
+    expect(rt.player.tile).toEqual([5, 5]);
     expect(f.sent).toHaveLength(0);
   });
 

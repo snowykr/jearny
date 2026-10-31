@@ -10,7 +10,8 @@ const ROWS = 9;
 // The camera never scrolls indoors; the room is centred in the 240x160 viewport.
 //
 //   y0   cap row
-//   y1   wall face: windows, clock, picture, shoji; the stairs sit at x10
+//   y1   wall face: windows, clock, picture, shoji
+//   y2   stairs up at x10 (the pad below the wall)
 //   y2   kitchen run along the back wall (left), TV corner (right)
 //   y3-6 living area; the guide waits at [4,4]
 //   y7   genkan step with the shoe rack; entry spawn
@@ -23,7 +24,7 @@ export const homeInterior: MapDefinition = makeRoom({
   grid: [COLS, ROWS],
   floor: IT.WOOD_FLOOR,
   wall: IT.WALL_TOP,
-  spawns: { [SPAWN.start]: [6, 5], [SPAWN.entry]: [6, 7], [SPAWN.stairs]: [10, 3] },
+  spawns: { [SPAWN.start]: [5, 5], [SPAWN.entry]: [6, 7], [SPAWN.stairs]: [10, 3] },
   portals: [
     { id: PORTAL.homeExit, tile: [6, 8], toScene: 'takanawa', toSpawn: SPAWN.homeDoor },
     { id: PORTAL.homeStairsUp, tile: [10, 2], toScene: 'home-2f', toSpawn: SPAWN.stairs },
@@ -53,7 +54,7 @@ for (let x = 1; x <= 11; x++) collision[idx(COLS, x, 1)] = 1;
 fill(1, 8, 11, 8, IT.WALL_BASE);
 
 // Wall hangings.
-hang(2, 1, IT.WINDOW_CURTAIN);
+hang(3, 1, IT.WINDOW_CURTAIN); // over the sink
 hang(6, 1, IT.WALL_CLOCK);
 hang(9, 1, IT.PICTURE_FRAME);
 hang(11, 1, IT.WALL_SHOJI);
@@ -82,11 +83,11 @@ place(1, 6, IT.FLOOR_LAMP);
 place(11, 6, IT.PLANT);
 
 // ---- genkan + front wall ----------------------------------------------------
-fill(5, 7, 7, 7, IT.GENKAN_STEP);
+fill(5, 7, 7, 7, IT.DOMA_STONE);
 ground[idx(COLS, 6, 8)] = IT.DOOR_MAT;
 place(4, 7, IT.SHOE_RACK);
 place(8, 7, IT.UMBRELLA_STAND);
 
 // Stairs up (top-right corner). Ground step tile; the portal is opened by makeRoom.
-ground[idx(COLS, 10, 2)] = IT.GENKAN_STEP;
+ground[idx(COLS, 10, 2)] = IT.FLOOR_WOOD_DARK; // recessed stairwell until #79's tile is wired
 

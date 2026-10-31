@@ -1,5 +1,6 @@
 // Snapshot persistence and validation (docs/ARCHITECTURE.md §8). The domain
 // never touches storage; the session loads a snapshot and adopts it.
+import { SCENE_IDS } from '../contracts';
 import type { DialogueStatus, GameSnapshot, QuestStatus, SceneId, Settings } from '../contracts';
 
 export interface SaveSlot {
@@ -26,7 +27,7 @@ export interface SaveStore {
   clear(): Promise<void>;
 }
 
-const SCENES: readonly SceneId[] = ['takanawa', 'home-interior', 'home-2f', 'shop-interior'];
+const SCENES: readonly SceneId[] = SCENE_IDS;
 const QUEST_STATUSES: readonly QuestStatus[] = ['not_started', 'active', 'ready_to_return', 'completed'];
 const DIALOGUE_STATUSES: readonly DialogueStatus[] = ['closed', 'showing', 'choosing', 'waiting_for_speech'];
 const TEXT_SIZES = ['normal', 'large'] as const;

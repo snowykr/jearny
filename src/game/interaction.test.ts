@@ -21,7 +21,9 @@ describe('facingTile / interactCommand', () => {
   });
 
   it('returns null for empty tiles and for buildings', () => {
-    expect(interactCommand(home, [8, 6], 'down')).toBeNull();
+    const start = home.spawns[SPAWN.start];
+    if (!start) throw new Error('Missing start spawn');
+    expect(interactCommand(home, start, 'down')).toBeNull();
     expect(interactCommand(takanawa, [57, 44], 'left')).toBeNull(); // faces the station building
     expect(entityAt(takanawa, [57, 44])).toBeNull();
     expect(entityAt(takanawa, [58, 44])?.id).toBe(BUILDING.station);
@@ -33,7 +35,9 @@ describe('collision helpers', () => {
   it('blocks outside the grid, collision cells, buildings and NPCs but not zones', () => {
     expect(isBlocked(home, [-1, 0])).toBe(true);
     expect(isBlocked(home, [0, 0])).toBe(true);
-    expect(isBlocked(home, [8, 6])).toBe(false);
+    const start = home.spawns[SPAWN.start];
+    if (!start) throw new Error('Missing start spawn');
+    expect(isBlocked(home, start)).toBe(false);
     expect(isBlocked(home, [4, 4])).toBe(true); // guide
     expect(isBlocked(takanawa, [62, 48])).toBe(false); // zone only (row 48 is below the station building)
     expect(isBlocked(takanawa, [66, 50])).toBe(true); // station staff
@@ -85,7 +89,9 @@ describe('arrivalCommand (portals and zones)', () => {
   });
 
   it('does nothing on plain tiles', () => {
-    expect(arrivalCommand(home, [8, 6], null)).toEqual({ command: null, portal: null, zoneId: null });
+    const start = home.spawns[SPAWN.start];
+    if (!start) throw new Error('Missing start spawn');
+    expect(arrivalCommand(home, start, null)).toEqual({ command: null, portal: null, zoneId: null });
   });
 });
 

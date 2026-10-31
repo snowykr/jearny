@@ -11,7 +11,7 @@ const ROWS = 9;
 //
 //   y0   cap row
 //   y1   shop-wall face: windows, lanterns, menu board
-//   y2-3 staff side; the shopkeeper is at [5,3] (2x1 collision)
+//   y2-3 staff side; the shopkeeper is at [5,3] (2x2 collision)
 //   y4   the glass counter, x1..11, sealed at both ends
 //   y5-7 customer floor: shelves on the left, tea corner on the right
 //   y8   front wall with the noren door at x6
@@ -59,7 +59,7 @@ place(1, 2, IT.POTTED_BAMBOO);
 place(11, 2, IT.POTTED_BAMBOO);
 place(2, 3, IT.SHELF);
 place(1, 3, IT.TEA_SET);
-place(10, 3, IT.WAGASHI_TRAY);
+place(11, 3, IT.WAGASHI_TRAY);
 
 // ---- counter (y4) -----------------------------------------------------------
 const counter: Array<[number, number]> = [
@@ -74,6 +74,6 @@ for (const y of [5, 6]) place(1, y, IT.SHELF);
 place(10, 5, IT.STOOL);
 place(10, 6, IT.LOW_TABLE);
 place(11, 6, IT.CUSHION_CHAIR);
-place(9, 7, IT.STOOL);
-place(8, 7, IT.PLANT);
+place(11, 5, IT.PLANT);
+place(10, 7, IT.POTTED_BAMBOO);
 place(11, 7, IT.POTTED_BAMBOO);

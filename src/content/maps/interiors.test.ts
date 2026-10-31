@@ -3,6 +3,7 @@ import { ENTITY, PORTAL, SPAWN } from '../../contracts';
 import type { MapDefinition, Tile } from '../../contracts';
 import { DELTA, interactCommand, isBlocked } from '../../game/interaction';
 import type { Dir } from '../../game/input';
+import { spawnFacing } from '../../game/scene';
 import { home2f } from './home-2f';
 import { homeInterior } from './home-interior';
 import { maps } from './index';
@@ -92,7 +93,30 @@ for (const { map, entityId, exit, exitPortal, toSpawn } of interiors) {
       for (const spawn of Object.values(map.spawns)) {
         expect(isBlocked(map, spawn)).toBe(false);
         const open = Object.values(DELTA).filter(([dx, dy]) => !isBlocked(map, [spawn[0] + dx, spawn[1] + dy]));
-        expect(open.length).toBeGreaterThanOrEqual(2);
+        expect(open.length).toBeGreaterThanOrEqual(3);
+      }
+    });
+
+    it('never seals an open floor cell behind furniture', () => {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const tile: Tile = [x, y];
+          if (isBlocked(map, tile)) continue;
+          const open = Object.values(DELTA).some(([dx, dy]) => !isBlocked(map, [x + dx, y + dy]));
+          expect(open, `isolated open cell ${x},${y}`).toBe(true);
+        }
+      }
+    });
+
+    it('blocks every wall-ground cell', () => {
+      map.layers.ground.forEach((tile, index) => {
+        if (WALL_GROUND.includes(tile)) expect(map.collision[index], `wall cell ${index}`).toBe(1);
+      });
+    });
+
+    it('keeps spawns off portals so entering a scene cannot bounce', () => {
+      for (const spawn of Object.values(map.spawns)) {
+        expect(map.portals.some((portal) => portal.tile[0] === spawn[0] && portal.tile[1] === spawn[1])).toBe(false);
       }
     });
 
@@ -155,27 +179,33 @@ describe('home floors', () => {
   });
 
   it('keeps the 1F contract coordinates other suites rely on', () => {
+    expect(homeInterior.portals.map((portal) => portal.id).sort()).toEqual([PORTAL.homeExit, PORTAL.homeStairsUp].sort());
     expect(homeInterior.grid).toEqual([13, 9]);
-    expect(homeInterior.spawns[SPAWN.start]).toEqual([6, 5]);
+    expect(homeInterior.spawns[SPAWN.start]).toEqual([5, 5]);
+    expect(spawnFacing(homeInterior, homeInterior.spawns[SPAWN.start]!)).toBe('down');
     expect(homeInterior.entities.find((e) => e.id === ENTITY.guide)?.tile).toEqual([4, 4]);
     expect(Object.keys(homeInterior.spawns).sort()).toEqual([SPAWN.entry, SPAWN.stairs, SPAWN.start]);
   });
 
   it('is furnished as a home: kitchen, dining, kotatsu, rug, genkan and wall hangings', () => {
     expect(homeInterior.layers.ground).toEqual(expect.arrayContaining([
-      IT.WOOD_FLOOR, IT.RUG, IT.GENKAN_STEP, IT.DOOR_MAT, IT.WALL, IT.WALL_BASE,
+      IT.WOOD_FLOOR, IT.RUG, IT.DOMA_STONE, IT.FLOOR_WOOD_DARK, IT.DOOR_MAT, IT.WALL, IT.WALL_BASE,
     ]));
     expect(homeInterior.layers.decoration).toEqual(expect.arrayContaining([
       IT.KITCHEN_COUNTER, IT.SINK, IT.STOVE, IT.FRIDGE, IT.KOTATSU_L, IT.KOTATSU_R, IT.ZABUTON, IT.TV_STAND,
       IT.BOOKSHELF, IT.LOW_TABLE, IT.PLANT, IT.SHOE_RACK, IT.UMBRELLA_STAND, IT.WINDOW_CURTAIN, IT.WALL_CLOCK,
       IT.PICTURE_FRAME, IT.WALL_SHOJI,
     ]));
-    expect(at(homeInterior.layers.ground, homeInterior, [6, 7])).toBe(IT.GENKAN_STEP);
+    expect(at(homeInterior.layers.ground, homeInterior, [6, 7])).toBe(IT.DOMA_STONE);
+    expect(at(homeInterior.layers.ground, homeInterior, [10, 2])).toBe(IT.FLOOR_WOOD_DARK);
+    const kotatsu = homeInterior.layers.decoration.findIndex((tile) => tile === IT.KOTATSU_L);
+    expect(homeInterior.layers.decoration[kotatsu + 1]).toBe(IT.KOTATSU_R);
   });
 
   it('furnishes 2F as a bedroom with a tatami floor and no outdoor door', () => {
     expect(home2f.portals).toHaveLength(1);
-    expect(home2f.layers.ground).toEqual(expect.arrayContaining([IT.TATAMI, IT.RUG, IT.GENKAN_STEP, IT.WALL, IT.WALL_BASE]));
+    expect(home2f.layers.ground).toEqual(expect.arrayContaining([IT.TATAMI, IT.RUG, IT.FLOOR_WOOD_DARK, IT.WALL, IT.WALL_BASE]));
+    expect(at(home2f.layers.ground, home2f, [8, 1])).toBe(IT.FLOOR_WOOD_DARK);
     expect(home2f.layers.decoration).toEqual(expect.arrayContaining([
       IT.FUTON, IT.BOOKSHELF, IT.LOW_TABLE, IT.CUSHION_CHAIR, IT.ZABUTON, IT.FLOOR_LAMP, IT.TV_STAND, IT.PLANT,
       IT.WINDOW_CURTAIN, IT.WALL_CLOCK, IT.PICTURE_FRAME,
@@ -205,6 +235,8 @@ describe('shop-interior', () => {
     expect(at(shopInterior.layers.decoration, shopInterior, [x, y + 1])).toBe(IT.DISPLAY_L);
     expect(at(shopInterior.layers.decoration, shopInterior, [x + 1, y + 1])).toBe(IT.DISPLAY_R);
     expect(isBlocked(shopInterior, keeper.tile)).toBe(true);
+    // The NPC blocks movement via its footprint, not by painting the map collision layer.
+    expect(at(shopInterior.collision, shopInterior, keeper.tile)).toBe(0);
     const entry = shopInterior.spawns[SPAWN.entry];
     if (!entry) throw new Error('Missing shop entry');
     const reachable = reachableTiles(shopInterior, entry);
