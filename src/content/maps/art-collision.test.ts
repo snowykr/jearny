@@ -74,16 +74,26 @@ describe('building collision follows the exported art', () => {
       const bounds = opaqueBounds(meta.id);
       const [cols, rows] = meta.collisionTiles;
       expect(entity.size).toEqual([cols, rows]);
-      // Same width as the sprite, so the painted columns and blocked tiles share an edge.
-      expect(meta.runtimeSize[0]).toBe(cols * 16);
+      // drawBuilding centres the sprite over the collision rect, so a sprite wider than `size`
+      // legitimately overhangs by (runtimeSize - cols*16)/2 per side while the rect itself stays
+      // `size`. Pin that geometry: the painted columns must sit inside the footprint expanded by its
+      // own overhang and straddle the footprint's centre, so neither a left-aligned sprite nor an
+      // off-centre one can pass.
+      const left = entity.tile[0] * 16;
+      const drawLeft = left + (cols * 16 - meta.runtimeSize[0]) / 2;
+      expect(Number.isInteger(drawLeft), `${meta.id}: sprite offset is a whole pixel`).toBe(true);
+      const overhang = Math.ceil((meta.runtimeSize[0] - cols * 16) / 2);
+      expect(drawLeft + bounds.minX).toBeGreaterThanOrEqual(left - overhang);
+      expect(drawLeft + bounds.maxX).toBeLessThan(left + cols * 16 + overhang);
+      const centre = left + (cols * 16) / 2;
+      expect(drawLeft + bounds.minX).toBeLessThanOrEqual(centre);
+      expect(drawLeft + bounds.maxX).toBeGreaterThanOrEqual(centre);
       const heightTiles = bounds.height / 16;
       const footRow = entity.footRow;
       expect(footRow).toBeDefined();
       if (footRow === undefined) return;
       const spriteTop = footRow - heightTiles;
       expect(entity.tile[1]).toBe(spriteTop + Math.floor(bounds.minY / 16));
-      const left = entity.tile[0] * 16;
-      expect(left + bounds.maxX).toBeLessThan(left + cols * 16);
       // The footprint also covers the painted bottom row.
       const bottom = (entity.tile[1] + rows) * 16;
       expect(spriteTop * 16 + bounds.maxY).toBeLessThan(bottom);
