@@ -46,6 +46,7 @@ describe('dialogue overlay', () => {
     const { root } = mount();
     expect(root.textContent).toContain('¥1000');
     expect(root.textContent).toContain('ガイドに話しかける');
+    expect(root.textContent).toContain('Talk to the guide at home');
     expect(dialogueBox(root)?.hidden).toBe(true);
   });
 

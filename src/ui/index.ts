@@ -76,10 +76,11 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   const wallet = element('span');
   const bag = element('div', 'jq-bag');
   const quest = element('div');
+  const questEn = element('div', 'jq-quest-en');
   const settingsButton = element('button', undefined, labels.settings);
   settingsButton.type = 'button';
   walletRow.append(wallet);
-  hud.append(hudTitle, walletRow, bag, quest, settingsButton);
+  hud.append(hudTitle, walletRow, bag, quest, questEn, settingsButton);
 
   // --- dialogue ------------------------------------------------------------
   const dialogue = element('div', 'jq-dialogue');
@@ -244,6 +245,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     }`;
     const objective = objectiveText(snapshot, gameContent);
     quest.textContent = `${labels.quest}: ${objective.ja}`;
+    questEn.textContent = objective.en;
     quest.title = objective.en;
     mute.checked = snapshot.settings.muted;
     volume.value = String(snapshot.settings.volume);
