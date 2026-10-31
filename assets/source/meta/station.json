@@ -1,198 +1,20 @@
 {
   "id": "station",
   "kind": "building",
-  "source": "assets/source/station-v3.png",
-  "runtime": "public/sprites/station.png",
+  "source": "assets/source/station-v1.png",
   "runtimeSize": [
     192,
     128
   ],
   "sliceX": 1,
   "sliceY": 1,
-  "generator": "Image Gen 2",
-  "mode": "edit",
-  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: background-extraction. Edit the attached station-v2. The previous edit FAILED: it kept the gray white glow around the building. DELETE the entire exterior backdrop and glow, all the way up to the navy outline of the roof, sides and base. Exterior must be empty alpha zero, not black or gray or a gradient. Keep every pixel of the building architecture, origami roof, trusses, glass and two front door sets unchanged. Isolate the building as a clean transparent sticker. No ambient haze, no drop shadow, no feathered edge. Do not redesign.",
+  "generator": "built-in image_gen",
+  "mode": "generate",
+  "prompt": "Create ONE isolated building sprite for an original Japanese top-down pixel RPG visually inspired by Pokemon FireRed's overworld. This is a game asset, not an illustration or full scene. Orthographic north-facing street elevation viewed from above at a fixed three-quarter TOP-DOWN RPG angle, front facade facing directly down to player, horizontal facade baseline, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background with no floor, no shadow beyond building footprint, no people, no text or logos. Entire building visible and centered with transparent margins. Simplify details to remain readable when scaled down in a 16px-grid game. Original pixel drawing based on supplied reference architecture, do not paste photo pixels. REFERENCE ROLE: architecture reference only. Subject Takanawa Gateway Station. Preserve its distinctive long white folded origami roof, triangular truss rhythm, glass concourse and cream/wood supports. Simplify to a small iconic station with three folded peaks, centered front entrance and two clear front doors, no surrounding skyscrapers, railway or plaza. Wide building approx 3:2 footprint. Intended game display 192x128 logical pixels.",
   "references": [
-    "assets/source/station-v2.png"
+    "research/shops/station-exterior-kkaa.jpg"
   ],
-  "anchors": {
-    "door": [
-      89,
-      126
-    ],
-    "foot": [
-      96,
-      127
-    ],
-    "secondDoor": [
-      102,
-      126
-    ]
-  },
-  "collisionTiles": [
-    12,
-    3
-  ],
-  "status": "approved",
-  "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration.",
-  "history": [
-    {
-      "source": "assets/source/station-v2.png",
-      "mode": "edit",
-      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: background-extraction. Edit target: attached station-v1.png. Remove only the soft white halo/glow and all background outside its dark silhouette. Make the exterior genuinely transparent with a hard crisp dark edge. Keep the folded origami roof silhouette, exact truss rhythm, glass colors, two front door sets and all architecture identical. No redesign, no extra objects. Roof outline must read on both light and dark ground. Retain original building aspect ratio for later proportional fitting within a 192x128 transparent canvas.",
-      "references": [
-        "assets/source/station-v1.png"
-      ]
-    },
-    {
-      "source": "assets/source/station-v3.png",
-      "mode": "edit",
-      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: background-extraction. Edit the attached station-v2. The previous edit FAILED: it kept the gray white glow around the building. DELETE the entire exterior backdrop and glow, all the way up to the navy outline of the roof, sides and base. Exterior must be empty alpha zero, not black or gray or a gradient. Keep every pixel of the building architecture, origami roof, trusses, glass and two front door sets unchanged. Isolate the building as a clean transparent sticker. No ambient haze, no drop shadow, no feathered edge. Do not redesign.",
-      "references": [
-        "assets/source/station-v2.png"
-      ]
-    }
-  ],
-  "export": {
-    "source": "assets/source/station-v3.png",
-    "sourceCrop": [
-      27,
-      250,
-      1510,
-      739
-    ],
-    "scaledSize": [
-      192,
-      63
-    ],
-    "offset": [
-      0,
-      65
-    ],
-    "paletteRGB": [
-      [
-        24,
-        30,
-        44
-      ],
-      [
-        61,
-        65,
-        77
-      ],
-      [
-        101,
-        109,
-        126
-      ],
-      [
-        160,
-        169,
-        190
-      ],
-      [
-        216,
-        220,
-        227
-      ],
-      [
-        255,
-        248,
-        226
-      ],
-      [
-        222,
-        205,
-        164
-      ],
-      [
-        176,
-        142,
-        103
-      ],
-      [
-        111,
-        77,
-        50
-      ],
-      [
-        178,
-        115,
-        55
-      ],
-      [
-        235,
-        169,
-        102
-      ],
-      [
-        111,
-        46,
-        51
-      ],
-      [
-        197,
-        66,
-        65
-      ],
-      [
-        230,
-        113,
-        83
-      ],
-      [
-        32,
-        76,
-        42
-      ],
-      [
-        64,
-        113,
-        44
-      ],
-      [
-        134,
-        168,
-        52
-      ],
-      [
-        28,
-        72,
-        105
-      ],
-      [
-        63,
-        101,
-        171
-      ],
-      [
-        125,
-        174,
-        213
-      ],
-      [
-        14,
-        75,
-        104
-      ],
-      [
-        22,
-        125,
-        161
-      ],
-      [
-        86,
-        200,
-        194
-      ]
-    ],
-    "runtimeSha256": "9418789eb6237ebb659b0cd5339ca94c90489e9d6e202416e79d185bd1d4b917",
-    "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
-    "paletteSources": [
-      "assets/source/station-v1.png",
-      "assets/source/matsushimaya-v1.png",
-      "assets/source/home-v1.png",
-      "assets/source/liebe-v1.png"
-    ]
-  }
+  "anchors": {},
+  "status": "draft",
+  "notes": "v1 draft source; legacy status: needs_edge_cleanup_and_grid_export"
 }

@@ -1,186 +1,20 @@
 {
   "id": "liebe",
   "kind": "building",
-  "source": "assets/source/liebe-v2.png",
-  "runtime": "public/sprites/liebe.png",
+  "source": "assets/source/liebe-v1.png",
   "runtimeSize": [
     80,
     80
   ],
   "sliceX": 1,
   "sliceY": 1,
-  "generator": "Image Gen 2",
-  "mode": "edit",
-  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: precise-object-edit. Edit target: liebe-v1.png. Snap this exact bakery to a clean consistent pixel grid for 80x80 runtime export. Keep its flat gray roof and vent, brick left wall, glass doors on the right, bread display, blank orange framed sidewalk sign and potted plants identical in position and proportions. Change only grid consistency and simplify microtexture into clean clusters. Preserve silhouette, palette, angle and architecture. No text or logos, hard transparent exterior, no glow or floor. Do not redesign.",
+  "generator": "built-in image_gen",
+  "mode": "generate",
+  "prompt": "Create ONE isolated building sprite for an original Japanese top-down pixel RPG visually inspired by Pokemon FireRed's overworld. This is a game asset, not an illustration or full scene. Orthographic north-facing street elevation viewed from above at a fixed three-quarter TOP-DOWN RPG angle, front facade facing directly down to player, horizontal facade baseline, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background with no floor, no shadow beyond building footprint, no people, no text or logos. Entire building visible and centered with transparent margins. Simplify details to remain readable when scaled down in a 16px-grid game. Original pixel drawing based on supplied reference architecture, do not paste photo pixels. REFERENCE ROLE: use ONLY the left half containing bakery exterior, ignore people and all right-half portraits. Subject Liebe small Japanese neighborhood bakery. Preserve warm tan brick facade, silver metal-framed glass entrance, small wooden A-frame blackboard with blank board, dense green plants in pots at both sides. A small neutral gray roof visible from above. One complete compact shop, no people. No bakery logos or text. Intended display 80x80 logical pixels.",
   "references": [
-    "assets/source/liebe-v1.png"
+    "research/shops/liebe-facade-official.jpg"
   ],
-  "anchors": {
-    "door": [
-      54,
-      74
-    ],
-    "foot": [
-      40,
-      79
-    ]
-  },
-  "collisionTiles": [
-    5,
-    3
-  ],
-  "status": "approved",
-  "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration.",
-  "history": [
-    {
-      "source": "assets/source/liebe-v2.png",
-      "mode": "edit",
-      "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density.\nMatch the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly.\nUse case: precise-object-edit. Edit target: liebe-v1.png. Snap this exact bakery to a clean consistent pixel grid for 80x80 runtime export. Keep its flat gray roof and vent, brick left wall, glass doors on the right, bread display, blank orange framed sidewalk sign and potted plants identical in position and proportions. Change only grid consistency and simplify microtexture into clean clusters. Preserve silhouette, palette, angle and architecture. No text or logos, hard transparent exterior, no glow or floor. Do not redesign.",
-      "references": [
-        "assets/source/liebe-v1.png"
-      ]
-    }
-  ],
-  "export": {
-    "source": "assets/source/liebe-v2.png",
-    "sourceCrop": [
-      71,
-      192,
-      1184,
-      1046
-    ],
-    "scaledSize": [
-      80,
-      61
-    ],
-    "offset": [
-      0,
-      19
-    ],
-    "paletteRGB": [
-      [
-        24,
-        30,
-        44
-      ],
-      [
-        61,
-        65,
-        77
-      ],
-      [
-        101,
-        109,
-        126
-      ],
-      [
-        160,
-        169,
-        190
-      ],
-      [
-        216,
-        220,
-        227
-      ],
-      [
-        255,
-        248,
-        226
-      ],
-      [
-        222,
-        205,
-        164
-      ],
-      [
-        176,
-        142,
-        103
-      ],
-      [
-        111,
-        77,
-        50
-      ],
-      [
-        178,
-        115,
-        55
-      ],
-      [
-        235,
-        169,
-        102
-      ],
-      [
-        111,
-        46,
-        51
-      ],
-      [
-        197,
-        66,
-        65
-      ],
-      [
-        230,
-        113,
-        83
-      ],
-      [
-        32,
-        76,
-        42
-      ],
-      [
-        64,
-        113,
-        44
-      ],
-      [
-        134,
-        168,
-        52
-      ],
-      [
-        28,
-        72,
-        105
-      ],
-      [
-        63,
-        101,
-        171
-      ],
-      [
-        125,
-        174,
-        213
-      ],
-      [
-        14,
-        75,
-        104
-      ],
-      [
-        22,
-        125,
-        161
-      ],
-      [
-        86,
-        200,
-        194
-      ]
-    ],
-    "runtimeSha256": "64d7d1f044619cef9d0e2eae3a43ec7168a3a8af072b2fa1c765bb28aa5b7966",
-    "method": "threshold alpha at 128; crop to alpha bounds; proportional nearest-neighbour fit; center horizontally and bottom-align on runtime canvas; quantize to shared sampled palette with no dithering; clear RGB in transparent pixels",
-    "paletteSources": [
-      "assets/source/station-v1.png",
-      "assets/source/matsushimaya-v1.png",
-      "assets/source/home-v1.png",
-      "assets/source/liebe-v1.png"
-    ]
-  }
+  "anchors": {},
+  "status": "draft",
+  "notes": "v1 draft source; legacy status: optional_outside_first_map"
 }

@@ -1,0 +1,143 @@
+{
+  "id": "char-station_staff",
+  "kind": "character",
+  "source": "assets/source/char-station_staff-v1.png",
+  "runtimeSize": [
+    48,
+    96
+  ],
+  "sliceX": 3,
+  "sliceY": 4,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Generate ONE character walk sheet for: Japanese railway station attendant in navy uniform, navy peaked cap with plain gold band, cream shirt and tie, dark shoes. No real logos, no backpack. Use attached player sheet as the exact layout, head/body proportion, pose and animation reference; buildings are palette references only. Exactly THREE columns and FOUR rows, twelve full-body poses. Rows DOWN, LEFT, RIGHT, UP in this order. All three figures in LEFT row face LEFT; all three in RIGHT row face RIGHT. Columns idle feet together, step A, step B opposite leg and arm forward. Each frame 16x24 logical pixels, enlarged cleanly, same scale throughout. Feet bottom-centre. Flat chunky shading, no gradients. Truly transparent empty space, no backdrop or halos. No grid lines, labels or extra poses.",
+  "references": [
+    "assets/source/home-v1.png",
+    "assets/source/matsushimaya-v1.png",
+    "assets/source/station-v1.png",
+    "assets/source/char-player-v2.png"
+  ],
+  "anchors": {
+    "foot": [
+      8,
+      24
+    ]
+  },
+  "collisionTiles": [
+    1,
+    1
+  ],
+  "status": "approved",
+  "notes": "Art export reviewed at 1x and 4x. Rows down,left,right,up; columns idle,stepA,stepB. Foot anchor is cell-local at lower edge. Loader/animation registration and manifest integration belong to issue #1. Source RGB may show glow when alpha is ignored; export uses hard alpha >=128 and canonical transparent RGB.",
+  "export": {
+    "method": "Threshold alpha at 128; find 4 occupied row bands and 3 occupied column bands per row; crop each frame to alpha content; preserve aspect ratio and nearest-neighbour fit within 14x22; centre horizontally and bottom-align in 16x24 cells; assemble 48x96 sheet; median-cut quantize to 23 RGB colors with dithering disabled; restore hard alpha and zero transparent RGB.",
+    "palette": "Per-sheet median-cut from reference-matched generated art, <=23 opaque colors plus transparent.",
+    "frameOrder": [
+      "down-idle",
+      "down-stepA",
+      "down-stepB",
+      "left-idle",
+      "left-stepA",
+      "left-stepB",
+      "right-idle",
+      "right-stepA",
+      "right-stepB",
+      "up-idle",
+      "up-stepA",
+      "up-stepB"
+    ],
+    "sourceFrameBounds": [
+      [
+        133,
+        84,
+        313,
+        395
+      ],
+      [
+        422,
+        84,
+        603,
+        402
+      ],
+      [
+        711,
+        84,
+        891,
+        402
+      ],
+      [
+        103,
+        428,
+        309,
+        749
+      ],
+      [
+        394,
+        428,
+        603,
+        745
+      ],
+      [
+        688,
+        428,
+        898,
+        744
+      ],
+      [
+        123,
+        775,
+        342,
+        1101
+      ],
+      [
+        414,
+        776,
+        631,
+        1100
+      ],
+      [
+        714,
+        775,
+        934,
+        1095
+      ],
+      [
+        128,
+        1123,
+        320,
+        1436
+      ],
+      [
+        416,
+        1123,
+        608,
+        1444
+      ],
+      [
+        705,
+        1123,
+        897,
+        1444
+      ]
+    ]
+  },
+  "sha256": "9ea4c843ec8e47d57482621cc9e5e17c80243e84f5b2c7bde44592f141ca978a",
+  "sourceSha256": "74190b79c327b0e494cdc1bbec4020a3fea8ded3ff38e6bdbe507ece9c9f603c",
+  "verification": {
+    "dimensions": [
+      48,
+      96
+    ],
+    "rgbaColors": 24,
+    "alphaValues": [
+      0,
+      255
+    ],
+    "distinctFramesPerDirection": 3,
+    "feetAtCellBottom": true,
+    "reviewScales": [
+      1,
+      4
+    ]
+  }
+}
