@@ -5,11 +5,31 @@ import type { Comp, KAPLAYCtx, LoadSpriteOpt, SpriteAnims } from 'kaplay';
 export const ASSETS = {
   buildings: { station: [192, 128], matsushimaya: [96, 80], home: [80, 96], liebe: [80, 80] },
   tilesets: { 'tiles-outdoor': { sliceX: 8, sliceY: 6 }, 'tiles-interior': { sliceX: 8, sliceY: 6 } },
-  /** Walk sheets: 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up), 16×24 cells. */
+  /** Walk sheets: 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up). Cells are 16×20 (16×24 on the legacy sheets); the real size is read from the loaded image. */
   characters: ['char-player', 'char-guide', 'char-station_staff', 'char-shopkeeper'],
 } as const;
 
 const loaded = new Set<string>();
+
+export const SHEET_COLS = 3;
+export const SHEET_ROWS = 4;
+/** Cell size assumed for fallback rectangles and sheets whose size is unknown: the 16×20 chibi spec. */
+export const DEFAULT_CELL: readonly [number, number] = [16, 20];
+
+/** Real cell size of a 3×4 walk sheet, or null when the image size is unusable. Handles 48×96 (16×24) and 48×80 (16×20). */
+export function cellSizeOfSheet(width: number, height: number): [number, number] | null {
+  if (!Number.isFinite(width) || !Number.isFinite(height)) return null;
+  const w = Math.floor(width / SHEET_COLS);
+  const h = Math.floor(height / SHEET_ROWS);
+  return w >= 1 && h >= 1 ? [w, h] : null;
+}
+
+const cellSizes = new Map<string, [number, number]>();
+
+/** Cell size of a loaded character sheet; DEFAULT_CELL when the sheet is missing. */
+export function characterCell(id: string): readonly [number, number] {
+  return cellSizes.get(id) ?? DEFAULT_CELL;
+}
 
 /** Walk sheets are 3 cols (idle, stepA, stepB) × 4 rows (down, left, right, up). */
 const DIRECTIONS = ['down', 'left', 'right', 'up'] as const;
@@ -34,13 +54,15 @@ function fetchImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-async function loadOne(k: KAPLAYCtx, id: string, opt?: LoadSpriteOpt): Promise<void> {
+async function loadOne(k: KAPLAYCtx, id: string, opt?: LoadSpriteOpt, onImage?: (img: HTMLImageElement) => void): Promise<void> {
   try {
     const img = await fetchImage(`/sprites/${id}.png`);
     await k.loadSprite(id, img, opt);
+    onImage?.(img);
     loaded.add(id);
   } catch {
     loaded.delete(id);
+    cellSizes.delete(id);
   }
 }
 
@@ -49,7 +71,13 @@ export async function loadAssets(k: KAPLAYCtx): Promise<void> {
   const jobs: Promise<void>[] = [];
   for (const id of Object.keys(ASSETS.buildings)) jobs.push(loadOne(k, id));
   for (const [id, slice] of Object.entries(ASSETS.tilesets)) jobs.push(loadOne(k, id, slice));
-  for (const id of ASSETS.characters) jobs.push(loadOne(k, id, { sliceX: 3, sliceY: 4, anims: characterAnims }));
+  for (const id of ASSETS.characters) {
+    const remember = (img: HTMLImageElement) => {
+      const cell = cellSizeOfSheet(img.width, img.height);
+      if (cell) cellSizes.set(id, cell);
+    };
+    jobs.push(loadOne(k, id, { sliceX: SHEET_COLS, sliceY: SHEET_ROWS, anims: characterAnims }, remember));
+  }
   await Promise.allSettled(jobs);
 }
 

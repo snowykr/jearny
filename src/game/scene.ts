@@ -1,7 +1,7 @@
 // Per-scene runtime: owns the player, turns input/arrivals into commands (#19) and
 // tears down every listener on dispose (#7). No KAPLAY imports, so it runs under vitest.
 import type { CommandPayload, GameSession, MapDefinition, Outcome, Portal, Tile } from '../contracts';
-import { DELTA, arrivalCommand, interactCommand } from './interaction';
+import { DELTA, arrivalCommand, entityAt, facingTile, interactCommand } from './interaction';
 import type { Dir, InputBus } from './input';
 import { createPlayer, updatePlayer } from './player';
 import type { PlayerState } from './player';
@@ -28,6 +28,8 @@ export interface SceneRuntime {
   readonly player: PlayerState;
   /** Pixel offset of the rejected-command bump. */
   bumpOffset(): [number, number];
+  /** Direction an NPC is temporarily turned toward the player, or null to use its authored facing. Presentation only. */
+  npcFacing(entityId: string): Dir | null;
   update(dt: number): void;
   /** Subscriptions still alive; must be 0 after dispose (leak check). */
   readonly activeListeners: number;
@@ -35,6 +37,8 @@ export interface SceneRuntime {
 }
 
 const BUMP_SECONDS = 0.2;
+/** An NPC that was talked to turns back after this long if no dialogue ever opened. */
+export const NPC_TURN_SECONDS = 2;
 const OPPOSITE: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 export function spawnTile(map: MapDefinition, spawnId: string): Tile {
@@ -67,6 +71,8 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
   let bumpT = 0;
   let wasOpen = false;
   let disposed = false;
+  /** NPCs turned to face the player. They turn back when the dialogue they opened closes, or `left` runs out if none opened. */
+  const turned = new Map<string, { dir: Dir; left: number; opened: boolean }>();
 
   const isInputBlocked = opts.isInputBlocked ?? (() => session.snapshot.dialogue.status !== 'closed');
 
@@ -94,7 +100,11 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
       if (action === 'interact') {
         if (isInputBlocked() || busy || player.to) return;
         const cmd = interactCommand(map, player.tile, player.facing);
-        if (cmd) send(cmd);
+        if (cmd) {
+          const target = entityAt(map, facingTile(player.tile, player.facing));
+          if (target?.kind === 'npc') turned.set(target.id, { dir: OPPOSITE[player.facing], left: NPC_TURN_SECONDS, opened: false });
+          send(cmd);
+        }
       } else {
         tapDir = action;
       }
@@ -109,10 +119,16 @@ export function createSceneRuntime(opts: SceneRuntimeOptions): SceneRuntime {
       const k = Math.sin(Math.PI * (1 - bumpT / BUMP_SECONDS)) * 3;
       return [Math.round(DELTA[player.facing][0] * k), Math.round(DELTA[player.facing][1] * k)];
     },
+    npcFacing: (entityId) => turned.get(entityId)?.dir ?? null,
     update(dt) {
       if (disposed) return;
       bumpT = Math.max(0, bumpT - dt);
       const blocked = isInputBlocked();
+      for (const [id, t] of turned) {
+        if (blocked) t.opened = true;
+        else if (t.opened) turned.delete(id);
+        else if (!busy && (t.left -= dt) <= 0) turned.delete(id);
+      }
       if (!wasOpen && blocked) {
         bus.reset(); // UI opened: drop held keys so nothing walks underneath it
         tapDir = null;
