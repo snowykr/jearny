@@ -1,0 +1,35 @@
+{
+  "id": "okido-wall-segment",
+  "kind": "building",
+  "source": "assets/source/okido-wall-segment-atlas-v1.png",
+  "rawSource": "assets/source/okido-wall-segment-raw-v1.png",
+  "runtimeSize": [
+    64,
+    48
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Takanawa Okido historic stone wall segment: squat old uneven grey and warm brown stone blocks with broad flat top. Perfectly horizontal left and right edges, identical edge heights and matching stone courses so four copies repeat seamlessly horizontally. Full width wall, no end caps, no greenery hanging beyond edges. One isolated sprite only, intended exact runtime canvas 64x48. Generate at least 1024 pixels high, matching aspect ratio, centered with small transparent margin. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Reference images visible above: station and matsushimaya are the style anchors; home, outdoor tiles, interior tiles and player show consistent game style. Very coarse purposeful pixel clusters that survive nearest-neighbour reduction. No fine texture, no shadows outside footprint.",
+  "references": [
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png",
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png"
+  ],
+  "anchors": {
+    "foot": [
+      32,
+      47
+    ]
+  },
+  "collisionTiles": [
+    4,
+    2
+  ],
+  "status": "draft",
+  "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Tileable horizontally (checked with a 4-copy repeat); a decorative prop, no door. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+}

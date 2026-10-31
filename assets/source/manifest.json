@@ -146,6 +146,40 @@
       "notes": "Image Gen 2 raw assets/source/bicycle-parking-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 64x48, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision). Door anchor is the front access point of the rack, not a literal door."
     },
     {
+      "id": "bus-shelter",
+      "kind": "building",
+      "source": "assets/source/bus-shelter-atlas-v1.png",
+      "sha256": "86ae21c7cd207abf057a929618649769d7168e3bc18bc217908f4af2d2fc58fb",
+      "sourceSize": [
+        64,
+        48
+      ],
+      "runtimeSize": [
+        64,
+        48
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/bus-shelter.png",
+      "spriteSha256": "6fca8793c5d40273056187f34a558511b4280d267003637ae85fe2a43467af8d",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          32,
+          47
+        ]
+      },
+      "collisionTiles": [
+        4,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Decorative prop, no door. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+    },
+    {
       "id": "cafe",
       "kind": "building",
       "source": "assets/source/cafe-atlas-v1.png",
@@ -182,6 +216,74 @@
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Image Gen 2 raw assets/source/cafe-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 80x80, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "car-red",
+      "kind": "building",
+      "source": "assets/source/car-red-atlas-v1.png",
+      "sha256": "0f52ddead8a656e1beeb3930c97c9309a2c4bac537983f8c8b5fde81a1784b90",
+      "sourceSize": [
+        32,
+        24
+      ],
+      "runtimeSize": [
+        32,
+        24
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/car-red.png",
+      "spriteSha256": "73dad0cb165db085e63168979da2c5e9af52f95c7fb3af3325d6638319e0fe9a",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          16,
+          23
+        ]
+      },
+      "collisionTiles": [
+        2,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
+    },
+    {
+      "id": "car-white",
+      "kind": "building",
+      "source": "assets/source/car-white-atlas-v1.png",
+      "sha256": "61433a53f8b56ef3ff8eae6deb00d08384f32a5e4699737164fe3c35bafdb8ae",
+      "sourceSize": [
+        32,
+        24
+      ],
+      "runtimeSize": [
+        32,
+        24
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/car-white.png",
+      "spriteSha256": "4e905f2fd1bb2d09451629130f08bdaa7fbec9dfdbe9ddbb5d5b4a2b3ca79b80",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          16,
+          23
+        ]
+      },
+      "collisionTiles": [
+        2,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
     },
     {
       "id": "char-guide",
@@ -318,6 +420,40 @@
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Original chibi redesign for #42. Rows down,left,right,up; columns idle,stepA,stepB. Requires #41 renderer and exporter support for 16x20 cells."
+    },
+    {
+      "id": "city-bus",
+      "kind": "building",
+      "source": "assets/source/city-bus-atlas-v1.png",
+      "sha256": "e88ca416d5e75a101788c73b2a971773e098e1f6a6e05f7f6a511c6fa309f6d4",
+      "sourceSize": [
+        64,
+        32
+      ],
+      "runtimeSize": [
+        64,
+        32
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/city-bus.png",
+      "spriteSha256": "4e6c99d1cd0809bde7f88443bc3c60399354fa88f47858200523efc5ea8d6ebb",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          32,
+          31
+        ]
+      },
+      "collisionTiles": [
+        4,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
     },
     {
       "id": "coupon-card",
@@ -479,6 +615,44 @@
       "generator": "Image Gen 2",
       "mode": "edit",
       "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
+      "id": "gateway-park-pavilion",
+      "kind": "building",
+      "source": "assets/source/gateway-park-pavilion-atlas-v1.png",
+      "sha256": "17d9aaae5f0cf636b537f401cafd2b621c82c75afd153ba237914f63dc0e7027",
+      "sourceSize": [
+        96,
+        80
+      ],
+      "runtimeSize": [
+        96,
+        80
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/gateway-park-pavilion.png",
+      "spriteSha256": "ba45c33da2bd25989e01f0f5b1de18dcedfae8ea56b11f4dbf02c6cdffc3d8c4",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          48,
+          78
+        ],
+        "foot": [
+          48,
+          79
+        ]
+      },
+      "collisionTiles": [
+        6,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
     },
     {
       "id": "gu",
@@ -785,6 +959,44 @@
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. Collision rectangle is centered above foot, in 16px ground tiles; roof overhang and transparent padding are not collision. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
+      "id": "linkpillar-tower",
+      "kind": "building",
+      "source": "assets/source/linkpillar-tower-atlas-v1.png",
+      "sha256": "9245fc8ef47ab079e0d0be89b4a96e22276fc0dcf88f618bb168ae093630cb19",
+      "sourceSize": [
+        160,
+        256
+      ],
+      "runtimeSize": [
+        160,
+        256
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/linkpillar-tower.png",
+      "spriteSha256": "99e3c6d422811b31efd3b833a6c77e54241f24567cc6b8fb10602baa06a5aeea",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          79,
+          254
+        ],
+        "foot": [
+          79,
+          255
+        ]
+      },
+      "collisionTiles": [
+        9,
+        16
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+    },
+    {
       "id": "matsumoto-kiyoshi",
       "kind": "building",
       "source": "assets/source/matsumoto-kiyoshi-atlas-v1.png",
@@ -899,6 +1111,248 @@
       "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
     },
     {
+      "id": "newoman-mall",
+      "kind": "building",
+      "source": "assets/source/newoman-mall-atlas-v1.png",
+      "sha256": "03578080fd9192f22932ac25b3563c35ee6a0c63766eced6090c5f900e734b44",
+      "sourceSize": [
+        224,
+        160
+      ],
+      "runtimeSize": [
+        224,
+        160
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/newoman-mall.png",
+      "spriteSha256": "c44bede908f2b216f79f00f9444d71f8f137e33ed37128c31f335290d5078872",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          112,
+          158
+        ],
+        "foot": [
+          112,
+          159
+        ]
+      },
+      "collisionTiles": [
+        14,
+        7
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+    },
+    {
+      "id": "npc-child",
+      "kind": "character",
+      "source": "assets/source/npc-child-atlas-v1.png",
+      "sha256": "5abf0ed606a79e1a8662f3695cb16c894b64867e6f628326f4ce8bc6d2c62fcb",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-child.png",
+      "spriteSha256": "7e59eb0d720a2dce3002faf8967ed7e1d454176e3e01967b8e88676ddd9a34e7",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
+      "id": "npc-elder",
+      "kind": "character",
+      "source": "assets/source/npc-elder-atlas-v1.png",
+      "sha256": "d0787005d0bda4e5526d29a3eb33c2f5046a485935e6c7fea9ded3cfb696bbfa",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-elder.png",
+      "spriteSha256": "b15d61b7b7909ed20dcf54d52ec1eb2a11958e93999712bf9e2f48983734ff71",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
+      "id": "npc-runner",
+      "kind": "character",
+      "source": "assets/source/npc-runner-atlas-v1.png",
+      "sha256": "b5eebc4a08d4a39302256773e46f94f35a7e216505f42aaab977177112abb046",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-runner.png",
+      "spriteSha256": "6daa5dc3c6a5bc2272c5ae05b248f547059245f42475cab9edab7d715a65eed3",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
+      "id": "npc-salaryman",
+      "kind": "character",
+      "source": "assets/source/npc-salaryman-atlas-v1.png",
+      "sha256": "2dd3f331235e57b25d264eb691a302eb23014fd6cb16acab3354cb24227e2580",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-salaryman.png",
+      "spriteSha256": "db03cdbd34dc9683727d3e050fd01b65ae03a44dc93c3a1f1d1a87e1df439ab8",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
+      "id": "npc-student",
+      "kind": "character",
+      "source": "assets/source/npc-student-atlas-v1.png",
+      "sha256": "b32b7bf887153953c00241eda1ab4c152b898f5d3182c7d549e5237a2926923f",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-student.png",
+      "spriteSha256": "2f19e982f66d141f844fb2521c2092de688c737ca0f62575bb560330a9c5c0d3",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
+      "id": "npc-tourist",
+      "kind": "character",
+      "source": "assets/source/npc-tourist-atlas-v1.png",
+      "sha256": "525b8091801e5c29c14e9eaef7e62d69b43159e3f73ba97f004106b967cc37e6",
+      "sourceSize": [
+        48,
+        80
+      ],
+      "runtimeSize": [
+        48,
+        80
+      ],
+      "sliceX": 3,
+      "sliceY": 4,
+      "sprite": "public/sprites/npc-tourist.png",
+      "spriteSha256": "039d375301d01f82642d2d4cf983656bb3fff8375b8c819468b14a49f2cf5a7d",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          8,
+          20
+        ]
+      },
+      "collisionTiles": [
+        1,
+        1
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+    },
+    {
       "id": "office-tower",
       "kind": "building",
       "source": "assets/source/office-tower-atlas-v1.png",
@@ -935,6 +1389,40 @@
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Image Gen 2 raw assets/source/office-tower-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 128x192, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "okido-wall-segment",
+      "kind": "building",
+      "source": "assets/source/okido-wall-segment-atlas-v1.png",
+      "sha256": "99c7c12f5e7c0740078612a6e7451aa03231ce0382f5c1704c584c481767d269",
+      "sourceSize": [
+        64,
+        48
+      ],
+      "runtimeSize": [
+        64,
+        48
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/okido-wall-segment.png",
+      "spriteSha256": "0020d216bd885c992071758116392e59c0c3d021504f7e0a9bbf285608ab5b7f",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          32,
+          47
+        ]
+      },
+      "collisionTiles": [
+        4,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Tileable horizontally (checked with a 4-copy repeat); a decorative prop, no door. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
     },
     {
       "id": "pocket-tabs",
@@ -1036,6 +1524,44 @@
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Image Gen 2 raw assets/source/sengakuji-hall-raw-v1.png -> alpha-bounds crop, aspect-preserving nearest-neighbour fit to 160x128, <=32 colours, hard alpha (artist export); atlas-v1 is that exact runtime-size image. Anchors are zero-based runtime px from top-left; door marks the threshold, foot the bottom-centre sorting point; collisionTiles is the base footprint in 16px tiles, centred above foot (roof overhang is not collision)."
+    },
+    {
+      "id": "sengakuji-station-exit",
+      "kind": "building",
+      "source": "assets/source/sengakuji-station-exit-atlas-v1.png",
+      "sha256": "f743b427ca0dbb70b4e2a5bfacaf16efcb9b6c8214ac1e332d7da34e30999662",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "runtimeSize": [
+        64,
+        64
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/sengakuji-station-exit.png",
+      "spriteSha256": "ccd464d21a07b504c67dd59e2c9f3bbd15bcd12dc5bf083b24d7fa41f40ac515",
+      "colors": 23,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          32,
+          62
+        ],
+        "foot": [
+          32,
+          63
+        ]
+      },
+      "collisionTiles": [
+        4,
+        4
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
     },
     {
       "id": "seven-eleven",
@@ -1156,6 +1682,112 @@
       "notes": "Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-center sorting point. This metadata file is the single source of building collision. Collision rectangle is the opaque sprite rows in 16px ground tiles; roof overhang and transparent padding are not collision. The map entity's footRow anchors the sprite bottom, not the collision rect. Map owner must place a walkable portal immediately in front of the door. Art reviewed at 1x and 4x; approval covers sprite export, not in-game map integration."
     },
     {
+      "id": "takanawa-shrine",
+      "kind": "building",
+      "source": "assets/source/takanawa-shrine-atlas-v1.png",
+      "sha256": "5e8720ab657326fd943c35341e873be67c7100aa54813c1bcfb61e21a58a856d",
+      "sourceSize": [
+        96,
+        96
+      ],
+      "runtimeSize": [
+        96,
+        96
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/takanawa-shrine.png",
+      "spriteSha256": "7e2f1261b600b18bdf53908f319291917947746c6ad13e3c3879e74ef63ec70e",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "door": [
+          48,
+          94
+        ],
+        "foot": [
+          48,
+          95
+        ]
+      },
+      "collisionTiles": [
+        6,
+        6
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+    },
+    {
+      "id": "taxi",
+      "kind": "building",
+      "source": "assets/source/taxi-atlas-v1.png",
+      "sha256": "fb82f8d2063bbbb159bb3b7149694f825b22c598cc93e81824e21f08c9a1bcb9",
+      "sourceSize": [
+        32,
+        24
+      ],
+      "runtimeSize": [
+        32,
+        24
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/taxi.png",
+      "spriteSha256": "9577b2512b47fe7aa32b930fcdae3800784cb62f86019aafe18b50291d5c1e59",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          16,
+          23
+        ]
+      },
+      "collisionTiles": [
+        2,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
+    },
+    {
+      "id": "taxi-stand",
+      "kind": "building",
+      "source": "assets/source/taxi-stand-atlas-v1.png",
+      "sha256": "d9141d3f2848805caff54d66d6f0a19e48d93ce7c95482d67c4bdbac269a435a",
+      "sourceSize": [
+        48,
+        48
+      ],
+      "runtimeSize": [
+        48,
+        48
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/taxi-stand.png",
+      "spriteSha256": "67f17e6ab05fd5e128de0f5e343667d519c5af12f9a9118601009168c1597a04",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          24,
+          47
+        ]
+      },
+      "collisionTiles": [
+        3,
+        3
+      ],
+      "generator": "Image Gen 2",
+      "mode": "generate",
+      "notes": "Map asset pack 2 (#93). Real Takanawa landmark, simplified. Anchors are zero-based runtime px from top-left; collisionTiles is the opaque-pixel bounding box snapped out to 16px tiles. Decorative prop, no door. Export: alpha-bounds crop, aspect-preserving nearest-neighbour fit, hard alpha, quantized by tools/art/export.mjs. Artist notes: Original landmark interpretations. Style references inspected at 6x before generation. Built-in Image Gen 2 used. Alpha-bounds crop, aspect-preserving nearest-neighbour fit, 31 RGB colors plus transparent. Door and collision anchors proposed for assembler review. No real wordmarks. Local git pull failed due to GitHub DNS resolution. Wall export crops two source-edge pixels and the upper transparent edge before repeating, removing end-cap gaps. Wall reviewed as four horizontal copies. All eight sprites reviewed at 1x and 6x."
+    },
+    {
       "id": "tiles-interior",
       "kind": "tileset",
       "source": "assets/source/tiles-interior-atlas-v4.png",
@@ -1259,6 +1891,31 @@
       "generator": "Image Gen 2",
       "mode": "edit",
       "notes": "Image Gen 2 4x4 source sheet (raw-v1) edited once (raw-v2); crops assembled row-major into the 8x2 atlas, each prop fit within 14x14 bottom-aligned, palette snapped to existing tiles-outdoor colours, hard alpha. Index 9 (manhole) is a full-cell ground tile whose edges match the tiles-outdoor sidewalk cell. Collision remains map-owned."
+    },
+    {
+      "id": "tiles-outdoor-3",
+      "kind": "tileset",
+      "source": "assets/source/tiles-outdoor-3-atlas-v1.png",
+      "sha256": "55e970eab139ae3d5e6c2f472fc938a3cd92541ba8f7cea60bed3a3c1094470a",
+      "sourceSize": [
+        128,
+        64
+      ],
+      "runtimeSize": [
+        128,
+        64
+      ],
+      "sliceX": 8,
+      "sliceY": 4,
+      "sprite": "public/sprites/tiles-outdoor-3.png",
+      "spriteSha256": "83ff6d00e1a98a4b2e37fea72366770b5f8b7bbb5740265dbccdc51fe20df2cf",
+      "colors": 23,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) road/park/nature add-on tiles, 8x4 of 16x16, indices row-major 0..31. Trees: sakura 14-17 and autumn 18-21 are TL,TR,BL,BR quadrants of a 32x32 tree. Collision remains map-owned. Artist notes: Three built-in Image Gen 2 outputs. raw-v2 ground/traffic source; raw-v3 corrected full trees sliced into four quadrants each. Nearest-neighbour export, 31 RGB palette entries plus transparency, hard alpha. Ground full-cell; grass/water perimeter strips assembled from palette-matched existing outdoor base cells; drain grate assembled over existing sidewalk. Repeatable brick/gravel/water opposite borders use copied source strips. Native and 6x visual review; 4x4 repeats and base joins included as PNG contact sheets. Brick mortar is sparse at runtime scale. Ground color continuity checked visually; road curves use a wider curb shape than existing straight edges, so map assembler should review their curb transitions. Requested git pull failed with shared FETCH_HEAD corruption; no repo files edited."
     },
     {
       "id": "town-map",
@@ -1409,6 +2066,74 @@
       "generator": "Image Gen 2",
       "mode": "generate",
       "notes": "Real brand storefront by art-direction decision (#85); not affiliated. Anchors are zero-based runtime pixel coordinates from top-left. Door marks the threshold; foot marks the bottom-centre sorting point. collisionTiles is the 16px-grid ground footprint of the facade (roof overhang and transparent padding are not collision). Atlas is the artist-finished exact-size sprite: alpha>=128 crop, nearest-neighbour fit, quantized to <=31 colours + transparent, hard alpha. Map owner places a walkable portal in front of the door. Art reviewed at 1x and 3x/6x."
+    },
+    {
+      "id": "yamanote-train",
+      "kind": "building",
+      "source": "assets/source/yamanote-train-atlas-v1.png",
+      "sha256": "a48f6fb27e0c2cfe4707d295d38f214e962007664c2ba28204513d2d7e52e3fd",
+      "sourceSize": [
+        128,
+        32
+      ],
+      "runtimeSize": [
+        128,
+        32
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/yamanote-train.png",
+      "spriteSha256": "31626fa2a4728ef9dafb265c53c14c0b143f8099b0b2cfabbb80751929a82679",
+      "colors": 23,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          64,
+          31
+        ]
+      },
+      "collisionTiles": [
+        7,
+        2
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
+    },
+    {
+      "id": "yamanote-train-v",
+      "kind": "building",
+      "source": "assets/source/yamanote-train-v-atlas-v1.png",
+      "sha256": "4936e0cb73d14b429b5c0505be3b0b7e3cffdb72ce62ba55b488d03290e56db7",
+      "sourceSize": [
+        32,
+        128
+      ],
+      "runtimeSize": [
+        32,
+        128
+      ],
+      "sliceX": 1,
+      "sliceY": 1,
+      "sprite": "public/sprites/yamanote-train-v.png",
+      "spriteSha256": "2238b6881b555196270bad18b83cecdf4689c1cd9167df07e6b93f3cf2680deb",
+      "colors": 24,
+      "alpha": true,
+      "status": "draft",
+      "anchors": {
+        "foot": [
+          16,
+          127
+        ]
+      },
+      "collisionTiles": [
+        2,
+        8
+      ],
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded."
     },
     {
       "id": "yoshinoya",

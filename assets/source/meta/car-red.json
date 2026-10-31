@@ -1,0 +1,38 @@
+{
+  "id": "car-red",
+  "kind": "building",
+  "source": "assets/source/car-red-atlas-v1.png",
+  "rawSource": "assets/source/vehicles-raw-v2.png",
+  "runtimeSize": [
+    32,
+    24
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Create ONE vehicle sprite sheet, 3 columns x 2 rows of equal square cells, at least 1536x1024 source pixels. Exactly six isolated vehicles, centered each cell, nothing else. Row 1 left: white compact car, right-facing, designed for 32x24. Row 1 middle: vermilion red compact car right-facing 32x24. Row 1 right: dark forest green Japanese taxi right-facing 32x24 with cream roof lamp. Row 2 left: cream and teal city bus right-facing 64x32. Row 2 middle: long silver Yamanote commuter train car running left-right, right end cab, iconic continuous light-green stripe, dark teal windows, visible roof, 128x32. Row 2 right: same Yamanote car vertically north-south, genuine overhead view with cab at bottom and roof equipment and green stripes on long sides, 32x128. Side-on vehicles must show roof and south side at the map angle of the references, long axes strictly horizontal. All six have simplified large color clusters that survive extreme downscale. No scenery, ground, rails, cast shadow, labels, text, numbers or logos. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Reference images are style only; do not depict buildings.",
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. EDIT TARGET: attached raw-v1 vehicle sheet. Keep all six vehicle identities, locations, proportions, right-facing horizontal directions, and vertical overhead train. Remove ALL dark background, cell lines, soft glows and shadows; make outside vehicle silhouettes completely transparent alpha zero. Simplify each vehicle to flat chunky deliberate pixel clusters, no gradients or soft glow anywhere. White and red cars and green taxi remain first row. Cream teal bus bottom left, horizontal green stripe silver train bottom middle, vertical matching train bottom right. Preserve roofs and visible south side of horizontal vehicles. Horizontal train must keep visible roof, repeated doors and windows, continuous light-green stripes. Dark navy one logical pixel outlines at target 32x24 car, 64x32 bus, 128x32 train, 32x128 vertical train. Do not add labels, roads, rails or ground. Style references station, matsushimaya, home and tiles only guide palette, crispness and angle. Source at least 1536x1024. True transparent background is mandatory."
+  ],
+  "references": [
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png",
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png"
+  ],
+  "anchors": {
+    "foot": [
+      16,
+      23
+    ]
+  },
+  "status": "draft",
+  "notes": "Map asset pack 2 (#93) vehicle. Drawn facing right (cars, bus, horizontal train; code can flip) or cab at the bottom (yamanote-train-v). All six vehicles come from one Image Gen 2 sheet (vehicles-raw-v1 generate, vehicles-raw-v2 edit). No collision rect: vehicles are map-owned moving or decorative props. Artist notes: Art-only handoff. raw-v1 generated sheet; raw-v2 edit simplifies shading and transparency. Final exports use raw-v2, alpha threshold 128, alpha-bounds crop, aspect-preserving nearest-neighbour fit into exact transparent canvases, 31 RGB quantization colors plus normalized transparent black. Reviewed at 1x and 6x. Cars and bus face right, horizontal train right cab, vertical train overhead bottom cab. No buildings. No game clone edits. Initial pull encountered shared FETCH_HEAD race; explicit pull origin main succeeded.",
+  "collisionTiles": [
+    2,
+    2
+  ]
+}

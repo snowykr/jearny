@@ -1,0 +1,32 @@
+{
+  "id": "npc-salaryman",
+  "kind": "character",
+  "source": "assets/source/npc-salaryman-atlas-v1.png",
+  "rawSource": "assets/source/npc-salaryman-raw-v1.png",
+  "runtimeSize": [
+    48,
+    80
+  ],
+  "sliceX": 3,
+  "sliceY": 4,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Use case: stylized-concept. Create ONE production sprite sheet of adult man navy business suit, cream shirt, dark tie, short dark hair, carrying a brown briefcase. Reference 1 is the exact character proportion and animation grid guide; other images are style references. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. EXACT layout: 3 columns by 4 rows with no gaps, each cell 16x20 logical pixels, entire sheet 48x80 logical pixels enlarged nearest neighbour to 768x1280. Twelve separate full-body poses. Rows in order: facing DOWN, facing LEFT, facing RIGHT, facing UP. Columns: standing idle feet together, walking left-foot forward, walking right-foot forward. Each cell must have exactly one figure; feet at bottom centre; equal figure size/scale in every frame. Use very coarse chunky pixel clusters, head approximately 9x8 logical pixels and body 9x10, dark colored 1 logical pixel outlines, no antialiasing. Keep each character inside its own cell, transparent space around silhouette. Clear alternating leg and arm poses. No grid lines, no text, no ground shadows. Accessory visible and consistent across frames. Do not copy reference character clothing; make requested original NPC.",
+  "references": [
+    "public/sprites/m2-char-player-8x.png",
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png"
+  ],
+  "anchors": {
+    "foot": [
+      8,
+      20
+    ]
+  },
+  "collisionTiles": [
+    1,
+    1
+  ],
+  "status": "draft",
+  "notes": "Map asset pack 2 (#93) townsfolk walk sheet. Rows down,left,right,up; columns idle,stepA,stepB (same layout as char-player). Artist notes: Six separate generated sources. Export via per-cell alpha bounds, common aspect-preserving nearest-neighbour scale per character, bottom-centre alignment, <=32 RGBA colors, binary alpha. Columns idle/stepA/stepB; rows down/left/right/up. Child is shorter. No repo edits. Transparent row gaps determine slice boundaries because generated row spacing is uneven. Reviewed final exports at 1x and 6x; distinct alternating poses and accessories remain legible. Raw numbering maps to salaryman, student, tourist, elder, child, runner respectively."
+}

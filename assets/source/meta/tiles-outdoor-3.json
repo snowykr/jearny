@@ -1,0 +1,63 @@
+{
+  "id": "tiles-outdoor-3",
+  "kind": "tileset",
+  "source": "assets/source/tiles-outdoor-3-atlas-v1.png",
+  "rawSource": "assets/source/tiles-outdoor-3-raw-v3.png",
+  "runtimeSize": [
+    128,
+    64
+  ],
+  "sliceX": 8,
+  "sliceY": 4,
+  "generator": "Image Gen 2",
+  "mode": "edit",
+  "prompts": [
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset.\nCreate ONE production tile atlas, exactly 8 columns x 4 rows, each cell 16x16 logical pixels; whole sheet 128x64 logical pixels enlarged uniformly 8x to 1024x512. No gutters, margins, grid lines, labels or text. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. References are style only. First reference outdoor tiles dictates ground colors: slate grey road, cream sidewalks, soft green grass, teal canal. Ground cells must be opaque full squares, continuing exactly to all four edges; transparent background only behind traffic light and tree quadrants. Each art pixel is a uniform 8x8 square.\nROW 1: road corner NE, road corner NW, road corner SE, road corner SW, T junction N, T junction S, T junction E, T junction W.\nRoad turns and junctions use slate asphalt with cream curb corners, thin dark tan curb divisions. NE corner means road exits top and right; NW top and left; SE bottom and right; SW bottom and left. T N means exits north east west (and analogously S E W). Road openings are 10 logical pixels wide centered, all edge connection positions identical.\nROW 2: four way intersection; vertical road dashed cream lane marking; freestanding traffic signal on transparent (three tiny red amber green lights on dark pole); zebra crossing corner on asphalt; full red brick paving; full park gravel path; sakura tree top left quadrant; sakura tree top right quadrant.\nROW 3: sakura tree bottom left quadrant; sakura tree bottom right quadrant; autumn tree top left quadrant; autumn tree top right quadrant; autumn tree bottom left quadrant; autumn tree bottom right quadrant; hedge corner on grass; blue and white flower bed on grass.\nEach tree comprises exactly four 16px cells assembled to one 32x32 tree. Sakura has rounded pink cream foliage and brown trunk, autumn orange gold vermilion foliage. Position quadrant crops so assembled trees connect perfectly despite their separated sheet positions. Transparent outside tree silhouette.\nROW 4: canal north bank (stone edge at top, water below); canal south bank (water above stone edge at bottom); seamless full canal teal water; stepping stones on green grass; lily pads on teal water; small flower patch on grass; small stone on grass; drain grate embedded in full cream sidewalk.\nUse sparse large pixel clusters, no fine noise, antialiasing, shadows or outlines around individual tile cells. Seamless grass and water share exact base colors with reference. All ground cells fully opaque.",
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset.\nEDIT the attached atlas. Keep the exact 8x4 grid and order of 16x16 logical cells. Correct tree quadrants: there are ONLY TWO 32x32 trees across eight cells. Sakura upper halves are row2 col7 and col8; lower halves row3 col1 and col2. These four cells MUST assemble into one tree, with leafy dome across upper halves and tapering canopy with centered brown trunk across lower halves. Autumn upper halves row3 col3 and col4; lower halves row3 col5 and col6. Currently they look like two duplicated full trees. Replace col3/4 with just upper dome foliage and col5/6 with tapering lower foliage plus trunk; assembled into 32x32 one whole tree. Keep silhouettes simple enough at 16px cells. Fix first four road corners in row1 so NE has cream curb only at bottom LEFT, NW curb only bottom RIGHT, SE curb only top LEFT, SW curb only top RIGHT. Road exits centered on their designated edges and other sides are cream sidewalk. Roads openings 10px wide. Remove ALL thin decorative grid outlines around ground tile perimeter; ground textures extend seamlessly to cell boundaries. Keep everything else. Match attached outdoor, station and shop references exactly in palette, outline weight, pixel density and three-quarter top-down angle. Transparency only outside traffic light and trees. No black/magenta/colored speckled halos, no soft alpha.",
+    "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset.\nEdit the previous atlas by extracting and correcting ONLY the TWO trees into a new source sheet, 2 columns x 1 row, each square 32x32 logical pixels, total 64x32. LEFT cell one complete sakura tree, RIGHT cell one complete autumn tree. No other tiles. Use one rounded canopy per tree, dark colored outline, pink/cream flowers on sakura, orange/red/gold on autumn, and a single central brown trunk at bottom. Each whole tree nearly fills its 32x32 square with 1 pixel clear margin. Transparent background and hard edges. Chunky pixels on uniform 32x32 grid per tree. No repeated canopy, no horizontal seams, no leaves below base. Match outdoor and station and shop attached style references exactly in palette, outline weight, pixel density and three-quarter top-down angle. Output at 1024x512 or equivalent 2:1 ratio, no padding."
+  ],
+  "references": [
+    "public/sprites/tiles-outdoor.png",
+    "public/sprites/tiles-interior.png",
+    "public/sprites/char-player.png",
+    "public/sprites/station.png",
+    "public/sprites/matsushimaya.png",
+    "public/sprites/home.png"
+  ],
+  "indices": {
+    "road_corner_NE": 0,
+    "road_corner_NW": 1,
+    "road_corner_SE": 2,
+    "road_corner_SW": 3,
+    "T_junction_N": 4,
+    "T_junction_S": 5,
+    "T_junction_E": 6,
+    "T_junction_W": 7,
+    "four_way_intersection": 8,
+    "road_dashed_vertical": 9,
+    "traffic_light": 10,
+    "zebra_crossing_corner": 11,
+    "red_brick_paving": 12,
+    "park_gravel_path": 13,
+    "sakura_tree_TL": 14,
+    "sakura_tree_TR": 15,
+    "sakura_tree_BL": 16,
+    "sakura_tree_BR": 17,
+    "autumn_tree_TL": 18,
+    "autumn_tree_TR": 19,
+    "autumn_tree_BL": 20,
+    "autumn_tree_BR": 21,
+    "hedge_corner": 22,
+    "flower_bed_blue_white": 23,
+    "canal_edge_N": 24,
+    "canal_edge_S": 25,
+    "canal_water": 26,
+    "stepping_stone_path": 27,
+    "pond_lily_pads": 28,
+    "grass_flower_patch": 29,
+    "grass_small_stone": 30,
+    "sidewalk_drain_grate": 31
+  },
+  "status": "draft",
+  "notes": "Map asset pack 2 (#93) road/park/nature add-on tiles, 8x4 of 16x16, indices row-major 0..31. Trees: sakura 14-17 and autumn 18-21 are TL,TR,BL,BR quadrants of a 32x32 tree. Collision remains map-owned. Artist notes: Three built-in Image Gen 2 outputs. raw-v2 ground/traffic source; raw-v3 corrected full trees sliced into four quadrants each. Nearest-neighbour export, 31 RGB palette entries plus transparency, hard alpha. Ground full-cell; grass/water perimeter strips assembled from palette-matched existing outdoor base cells; drain grate assembled over existing sidewalk. Repeatable brick/gravel/water opposite borders use copied source strips. Native and 6x visual review; 4x4 repeats and base joins included as PNG contact sheets. Brick mortar is sparse at runtime scale. Ground color continuity checked visually; road curves use a wider curb shape than existing straight edges, so map assembler should review their curb transitions. Requested git pull failed with shared FETCH_HEAD corruption; no repo files edited."
+}
