@@ -17,6 +17,8 @@ interface ArtMeta {
   kind: string;
   runtimeSize: [number, number];
   collisionTiles?: [number, number];
+  /** Runtime-pixel anchors; `foot` is the sorting point, `door` the threshold. */
+  anchors?: { foot?: [number, number]; door?: [number, number]; secondDoor?: [number, number] };
 }
 
 // `kind: building` also covers single-sprite art (coupon icon/stamp) that has no
@@ -85,6 +87,21 @@ describe('building collision follows the exported art', () => {
       // The footprint also covers the painted bottom row.
       const bottom = (entity.tile[1] + rows) * 16;
       expect(spriteTop * 16 + bounds.maxY).toBeLessThan(bottom);
+      // The declared foot/door anchors must point at painted pixels, not at transparent padding
+      // (station.json used to declare foot y=127 on art that ends at 91, which sent two reviews
+      // after a collision rect over empty deck).
+      const foot = meta.anchors?.foot;
+      const door = meta.anchors?.door;
+      if (foot) {
+        expect(foot[1]).toBeGreaterThanOrEqual(bounds.minY);
+        expect(foot[1]).toBeLessThanOrEqual(bounds.maxY);
+      }
+      if (door) {
+        expect(door[0]).toBeGreaterThanOrEqual(bounds.minX);
+        expect(door[0]).toBeLessThanOrEqual(bounds.maxX);
+        expect(door[1]).toBeGreaterThanOrEqual(bounds.minY);
+        expect(door[1]).toBeLessThanOrEqual(bounds.maxY);
+      }
     });
   }
 
