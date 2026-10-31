@@ -15,7 +15,11 @@ export type SaveLoad =
   | { status: 'unavailable' };
 
 export interface SaveStore {
-  /** `corrupt` means data existed but nothing usable matched `contentVersion`. */
+  /**
+   * `corrupt`: data exists but no snapshot decoded. `version_mismatch`: a valid
+   * snapshot belongs to another contentVersion and must be left untouched until
+   * the player confirms a restart. `unavailable`: storage could not be reached.
+   */
   load(contentVersion: string): Promise<SaveLoad>;
   /** Writes the new current snapshot and demotes the old one to `previous`. */
   save(snapshot: GameSnapshot): Promise<void>;

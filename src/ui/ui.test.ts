@@ -197,6 +197,32 @@ describe('dialogue overlay', () => {
     expect(replay?.hidden).toBe(true);
   });
 
+  it('replays without advancing or closing the dialogue', async () => {
+    const { root, session } = mount();
+    await session.dispatch({ type: 'UsePortal', portalId: PORTAL.homeExit });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.stationStaff });
+    const replay = root.querySelector<HTMLButtonElement>('.jq-replay');
+    expect(replay?.hidden).toBe(false);
+
+    replay?.click();
+    await Promise.resolve();
+    expect(session.snapshot.dialogue.nodeId).toBe('station.directions');
+    expect(session.snapshot.dialogue.status).toBe('showing');
+  });
+
+  it('does not reset the save when the prompt is dismissed with Escape', async () => {
+    const { root, session } = mount({
+      bootEffects: [{ type: 'ShowHint', reason: 'save_corrupt', id: 'boot:0' }],
+    });
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    expect(session.snapshot.revision).toBe(1);
+
+    press('Escape');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(session.snapshot.revision).toBe(1);
+    expect(root.querySelector<HTMLElement>('.jq-modal')?.hidden).toBe(true);
+  });
+
   it('toggles settings and applies the large text class', () => {
     const { root, session } = mount();
     root.querySelector<HTMLButtonElement>('.jq-hud button')?.click();

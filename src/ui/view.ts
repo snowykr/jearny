@@ -18,6 +18,7 @@ export type ChoiceView =
       itemId: string;
       quantity: number;
       priceYen: number;
+      disabled: boolean;
     };
 
 export function currentNode(snapshot: GameSnapshot, content: WorldContent): DialogueNode | null {
@@ -63,6 +64,7 @@ export function visibleChoices(snapshot: GameSnapshot, content: WorldContent): C
     if (shop.orderNodeId !== node.id) continue;
     for (const item of shop.items) {
       const quantity = shop.requiredQuantity;
+      const priceYen = item.priceYen * quantity;
       views.push({
         kind: 'buy',
         id: `${item.itemId}:${quantity}`,
@@ -70,7 +72,8 @@ export function visibleChoices(snapshot: GameSnapshot, content: WorldContent): C
         shopId: shop.shopId,
         itemId: item.itemId,
         quantity,
-        priceYen: item.priceYen * quantity,
+        priceYen,
+        disabled: snapshot.walletYen < priceYen,
       });
     }
   }

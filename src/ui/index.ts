@@ -77,6 +77,8 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   // --- toast / settings / modal -------------------------------------------
   const toast = element('div', 'jq-toast');
   toast.hidden = true;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
 
   const settings = element('div', 'jq-settings');
   settings.hidden = true;
@@ -119,8 +121,12 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
 
   const modal = element('div', 'jq-modal');
   modal.hidden = true;
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
   const modalCard = element('div', 'jq-modal-card');
   const modalTitle = element('h2');
+  modalTitle.id = 'jq-modal-title';
+  modal.setAttribute('aria-labelledby', modalTitle.id);
   const modalBody = element('p');
   const modalButton = element('button');
   modalButton.type = 'button';
@@ -156,6 +162,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       const label = choice.kind === 'buy' ? `${choice.label} ¥${choice.priceYen}` : choice.label;
       const button = element('button', 'jq-choice', label);
       button.type = 'button';
+      button.disabled = choice.kind === 'buy' && choice.disabled;
       button.setAttribute('aria-selected', String(index === selected));
       button.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -184,7 +191,9 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
     }
     speaker.textContent = speakerName(snapshot, gameContent);
     replay.hidden = !node.lineId;
-    replay.onclick = () => {
+    replay.onclick = (event) => {
+      // The button lives inside the click-to-advance box; never advance it.
+      event.stopPropagation();
       if (node.lineId) replayAudio(node.lineId);
     };
     renderText();
@@ -258,6 +267,7 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   };
 
   const activate = (choice: ChoiceView): void => {
+    if (choice.kind === 'buy' && choice.disabled) return;
     if (choice.kind === 'choice') {
       stopAudio();
       void session.dispatch({
@@ -278,12 +288,17 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
   const intercept = (event: KeyboardEvent): void => {
     const snapshot = session.snapshot;
     if (modalOpen) {
-      if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         event.stopPropagation();
         const run = modalAction;
         closeModal();
         run?.();
+      } else if (event.key === 'Escape') {
+        // Dismissing never deletes a save; only the explicit action can.
+        event.preventDefault();
+        event.stopPropagation();
+        closeModal();
       }
       return;
     }
@@ -296,6 +311,8 @@ export function mountUi(root: HTMLElement, session: GameSession): () => void {
       return;
     }
     if (!currentNode(snapshot, gameContent)) return;
+    // The replay control owns its own activation; the dialogue must not eat it.
+    if (event.target instanceof Node && replay.contains(event.target)) return;
 
     const navigation = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     if (!navigation.includes(event.key) && !['Enter', ' ', 'Spacebar', 'Escape'].includes(event.key))

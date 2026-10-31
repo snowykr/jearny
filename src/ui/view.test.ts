@@ -35,6 +35,7 @@ describe('view model', () => {
       itemId: 'mochi',
       quantity: 2,
       priceYen: 600,
+      disabled: false,
     });
     expect(choices.slice(1).map((choice) => choice.id)).toEqual(['again', 'one', 'three']);
   });

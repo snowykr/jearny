@@ -93,10 +93,12 @@ function play(path: string): void {
 /** Replays one published line on demand (the dialogue box button). */
 export function replayAudio(lineId: string): void {
   if (muted) return;
+  const token = (generation += 1);
   void loadManifest().then((loaded) => {
+    // The dialogue may have advanced or the scene changed while loading.
+    if (token !== generation) return;
     const line = loaded?.lines[lineId];
-    if (!line) return;
-    play(line.path);
+    if (line) play(line.path);
   });
 }
 

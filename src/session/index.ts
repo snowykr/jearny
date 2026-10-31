@@ -42,6 +42,13 @@ function mergeSettings(current: GameSnapshot['settings'], patch: SettingsPatch):
 
 let bootSequence = 0;
 
+/** randomUUID needs a secure context; HTTP LAN dev and file:// fall back. */
+function guardedId(): string {
+  return typeof globalThis.crypto?.randomUUID === 'function'
+    ? globalThis.crypto.randomUUID()
+    : `${Date.now()}-${++bootSequence}`;
+}
+
 export function createSession(options: SessionOptions): GameSession {
   const { content, store } = options;
   let snapshot: GameSnapshot =
@@ -52,6 +59,7 @@ export function createSession(options: SessionOptions): GameSession {
   let pending: Effect[] = [...(options.bootEffects ?? [])];
   let saveBlocked = options.saveBlocked ?? false;
   let saveFailed = false;
+  let resetting = false;
   let saveChain: Promise<void> = Promise.resolve();
   let closed = false;
   let queue: Promise<unknown> = Promise.resolve();
@@ -64,8 +72,7 @@ export function createSession(options: SessionOptions): GameSession {
   };
 
   const notify = (effects: Effect[] = []): void => {
-    // Boot effects are delivered by subscribe(); a command must not replay them.
-    pending = [];
+    // Boot effects are delivered by subscribe() and cleared by the first command.
     for (const listener of listeners) {
       try {
         listener(snapshot, effects);
@@ -76,7 +83,7 @@ export function createSession(options: SessionOptions): GameSession {
   };
 
   const persist = (): void => {
-    if (saveBlocked) return;
+    if (saveBlocked || resetting) return;
     const toSave = snapshot;
     saveChain = saveChain.then(async () => {
       if (!decodeSnapshot(toSave)) {
@@ -104,6 +111,8 @@ export function createSession(options: SessionOptions): GameSession {
 
   const execute = (command: Command): Outcome => {
     if (closed) return { ok: false, reason: 'not_available', snapshot };
+    // Boot effects live until the first command, whatever the outcome.
+    pending = [];
     const payloadKey = JSON.stringify(command.payload);
     const previousPayload = applied.get(command.commandId);
     // Retried transport => the same command id must not advance state twice.
@@ -141,13 +150,7 @@ export function createSession(options: SessionOptions): GameSession {
     return result;
   };
 
-  const newCommandId = (): string => {
-    const suffix =
-      typeof globalThis.crypto?.randomUUID === 'function'
-        ? globalThis.crypto.randomUUID()
-        : `${Date.now()}-${++bootSequence}`;
-    return `${snapshot.sessionId}:${suffix}`;
-  };
+  const newCommandId = (): string => `${snapshot.sessionId}:${guardedId()}`;
 
   return {
     get snapshot() {
@@ -179,13 +182,25 @@ export function createSession(options: SessionOptions): GameSession {
       return () => listeners.delete(listener);
     },
     async reset() {
-      await store.clear();
-      snapshot = createInitialSnapshot(globalThis.crypto.randomUUID(), content.version);
-      applied.clear();
-      seenEffectIds.length = 0;
-      saveBlocked = false;
-      saveFailed = false;
-      notify();
+      // One serialization rule: reset is a queued mutation like any command.
+      const task = queue.then(async () => {
+        resetting = true;
+        try {
+          // Let an in-flight save finish so it cannot land after the clear.
+          await saveChain;
+          await store.clear();
+          snapshot = createInitialSnapshot(guardedId(), content.version);
+          applied.clear();
+          seenEffectIds.length = 0;
+          saveBlocked = false;
+          saveFailed = false;
+        } finally {
+          resetting = false;
+        }
+        notify();
+      });
+      queue = task.catch(() => undefined);
+      await task;
     },
     async close() {
       closed = true;

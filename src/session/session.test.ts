@@ -128,6 +128,15 @@ describe('session: effects, settings and saves', () => {
     expect(second.filter((effect) => effect.id === bootEffect.id)).toHaveLength(1);
   });
 
+  it('does not consume a boot hint on a settings change', () => {
+    const bootEffect: Effect = { type: 'ShowHint', reason: 'save_corrupt', id: 'boot:1' };
+    const { session } = make({ bootEffects: [bootEffect] });
+    session.updateSettings({ muted: true });
+    const seen: Effect[] = [];
+    session.subscribe((_snapshot, effects) => seen.push(...effects));
+    expect(seen).toEqual([bootEffect]);
+  });
+
   it('resets the store and the snapshot', async () => {
     const { session, store } = make();
     await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
@@ -171,6 +180,39 @@ describe('session: effects, settings and saves', () => {
     const { session } = make();
     session.updateSettings({ volume: Number.NaN });
     expect(session.snapshot.settings.volume).toBe(0.8);
+  });
+
+  it('waits for an in-flight save before clearing on reset', async () => {
+    const log: string[] = [];
+    let release = (): void => undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const store = {
+      load: async () => ({ status: 'empty' }) as const,
+      save: async () => {
+        log.push('save:start');
+        await gate;
+        log.push('save:end');
+      },
+      clear: async () => {
+        log.push('clear');
+      },
+    };
+    const session = createSession({
+      content,
+      store,
+      initial: createInitialSnapshot('slow-save', content.version),
+    });
+
+    await session.dispatch({ type: 'Interact', entityId: ENTITY.guide });
+    const reset = session.reset?.();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(log).toEqual(['save:start']);
+
+    release();
+    await reset;
+    expect(log).toEqual(['save:start', 'save:end', 'clear']);
   });
 
   it('hints once when the store cannot write', async () => {
