@@ -1,0 +1,28 @@
+{
+  "id": "pocket-tabs",
+  "kind": "tileset",
+  "source": "assets/source/pocket-tabs-atlas-v1.png",
+  "rawSource": "assets/source/pocket-tabs-raw-v1.png",
+  "runtime": "public/sprites/pocket-tabs.png",
+  "runtimeSize": [
+    32,
+    16
+  ],
+  "sliceX": 2,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Use case: stylized-concept. One sprite sheet with TWO equal square cells, 2 columns x 1 row no gaps, logical 32x16 canvas each cell 16x16. Left icon a simple small golden key with round bow and two teeth. Right icon a cream shopping bag with teal handle containing a pink mochi peeking over rim. Each icon fills its own cell with 1 pixel clear margin, chunky extremely simple 16x16 pixel clusters, dark outline, no text. Genuine transparent background. No scenery. Style reference buildings only for palette.",
+  "references": [
+    "/tmp/jearny-art67/p5-style.png",
+    "/tmp/jearny-art67/icons-raw-v0.png",
+    "/Users/mfuad16/.folio-os/scratch/2026-10-31-ai-ai-ai-ai-ai-7a1d4478/repos/jearny/assets/source/station-v1.png",
+    "/Users/mfuad16/.folio-os/scratch/2026-10-31-ai-ai-ai-ai-ai-7a1d4478/repos/jearny/assets/source/matsushimaya-v1.png"
+  ],
+  "status": "draft",
+  "iconIndex": {
+    "0": "taisetsu na mono (key item: golden key)",
+    "1": "kaimono (shopping bag with mochi)"
+  },
+  "notes": "2 icons of 16x16 (32x16). raw-v1 is the bag sheet; raw-v2 is the pocket tab sheet. Nearest-neighbour resize, 31 RGB colors plus transparent, alpha threshold 128. Reviewed final sprites at 1x and 6x. No repository files edited."
+}

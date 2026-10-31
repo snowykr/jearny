@@ -1,0 +1,40 @@
+{
+  "id": "bag-art",
+  "kind": "building",
+  "source": "assets/source/bag-art-atlas-v1.png",
+  "rawSource": "assets/source/bag-art-raw-v1.png",
+  "runtime": "public/sprites/bag-art.png",
+  "runtimeSize": [
+    192,
+    64
+  ],
+  "sliceX": 1,
+  "sliceY": 1,
+  "generator": "Image Gen 2",
+  "mode": "generate",
+  "prompt": "Original Japanese top-down pixel RPG asset visually inspired by Pokemon FireRed's overworld. Orthographic three-quarter TOP-DOWN RPG angle, front facing directly down to player, no isometric diamond or perspective convergence. Chunky deliberate pixels, crisp edges, restrained 24-color palette, dark colored outlines, sun from upper left, simple 3-shade clusters. Transparent background, no floor, no shadow beyond footprint, no text or logos. Readable when scaled down into a 16px-grid game. Match the attached reference sprites exactly in palette, outline and pixel density. original design, not resembling any Nintendo / Game Freak / Pokémon asset. Match the palette, outline weight, pixel density and three-quarter top-down angle of the attached reference sprites exactly. Use case: stylized-concept. Generate a single horizontal sprite sheet, precisely THREE equal square cells in one row, no gaps, logical canvas 192x64, each cell 64x64. Each tote fits in its cell with 6px clear margin. Same teal travel tote as TOP LEFT icon reference: rounded rectangular teal body, cream loop handles, two vertical cream straps, tiny plain cream rectangular front patch. Frame 0 closed tote. Frame 1 same tote slightly open, a small cream mochi box and folded green map peeking out. Frame 2 same closed tote tilted slightly clockwise for wiggle animation, not a different bag. Consistent scale and baseline. Bold simple pixel clusters, no tiny details. Transparent background. The building references are style only; draw no buildings.",
+  "references": [
+    "/tmp/jearny-art67/p5-style.png",
+    "/tmp/jearny-art67/icons-raw-v0.png",
+    "/Users/mfuad16/.folio-os/scratch/2026-10-31-ai-ai-ai-ai-ai-7a1d4478/repos/jearny/assets/source/station-v1.png",
+    "/Users/mfuad16/.folio-os/scratch/2026-10-31-ai-ai-ai-ai-ai-7a1d4478/repos/jearny/assets/source/matsushimaya-v1.png"
+  ],
+  "status": "draft",
+  "frames": {
+    "count": 3,
+    "size": [
+      64,
+      64
+    ],
+    "index": {
+      "0": "closed",
+      "1": "slightly open (mochi box, map inside)",
+      "2": "tilted wiggle"
+    }
+  },
+  "notes": "3 frames of 64x64 laid out horizontally (192x64); load as a 3x1 sheet. Same teal tote as ui-icons #0. raw-v1 is the bag sheet; raw-v2 is the pocket tab sheet. Nearest-neighbour resize, 31 RGB colors plus transparent, alpha threshold 128. Reviewed final sprites at 1x and 6x. No repository files edited.",
+  "collisionTiles": [
+    12,
+    4
+  ]
+}
