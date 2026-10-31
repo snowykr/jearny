@@ -70,7 +70,7 @@ describe('arrivalCommand (portals and zones)', () => {
   });
 
   it('dispatches Interact(zone) once per entry', () => {
-    const first = arrivalCommand(takanawa, [62, 48], null);
+    const first = arrivalCommand(takanawa, [62, 48], null); // zone covers x 61..67, y 48..49
     expect(first.command).toEqual({ type: 'Interact', entityId: ENTITY.stationZone });
     expect(first.zoneId).toBe(ENTITY.stationZone);
     // moving within the zone does not re-fire
@@ -78,7 +78,7 @@ describe('arrivalCommand (portals and zones)', () => {
     expect(second.command).toBeNull();
     expect(second.zoneId).toBe(ENTITY.stationZone);
     // leaving then re-entering fires again
-    const out = arrivalCommand(takanawa, [61, 48], second.zoneId);
+    const out = arrivalCommand(takanawa, [60, 48], second.zoneId);
     expect(out.command).toBeNull();
     expect(out.zoneId).toBeNull();
     expect(arrivalCommand(takanawa, [62, 48], out.zoneId).command).not.toBeNull();

@@ -123,12 +123,13 @@ describe('scene runtime', () => {
 
   it('entering the station zone dispatches Interact(zone) once per entry', async () => {
     const f = fakeSession();
-    const { rt, bus } = setup('takanawa', 'station-deck', f); // zone covers x 62..67, y 46..48; the station building blocks y<=47
+    const { rt, bus } = setup('takanawa', 'station-deck', f); // zone covers x 61..67, y 48..49; the station building blocks y<=47
     rt.player.tile = [64, 50];
     rt.player.facing = 'up';
     bus.press('up');
-    tick(rt, 1.2); // y 49, then 48 (enters the zone); 47 is the building
+    tick(rt, 0.3); // y 49 enters the zone; the in-flight dispatch pauses walking
     await flush();
+    tick(rt, 0.5); // y 48 is still inside the zone (no re-fire); 47 is the building
     expect(f.sent).toEqual([{ type: 'Interact', entityId: ENTITY.stationZone }]);
     bus.release('up');
     expect(rt.player.tile[1]).toBe(48);
