@@ -31,7 +31,7 @@ main.ts ─ openSession()      (B: src/session)  ──► GameSession contract
 
 ## Track A — World (this device)
 
-1. **Authored maps** in `src/content/maps/`: `takanawa` (128×96, laid out from the anchors in `content/world-plan.json`), `home-interior` and `shop-interior` (16×12). Rail is blocked, Route 15 can only be crossed at the crossing, and the plaza connects to the station by the deck portal. Add spawns, portals and entity anchors using the registry IDs.
+1. **Authored maps** in `src/content/maps/`: `takanawa` (128×96, laid out from the anchors in `content/world-plan.json`), `home-interior` and `shop-interior` (13×9), and `home-2f` (11×8). Rail is blocked, Route 15 can only be crossed at the crossing, and the plaza connects to the station by the deck portal. Add spawns, portals and entity anchors using the registry IDs.
 2. **Map validation tests** (`src/content/maps/*.test.ts`): every portal leads to a walkable spawn, rail cells are never walkable, and BFS reaches every `mandatoryConnections` pair.
 3. **Scenes**: load a map from `snapshot.sceneId`/`spawnId`. Add grid walking with tweened steps and facing, Y-sort by feet, a roof foreground layer, a camera clamped to the map, and cleanup on scene change.
 4. **Interaction**: find the entity on the faced tile, then dispatch `Interact`. Stepping onto a portal dispatches `UsePortal`. Re-enter scenes on `ChangeScene`.
