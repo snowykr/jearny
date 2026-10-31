@@ -35,4 +35,8 @@ export const BUILDING = {
 export const SHOP = { matsushimaya: 'shop:matsushimaya' } as const;
 export const ITEM = { mochi: 'mochi' } as const;
 export const QUEST = { firstTrip: 'first-neighborhood-trip' } as const;
-export const CONVERSATION = { shopOrder: 'shop_order' } as const;
+export const ZONE = { station: 'station' } as const;
+export const CONVERSATION = {
+  guideIntro: 'guide_intro',
+  shopOrder: 'shop_order',
+} as const;

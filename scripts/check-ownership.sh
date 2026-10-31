@@ -5,7 +5,7 @@ set -euo pipefail
 base="${1:-origin/main}"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
-a='^(src/game/|src/content/maps/|public/sprites/|assets/)'
+a='^(src/game/|src/content/maps/|public/sprites/|assets/|tools/art/)'
 b='^(src/domain/|src/session/|src/storage/|src/ui/|src/audio/|src/content/|content/|tools/voice/|public/audio/)'
 shared='^(src/contracts/|src/main\.ts|package(-lock)?\.json|tsconfig\.json|vite\.config\.ts|index\.html|docs/|\.github/)'
 
