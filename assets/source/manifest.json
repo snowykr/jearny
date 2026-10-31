@@ -325,6 +325,31 @@
       "notes": "Three generated themed sheets sliced in IT index order. All surfaces use full square source cells, never stretched from opaque bounds. Furniture alpha threshold 128. Paired display and kotatsu halves cropped to alpha bounds and fitted to 16x14 to remove source spacing. Index 47 transparent. Runtime export uses nearest-neighbour, hard alpha and 24-color quantization. Surfaces v4 is an Image Gen 2 edit of v3 to simplify grain at 16px. WALL_TOP uses a square crop of the generated walnut cap. See export.tiles for measured crop coordinates."
     },
     {
+      "id": "tiles-interior-2",
+      "kind": "tileset",
+      "source": "assets/source/tiles-interior-2-atlas-v1.png",
+      "sha256": "0aa5483ff0031c8df3aea072e37ce336cc6886458611151b207f7335acf28b57",
+      "sourceSize": [
+        128,
+        32
+      ],
+      "runtimeSize": [
+        128,
+        32
+      ],
+      "sliceX": 8,
+      "sliceY": 2,
+      "sprite": "public/sprites/tiles-interior-2.png",
+      "spriteSha256": "a65a770573822a41348648915b47173001aea28a4d3881ced1cd3fa8be9cbc61",
+      "colors": 23,
+      "alpha": true,
+      "status": "review",
+      "anchors": {},
+      "generator": "Image Gen 2",
+      "mode": "edit",
+      "notes": "Two themed Image Gen 2 sheets, each edited once. Square crops and nearest-neighbour reduction, hard alpha, exact existing interior palette. Rug edges composite generated one-pixel binding strips over existing RUG index 29 to retain its texture. Mock corners combine the corresponding horizontal and vertical strips. No game code changes."
+    },
+    {
       "id": "tiles-outdoor",
       "kind": "tileset",
       "source": "assets/source/tiles-outdoor-atlas-v2.png",
