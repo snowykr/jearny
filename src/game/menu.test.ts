@@ -122,6 +122,16 @@ describe('start menu', () => {
     expect(document.activeElement).toBe(document.getElementById('game'));
   });
 
+  it('falls back to the canvas when the opener was removed from the DOM', () => {
+    const { menu } = mount();
+    const opener = trigger();
+    opener?.focus();
+    menu.open();
+    opener?.remove();
+    menu.close();
+    expect(document.activeElement).toBe(document.getElementById('game'));
+  });
+
   it('shows the wallet, items with descriptions and quest progress in 持ち物', () => {
     const description = ITEM_DESCRIPTIONS[ITEM.mochi] ?? '';
     expect(description).not.toBe('');
